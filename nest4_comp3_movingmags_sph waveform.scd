@@ -529,15 +529,15 @@ SynthDef.new(\ospace, {
 				ampy=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(1,1.01);
 				ampz=SinOsc.ar(lfo_amp.lag(0.1),45.degrad,mul:1).range(1,1.01);
 
-			Out.kr(~controlBus_ax.index, SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1));
-			Out.kr(~controlBus_ay.index, SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1));
-			Out.kr(~controlBus_az.index,SinOsc.ar(lfo_amp.lag(0.1),45.degrad,mul:1));
+			Out.kr(~controlBus_ax.index, ampx);
+			Out.kr(~controlBus_ay.index, ampy);
+			Out.kr(~controlBus_az.index,ampz);
 
 				scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-				fundamental=(12*16);
+				fundamental=(12*8);
 freq=(fundamental*octave);
 
-				32.do{
+				128.do{
 
 							sph3=Spherical(ampx,Select.kr(pl1,~az),Select.kr(pl1,~el));
 					sph4=Spherical(ampy,Select.kr(pl1,~az),Select.kr(pl1,~el));
