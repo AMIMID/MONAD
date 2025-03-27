@@ -492,6 +492,16 @@ wt = signal.asWavetable;
 	 ~controlBus_ay = Bus.control(s, 1);
 	 ~controlBus_az = Bus.control(s, 1);
 	)
+
+	///phases
+		({
+		var angle=0;
+		~phase=(360*12).collect{
+		angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);
+		}
+		}.value;
+	);
+
 /////synths////
 		(
 SynthDef.new(\ospace, {
@@ -525,25 +535,24 @@ SynthDef.new(\ospace, {
 
 					Out.kr(~controlBus_m.index, harm.lag(0.1));
 
-			ampx=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(1,1.01).poll;
-				ampy=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(1,1.01);
-				ampz=SinOsc.ar(lfo_amp.lag(0.1),45.degrad,mul:1).range(1,1.01);
+			ampx=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(1,2);
+				ampy=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(1,2);
+				ampz=SinOsc.ar(lfo_amp.lag(0.1),45.degrad,mul:1).range(1,2);
 
 			Out.kr(~controlBus_ax.index, ampx);
 			Out.kr(~controlBus_ay.index, ampy);
 			Out.kr(~controlBus_az.index,ampz);
 
 				scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-				fundamental=(12*8);
+				fundamental=(12*128);
 freq=(fundamental*octave);
 
-				128.do{
+				32.do{
 
 							sph3=Spherical(ampx,Select.kr(pl1,~az),Select.kr(pl1,~el));
 					sph4=Spherical(ampy,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph5=Spherical(ampz,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
-					sphere=Spherical(48,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 			magx=(
 	 mag_x=(Complex(cos((sph3.theta.round(0.00001)*m).wrap(pi.neg,pi)),cos((sph3.theta.round(0.00001)*m).wrap(pi.neg,pi))).rho*Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
@@ -580,28 +589,55 @@ mag_z=Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((sp
 				mag_x=magx.value;
 				mag_y= magy.value;
 				mag_z=magz.value;
+
 				interval=Cartesian(mag_x,mag_y,mag_z).rho;
-//n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
-//ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
+					sphere=Spherical(48,azimuth.lag(0.1),elevation.lag(0.1));
 
-//	ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 96), scale) / 12);
-//ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 96), scale) / 12);
-//ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
+n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
-//amp1=(ton1.reciprocal*octave.reciprocal).round(0.00000001);amp2=(ton2.reciprocal*octave.reciprocal).round(0.00000001);amp3=(ton3.reciprocal*octave.reciprocal).round(0.00000001);
+ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
 
-//	pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);
+	ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 96), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 96), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
+
+amp1=(ton1.reciprocal*octave.reciprocal).round(0.00000001);amp2=(ton2.reciprocal*octave.reciprocal).round(0.00000001);amp3=(ton3.reciprocal*octave.reciprocal).round(0.00000001);
+
+	pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);
 
 				phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 
 osc1=VBAP.ar(4,
-					SinOsc.ar(interval*freq,mul:octave.reciprocal*interval.reciprocal),
+					SinOsc.ar(pitch1+SinOsc.ar(freq*interval,mul:freq*interval),mul:amp1,phase:phase),
 ~b.bufnum,
 sphere.theta.raddeg,sphere.phi.raddeg
 //Osc.ar(~t.bufnum,1,phase:sphere.theta.linlin(pi.neg,pi,2pi.neg,2pi),mul:180),
 //Osc.ar(~t.bufnum,1,phase:sphere.phi.linlin((pi/2).neg,(pi/2),2pi.neg,2pi),mul:90)
 		);
 
+osc2=VBAP.ar(4,
+						SinOsc.ar(pitch2+SinOsc.ar(freq*interval,mul:freq*interval),mul:amp2,phase:phase),
+~b.bufnum,
+sphere.theta.raddeg,sphere.phi.raddeg
+//Osc.ar(~t.bufnum,1,phase:sphere.theta.linlin(pi.neg,pi,2pi.neg,2pi),mul:180),
+//Osc.ar(~t.bufnum,1,phase:sphere.phi.linlin((pi/2).neg,(pi/2),2pi.neg,2pi),mul:90)
+		);
+
+osc3=VBAP.ar(4,
+					SinOsc.ar(pitch3+SinOsc.ar(freq*interval,mul:freq*interval),mul:amp3,phase:phase),
+~b.bufnum,
+sphere.theta.raddeg,sphere.phi.raddeg
+//Osc.ar(~t.bufnum,1,phase:sphere.theta.linlin(pi.neg,pi,2pi.neg,2pi),mul:180),
+//Osc.ar(~t.bufnum,1,phase:sphere.phi.linlin((pi/2).neg,(pi/2),2pi.neg,2pi),mul:90)
+		);
+
+	//wrappedOut3.value(out1,LeakDC.ar(osc3,mul:env));
+				Out.ar(0,LeakDC.ar(osc3,mul:gain*0.01));
+
+	//	wrappedOut2.value(out1,LeakDC.ar( osc2,mul:env));
+					Out.ar(0,LeakDC.ar(osc2,mul:gain*0.01));
+
+		//wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env));
 				Out.ar(0,LeakDC.ar(osc1,mul:gain*0.01));
 				pl1=pl1+1;}
 
@@ -642,12 +678,14 @@ w=Window.new("gui",Rect.new(750,100,500,420)).front.alwaysOnTop_(true);
 
 ~bb = Slider.new(w.view,Rect.new(20,60,160,30));
 
+~cc = Slider2D.new(w.view,Rect.new(20,150,200,200));
+
 ~on = Button(w,Rect(20,350,40,40)).states_([
 	["off",Color.black],Color.gray,["on",Color.white,Color.gray]]).action_({
 	arg obj;
 	if(
 		obj.value==1,{~synth=Synth.new(\ospace,[
-						\gain,~aa.value,\lfo_amp,~bb.value.linlin(0,1,0.001,100),\harm,~dd.value.linlin(0,1,1,8).round(1)]).register;},
+						\gain,~aa.value,\lfo_amp,~bb.value.linlin(0,1,0.001,100),\harm,~dd.value.linlin(0,1,1,8).round(1),\elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register;},
 		{~synth.free}
 )});
 /*(
@@ -683,6 +721,15 @@ f.string = "reverb2";
 });
 );
 (
+~cc.action_({
+	arg obj;
+			var az,el;
+	az=obj.x.linlin(0,1,180.neg.degrad,180.degrad);
+	el=obj.y.linlin(0,1,90.neg.degrad,90.degrad);
+			if(~synth.isPlaying,{~synth.set(\azimuth,az,\elevation,el)});
+});
+);
+(
 ~dd.action_({
 	arg obj;
 			var harm;
@@ -692,7 +739,7 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 });
 			);
 
-			 ~v = UserView.new(w,Rect(150,150,200,200)).background_(Color.black);
+			 ~v = UserView.new(w,Rect(220,150,200,200)).background_(Color.black);
 			 a = ScatterView3d(~v, Rect(0,0, 200,200), data, [-1000, 1000].asSpec,[-1000, 1000].asSpec,[-1000, 1000].asSpec);
 			 a.drawMethod = \fillRect;
 			 a.symbolSize = 1;
