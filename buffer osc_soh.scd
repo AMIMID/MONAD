@@ -150,29 +150,6 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 ~dur=~dur*2;
 
 
-		//////////////////////wavetable
-		{
-var signal,wt,m=0,amp;
-
-~level=90.collect{m=m+1;amp=m.reciprocal};
-~phase=90.collect{pi};
-signal=Signal.sineFill(1024,~level,~phase);
-
-wt = signal.asWavetable;
-~t.loadCollection(wt);
-//signal.plot;
-		}.value;
-
-		//////notes
-	({
-		var angle=0;
-		~angle=(360*12).collect{
-		angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);
-		}
-		}.value;
-	~angle1=~angle/2;
-	);
-
 
 /////synths////
 	(
@@ -243,21 +220,9 @@ osc2=BPF.kr(sig1,pitch2,rq2,mul:amp2* (rq2.sqrt.reciprocal));
 
 osc3=BPF.kr(sig1,pitch3,rq3,mul:amp3* (rq3.sqrt.reciprocal));
 
-//osc11=BPF.ar(sig, pitch1, rq1, mul: amp1 * (rq1.sqrt.reciprocal));
-
-//osc22=BPF.ar(sig,pitch2,rq2,mul:amp2* (rq2.sqrt.reciprocal));
-
-//osc33=BPF.ar(sig,pitch3,rq3,mul:amp3* (rq3.sqrt.reciprocal));
-
 				Out.kr(3,Lag.kr((ZeroCrossing.kr(osc1)*env),0.1));
-				Out.kr(6,Amplitude.kr(osc1, 0.01, 0.25,6)*env);
-
 					Out.kr(4,Lag.kr((ZeroCrossing.kr(osc2)*env),0.1));
-						Out.kr(7, Amplitude.kr(osc2, 0.01, 0.25,6)*env);
-
-
 							Out.kr(5,Lag.kr((ZeroCrossing.kr(osc3)*env),0.1));
-							Out.kr(8,Amplitude.kr(osc3, 0.01, 0.25,6)*env);
 
 }).add;
 );
@@ -275,14 +240,13 @@ SynthDef.new(\ospace1, {
 				var sig,rq;
 					var ratio1,ratio2,ratio3;
 	var scale,nn=25.neg;
-				var ampx,ampy,ampz;
+				var ampx,ampy,ampz,mod_angle;
 
 					m_x=In.kr(3).lag(0.1);
 	m_y=In.kr(4).lag(0.1);
 	m_z=In.kr(5).lag(0.1);
-				ampx=In.kr(6).lag(0.1);
-				ampy=In.kr(7).lag(0.1);
-				ampz=In.kr(8).lag(0.1);
+
+				mod_angle=SinOsc.ar(Amplitude.kr(In.ar(4))).range(90.neg.degrad,90.degrad);
 
 				sph3=Spherical(ampx,Select.kr(pl1,~az),Select.kr(pl1,~el));
 					sph4=Spherical(ampy,Select.kr(pl1,~az),Select.kr(pl1,~el));
@@ -290,20 +254,20 @@ SynthDef.new(\ospace1, {
 
 
 			~magx=(
-	 /*mag_x=(Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho*Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
-*/
-////for in-between harmonics multiply sin(phi) after cos, when m is 2 then harm 3/2 is formed in oder 3, when m is 3 harm 4/3 is formed in oder 4 and when m is 3 for theta and 2 for phi harm 4/2 is formed for order4//////same for y axis
+					mag_x=(Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi))).rho*Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
 
+////for in-between harmonics multiply sin(phi) after cos, when m is 2 then harm 3/2 is formed in oder 3, when m is 3 harm 4/3 is formed in oder 4 and when m is 3 for theta and 2 for phi harm 4/2 is formed for order4//////same for y axis
+/*
 		(Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),
 			cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho*
 		 	Complex(sin((sph3.phi.round(0.00001)*(m_x-1)).wrap((pi/2).neg,(pi/2))),sin((sph3.phi.round(0.00001)*(m_x-1)).wrap((pi/
 		 	2).neg,(pi/2)))).rho*
-		 Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
+		 Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;*/
 
 						);
 
-~magy=((Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),
-		sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
+~magy=((Complex(sin(((sph4.theta+mod_angle).round(0.00001)*m_y).wrap(pi.neg,pi)),
+		sin(((sph4.theta+mod_angle).round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
 		Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/
 		2)))).rho)*sph4.rho;
 //		mag_y=(Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
@@ -311,21 +275,14 @@ SynthDef.new(\ospace1, {
 //Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph4.rho;
 						);
 
-~magz=(Complex(cos((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
-
-/*if(
-m_z.even,
-mag_z=Complex(cos((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho,
-mag_z=Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
-	);*/
-////z axis   ambi..  sin for odd numbers, cos for even
+~magz=(Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 						);
 //mag=Cartesian(Select.kr(pl1,~magx), Select.kr(pl1,~magy),Select.kr(pl1,~magz));
 				magx=~magx.value;
 				magy= ~magy.value;
 				magz=~magz.value;
-				magx.poll;
+				//magx.poll;
 				//env=EnvGen.ar(Env.adsr(0.05,0.5,0.5,decay),gate,doneAction:2,levelScale:0.1);
 				//env=EnvGen.ar(Env.perc(0.025,decay,amp),doneAction:2,levelScale:1 );
 				env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:10);
@@ -374,24 +331,19 @@ osc1=VBAP.ar(4,
 					BPF.ar(sig, pitch1, rq1, mul: amp1 * magx* (rq1.sqrt.reciprocal)),
 ~b.bufnum,
 sphere.theta.raddeg,sphere.phi.raddeg
-//Osc.ar(~t.bufnum,1/2,phase:sphere.theta.linlin(pi.neg,pi,2pi.neg,2pi),mul:180),
-//Osc.ar(~t.bufnum,1,phase:sphere.phi.linlin((pi/2).neg,(pi/2),2pi.neg,2pi),mul:90)
 		);
 
 osc2=VBAP.ar(4,
 					BPF.ar(sig,pitch2,rq2,mul:amp2*magy* (rq2.sqrt.reciprocal)),
 ~b.bufnum,
 sphere.theta.raddeg,sphere.phi.raddeg
-//Osc.ar(~t.bufnum,1,phase:sphere.theta.linlin(pi.neg,pi,2pi.neg,2pi),mul:180),
-//Osc.ar(~t.bufnum,1,phase:sphere.phi.linlin((pi/2).neg,(pi/2),2pi.neg,2pi),mul:90)
+
 		);
 
 osc3=VBAP.ar(4,
 						BPF.ar(sig,pitch3,rq3,mul:amp3*magz* (rq3.sqrt.reciprocal)),
 ~b.bufnum,
 sphere.theta.raddeg,sphere.phi.raddeg
-//Osc.ar(~t.bufnum,1,phase:sphere.theta.linlin(pi.neg,pi,2pi.neg,2pi),mul:180),
-//Osc.ar(~t.bufnum,1,phase:sphere.phi.linlin((pi/2).neg,(pi/2),2pi.neg,2pi),mul:90)
 		);
 
 	//wrappedOut3.value(out1,LeakDC.ar(osc3,mul:env));
@@ -462,7 +414,7 @@ SynthDef.new(\obuff, {
 			//sig2=PlayBuf.ar(1, ~c2.bufnum, BufRateScale.kr(~c2.bufnum),startPos:0, loop: 1, doneAction:2);
 
 
-			//Out.ar(4,sig1*gain);
+			Out.ar(4,sig1*gain);
 				Out.kr(9,sig1*gain);
 			//	Out.ar(5,sig2*gain);
 				Out.kr(0,Osc.kr(~m.bufnum,0.01,phase:0.degrad));
