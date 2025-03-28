@@ -188,6 +188,8 @@ wt = signal.asWavetable;
 	// ~controlBus_ay = Bus.control(s, 1);
 	// ~controlBus_az = Bus.control(s, 1);
 		~controlBus_ang = Bus.control(s, 1);
+		~controlBus_ang1 = Bus.control(s, 1);
+		~controlBus_ang0 = Bus.control(s, 1);
 	);
 
 	///phases
@@ -214,7 +216,7 @@ SynthDef.new(\ospace, {
 					var ratio1,ratio2,ratio3;
 		var scale,nn=49.neg;
 				var ampx,ampy,ampz;
-			var interval,mod_angle;
+			var interval,mod_angle,mod_angle0,mod_angle1;
 
 			// var wrappedOut1 = { |busArray, signalArray|
 			// 	[busArray, signalArray].flop.do { |pair|
@@ -232,16 +234,14 @@ SynthDef.new(\ospace, {
 
 					Out.kr(~controlBus_m.index, harm.lag(0.1));
 
-		//	ampx=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1);
-			//	ampy=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1);
-			//	ampz=SinOsc.ar(lfo_amp.lag(0.1),45.degrad,mul:1);
+
+			mod_angle0=SinOsc.ar(lfo_amp.lag(0.1),45.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			mod_angle=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
+			mod_angle1=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 
-
-			//Out.kr(~controlBus_ax.index, ampx);
-		//	Out.kr(~controlBus_ay.index, ampy);
-		//	Out.kr(~controlBus_az.index,ampz);
 				Out.kr(~controlBus_ang.index,mod_angle);
+			Out.kr(~controlBus_ang1.index,mod_angle1);
+			Out.kr(~controlBus_ang0.index,mod_angle0);
 
 				scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 				fundamental=(12*4);
@@ -270,8 +270,8 @@ freq=(fundamental*octave);
 
 						);
 
-				magy=((Complex(sin(((sph4.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),
-					sin(((sph4.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi))).rho*
+				magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
+					sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho*
 		Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/
 		2)))).rho)*sph4.rho;
 //		mag_y=(Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
@@ -279,7 +279,7 @@ freq=(fundamental*octave);
 //Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph4.rho;
 						);
 
-magz=(Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
+magz=(Complex(cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 
 						);
@@ -338,7 +338,7 @@ s.meter;s.freqscope;s.scope;
 			 var azimuth,elevation,magnitudex,magnitudey,magnitudez;
 			 var durx,dury,durz;
 			 var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
-			 var num=1.neg,amplitudex,amplitudey,amplitudez,a,mod_angle;
+			 var num=1.neg,amplitudex,amplitudey,amplitudez,a,mod_angle,mod_angle1,mod_angle0;
 			 data = [];
 
 Window.closeAll;
@@ -416,6 +416,8 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 		//	amplitudey=~controlBus_ay.getSynchronous;
 		//	amplitudez=~controlBus_az.getSynchronous;
 	mod_angle=~controlBus_ang.getSynchronous;
+	mod_angle1=~controlBus_ang1.getSynchronous;
+	mod_angle0=~controlBus_ang0.getSynchronous;
 			 	//	a.symbolColor = Color.new(amplitude,1,amplitude);
 
 			 	(
@@ -470,8 +472,8 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 
 			 					sph4=Spherical(1,(az4.degrad),(el4.degrad));
 
-			 					mag_y=(Complex(sin(((sph4.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),
-			 						sin(((sph4.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi))).rho*
+			 					mag_y=(Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
+			 						sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho*
 			 						Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/
 			 					2)))).rho)*sph4.rho;
 			 					//		mag_y=(Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
@@ -486,7 +488,7 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 			 					pl5=(pl5+1).mod(12);
 
 			 					sph5=Spherical(1,(az5.degrad),(el5.degrad));
-					mag_z=Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
+					mag_z=Complex(cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 
 
