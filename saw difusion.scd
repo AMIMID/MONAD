@@ -250,11 +250,11 @@ freq=(fundamental*octave);
 
 				4.do{
 				m=m+1;
-				32.do{
+				16.do{
 
-							sph3=Spherical(gain,Select.kr(pl1,~az),Select.kr(pl1,~el));
-					sph4=Spherical(gain,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph5=Spherical(gain,Select.kr(pl1,~az),Select.kr(pl1,~el));
+					sph3=Spherical(gain,~az.[pl1],~el.[pl1]);
+					sph4=Spherical(gain,~az.[pl1],~el.[pl1]);
+		sph5=Spherical(gain,~az.[pl1],~el.[pl1]);
 
 
 			magx=(
@@ -288,9 +288,9 @@ magz=(Complex(cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2
 				mag_z=magz.value;
 
 				interval=Cartesian(mag_x,mag_y,mag_z).rho;
-					sphere=Spherical(48,Select.kr(pl1,~az),Select.kr(pl1,~el));
+					sphere=Spherical(48,~az.[pl1],~el.[pl1]);
 
-n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
+/*n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
 
@@ -300,7 +300,7 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
 
 amp1=(ton1.reciprocal*octave.reciprocal).round(0.00000001);amp2=(ton2.reciprocal*octave.reciprocal).round(0.00000001);amp3=(ton3.reciprocal*octave.reciprocal).round(0.00000001);
 
-	pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);
+	pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);*/
 
 
 osc1=VBAP.ar(4,
@@ -310,7 +310,7 @@ sphere.theta.raddeg,sphere.phi.raddeg
 		);
 
 				Out.ar(0,LeakDC.ar(osc1,mul:0.01));
-					pl1=pl1+1;};int=int+1;}
+					pl1=pl1+1;};int=int+1;pl1=0;}
 
 }).add;
 );
@@ -348,8 +348,6 @@ w=Window.new("gui",Rect.new(750,100,500,420)).front.alwaysOnTop_(true);
 ~dd = Slider.new(w.view,Rect.new(20,100,160,30));
 
 ~bb = Slider.new(w.view,Rect.new(20,60,160,30));
-
-~cc = Slider2D.new(w.view,Rect.new(20,150,200,200));
 
 ~on = Button(w,Rect(20,350,40,40)).states_([
 	["off",Color.black],Color.gray,["on",Color.white,Color.gray]]).action_({
@@ -498,7 +496,7 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 			 		}.value;
 
 			 	);
-				dota=(360).collect{
+				dota=(360*6).collect{
 
 			 		az=~azz.[pla];
 				el=~ell.[pla];
@@ -506,7 +504,7 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 					magg=Cartesian(~magxx.[pla],~magyy.[pla],~magzz.[pla]).rho/(2.sqrt);
 					pla=pla+1;
 
-					sph=Spherical((magg)*600,az,el).asCartesian.asArray;
+					sph=Spherical((magg)*400,az,el).asCartesian.asArray;
 
 
 
