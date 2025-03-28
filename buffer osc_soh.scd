@@ -240,20 +240,22 @@ SynthDef.new(\ospace1, {
 				var sig,rq;
 					var ratio1,ratio2,ratio3;
 	var scale,nn=25.neg;
-				var ampx,ampy,ampz,mod_angle;
+				var ampx,ampy,ampz,mod_angle,mod_angle;
 
 					m_x=In.kr(3).lag(0.1);
 	m_y=In.kr(4).lag(0.1);
 	m_z=In.kr(5).lag(0.1);
 
-				mod_angle=SinOsc.ar(Amplitude.kr(In.ar(4))).range(90.neg.degrad,90.degrad);
+							mod_angle=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
+			mod_angle1=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 
 				sph3=Spherical(ampx,Select.kr(pl1,~az),Select.kr(pl1,~el));
 					sph4=Spherical(ampy,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph5=Spherical(ampz,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
+(
 
-			~magx=(
+			mag_x=(
 					mag_x=(Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi))).rho*Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
 
 ////for in-between harmonics multiply sin(phi) after cos, when m is 2 then harm 3/2 is formed in oder 3, when m is 3 harm 4/3 is formed in oder 4 and when m is 3 for theta and 2 for phi harm 4/2 is formed for order4//////same for y axis
@@ -266,8 +268,8 @@ SynthDef.new(\ospace1, {
 
 						);
 
-~magy=((Complex(sin(((sph4.theta+mod_angle).round(0.00001)*m_y).wrap(pi.neg,pi)),
-		sin(((sph4.theta+mod_angle).round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
+mag_y=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
+		sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho*
 		Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/
 		2)))).rho)*sph4.rho;
 //		mag_y=(Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
@@ -275,13 +277,14 @@ SynthDef.new(\ospace1, {
 //Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph4.rho;
 						);
 
-~magz=(Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
+mag_z=(Complex(cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 						);
 //mag=Cartesian(Select.kr(pl1,~magx), Select.kr(pl1,~magy),Select.kr(pl1,~magz));
-				magx=~magx.value;
-				magy= ~magy.value;
-				magz=~magz.value;
+				magx=mag_x.value;
+				magy= mag_y.value;
+				magz=mag_z.value;
+				);
 				//magx.poll;
 				//env=EnvGen.ar(Env.adsr(0.05,0.5,0.5,decay),gate,doneAction:2,levelScale:0.1);
 				//env=EnvGen.ar(Env.perc(0.025,decay,amp),doneAction:2,levelScale:1 );
