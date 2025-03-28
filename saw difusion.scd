@@ -202,7 +202,7 @@ wt = signal.asWavetable;
 /////synths////
 		(
 SynthDef.new(\ospace, {
-				arg gain, lfo_amp, harm, azimuth, elevation;
+				arg gain, lfo_amp, harm;
 	var sph3,sph4,sph5,m=0,pl1=0;
 	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,pl2=0,envp,octave=4;
 	var ton1,ton2,ton3;
@@ -228,7 +228,7 @@ SynthDef.new(\ospace, {
 			// var out1 = NamedControl.kr(\out1, [0, 1, 2, 3]);  // multiple buses!
 //	var out2 = NamedControl.kr(\out2, [0, 1, 2, 3, 4, 5]);  // multiple buses!
 //	var out3 = NamedControl.kr(\out3, [0, 1, 2, 3, 4, 5]);  // multiple buses!
-					m=m+1;
+
 
 					Out.kr(~controlBus_m.index, harm.lag(0.1));
 
@@ -248,7 +248,9 @@ SynthDef.new(\ospace, {
 			octave=harm.lag(0.1);
 freq=(fundamental*octave);
 
-				16.do{
+				4.do{
+				m=m+1;
+				32.do{
 
 							sph3=Spherical(gain,Select.kr(pl1,~az),Select.kr(pl1,~el));
 					sph4=Spherical(gain,Select.kr(pl1,~az),Select.kr(pl1,~el));
@@ -286,7 +288,7 @@ magz=(Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2)
 				mag_z=magz.value;
 
 				interval=Cartesian(mag_x,mag_y,mag_z).rho;
-					sphere=Spherical(48,azimuth.lag(0.1),elevation.lag(0.1));
+					sphere=Spherical(48,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
@@ -305,12 +307,10 @@ osc1=VBAP.ar(4,
 					SinOsc.ar(freq*int,mul:int.reciprocal*interval),
 ~b.bufnum,
 sphere.theta.raddeg,sphere.phi.raddeg
-//Osc.ar(~t.bufnum,1,phase:sphere.theta.linlin(pi.neg,pi,2pi.neg,2pi),mul:180),
-//Osc.ar(~t.bufnum,1,phase:sphere.phi.linlin((pi/2).neg,(pi/2),2pi.neg,2pi),mul:90)
 		);
 
 				Out.ar(0,LeakDC.ar(osc1,mul:0.01));
-				pl1=pl1+1;int=int+1;}
+					pl1=pl1+1;};int=int+1;}
 
 }).add;
 );
@@ -356,7 +356,7 @@ w=Window.new("gui",Rect.new(750,100,500,420)).front.alwaysOnTop_(true);
 	arg obj;
 	if(
 		obj.value==1,{~synth=Synth.new(\ospace,[
-						\gain,~aa.value,\lfo_amp,~bb.value.linlin(0,1,0.001,100),\harm,~dd.value.linlin(0,1,1,8).round(1),\elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register;},
+						\gain,~aa.value,\lfo_amp,~bb.value.linlin(0,1,0.001,100),\harm,~dd.value.linlin(0,1,1,8).round(1)]).register;},
 		{~synth.free}
 )});
 /*(
@@ -389,26 +389,17 @@ f.string = "reverb2";
 	lfo_amp=obj.value.linlin(0,1,0.001,100);
 				lfo_amp.value.postln;
 		if(~synth.isPlaying,{~synth.set(\lfo_amp,lfo_amp)});
-});
-);
-(
-~cc.action_({
-	arg obj;
-			var az,el;
-	az=obj.x.linlin(0,1,180.neg.degrad,180.degrad);
-	el=obj.y.linlin(0,1,90.neg.degrad,90.degrad);
-			if(~synth.isPlaying,{~synth.set(\azimuth,az,\elevation,el)});
-});
-);
+}););
 (
 ~dd.action_({
 	arg obj;
 			var harm;
-			harm=obj.value.linlin(0,1,1,8).round(1);
+	harm=obj.value.linlin(0,1,1,8).round(1);
 				harm.value.postln;
 if(~synth.isPlaying,{~synth.set(\harm,harm)});
 });
-			);
+);
+(
 
 			 ~v = UserView.new(w,Rect(220,150,200,200)).background_(Color.black);
 			 a = ScatterView3d(~v, Rect(0,0, 200,200), data, [-1000, 1000].asSpec,[-1000, 1000].asSpec,[-1000, 1000].asSpec);
@@ -497,12 +488,7 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 			 					sph5=Spherical(1,(az5.degrad),(el5.degrad));
 					mag_z=Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
-			 					/*if(
-			 					m_z.even,
-			 					mag_z=Complex(cos((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho,
-			 					mag_z=Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
-			 					);*/
-			 					////z axis   ambi..  sin for odd numbers, cos for even
+
 
 			 				};angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~azz=~azz++azimuth;~ell=~ell++elevation;~magxx=~magxx++magnitudex;~magyy=~magyy++magnitudey;~magzz=~magzz++magnitudez;
 
@@ -518,7 +504,7 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 					magg=Cartesian(~magxx.[pla],~magyy.[pla],~magzz.[pla]).rho/(2.sqrt);
 					pla=pla+1;
 
-					sph=Spherical((magg)*500,az,el).asCartesian.asArray;
+					sph=Spherical((magg)*600,az,el).asCartesian.asArray;
 
 
 
@@ -544,6 +530,6 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 
 			 };
 			 { while { run } {~v.background_(Color.black); ~v.refresh; (0.001).wait } }.fork(AppClock);
-		)
+))
 Scale.directory;
 s.record(numChannels:4);
