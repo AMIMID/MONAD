@@ -222,8 +222,8 @@ SynthDef.new(\ospace, {
 						);
 
 
-magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m_y).wrap(pi.neg,pi)),
-		sin(((sph4.theta+mod_angle1).round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
+magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
+		sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho*
 		Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/
 		2)))).rho)*sph4.rho;
 //		mag_y=(Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
@@ -231,7 +231,7 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m_y).wrap(pi.neg,pi))
 //Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph4.rho;
 						);
 
-				magz=(Complex(cos(((sph5.phi+mod_angle0).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle0).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
+				magz=(Complex(cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 						);
 				mag_x=magx.value;
