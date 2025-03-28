@@ -52,7 +52,7 @@ SynthDef.new(\player,{
 	var env;
 	var sig1, sig2, sig3, sig4,control,sig;
 
-	sig=SinOsc.kr(0.01).range(1,16).round(1);
+	sig=SinOsc.kr(0.01).range(1,4);
 
 	Out.kr(~controlBus_mx.index, sig);
 Out.kr(~controlBus_my.index, sig);
@@ -103,9 +103,12 @@ a.background = Color.black;
   r= Routine({loop{
 
 	data=[];
-	m_x=~controlBus_mx.getSynchronous;
-	m_y=~controlBus_my.getSynchronous;
-	m_z=~controlBus_mz.getSynchronous;
+	//m_x=~controlBus_mx.getSynchronous;
+	//m_y=~controlBus_my.getSynchronous;
+	//m_z=~controlBus_mz.getSynchronous;
+		m_x=3;
+	m_y=3;
+	m_z=3;
 	mod_angle=~controlBus_a.getSynchronous;
 	mod_angle1=~controlBus_a1.getSynchronous;
 	mod_angle0=~controlBus_a0.getSynchronous;
@@ -177,7 +180,7 @@ magnitudez=(12).collect{
 			 					pl5=(pl5+1).mod(12);
 
 			 					sph5=Spherical(1,(az5.degrad),(el5.degrad));
-					mag_z=Complex(cos(((sph5.phi+mod_angle0).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle0).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
+					mag_z=Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 
 
@@ -196,7 +199,7 @@ magnitudez=(12).collect{
 	az=~az.[pla];
 	el=~el.[pla];
 
-	magg=Cartesian(~magx.[pla],~magy.[pla],~magz.[pla]).rho/(2.sqrt);
+	magg=Cartesian(~magz.[pla],~magz.[pla],~magz.[pla]).rho/(2.sqrt);
 	pla=pla+1;
 
 		sph=Spherical((magg)*600,az,el).asCartesian.asArray;
