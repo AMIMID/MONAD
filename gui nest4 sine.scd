@@ -195,9 +195,7 @@ SynthDef.new(\ospace, {
 			// var out1 = NamedControl.kr(\out1, [0, 1, 2, 3]);  // multiple buses!
 //	var out2 = NamedControl.kr(\out2, [0, 1, 2, 3, 4, 5]);  // multiple buses!
 //	var out3 = NamedControl.kr(\out3, [0, 1, 2, 3, 4, 5]);  // multiple buses!
-					m_x=harm.lag(0.1);
-	m_y=harm.lag(0.1);
-	m_z=harm.lag(0.1);
+					m=harm.lag(0.1);
 
 					//	mod_angle0=SinOsc.ar(lfo_amp.lag(0.1),45.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			mod_angle=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
@@ -269,19 +267,19 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
 				phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 
 osc1=VBAP.ar(4,
-					SinOsc.ar(pitch1,mul:amp1*mag_x,phase:phase),
+					SinOsc.ar(pitch1+mag_x,mul:amp1*mag_x,phase:phase),
 ~b.bufnum,
 sphere.theta.raddeg,sphere.phi.raddeg
 		);
 
 osc2=VBAP.ar(4,
-						SinOsc.ar(pitch2,mul:amp2*mag_y,phase:phase),
+						SinOsc.ar(pitch2+mag_y,mul:amp2*mag_y,phase:phase),
 ~b.bufnum,
 sphere.theta.raddeg,sphere.phi.raddeg
 		);
 
 osc3=VBAP.ar(4,
-					SinOsc.ar(pitch3,mul:amp3*mag_z,phase:phase),
+					SinOsc.ar(pitch3+mag_z,mul:amp3*mag_z,phase:phase),
 ~b.bufnum,
 sphere.theta.raddeg,sphere.phi.raddeg
 		);
@@ -371,7 +369,7 @@ f.string = "reverb2";
 ~dd.action_({
 	arg obj;
 			var harm;
-			harm=obj.value.linlin(0,1,1,8).round(1);;
+			harm=obj.value.linlin(0,1,1,8).round(1);
 				harm.value.postln;
 if(~synth.isPlaying,{~synth.set(\harm,harm)});
 });
