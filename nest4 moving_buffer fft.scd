@@ -107,12 +107,19 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 );
 ~dur=~dur*2;
 
+	({
+		var n=1.neg;
+		~lb=(512).collect{
+		n=n+1;
+		}
+		}.value
+	);
 
 
 /////synths////
 (
-SynthDef.new(\ospace1, {
-	arg amp=1,pl1=1;
+SynthDef.new(\ospace, {
+	arg amp=1,pl1=1,lfo=1;
 	var sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
 	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=4,pl2=0,envp,octave=4;
 	var ton1,ton2,ton3;
@@ -128,17 +135,18 @@ SynthDef.new(\ospace1, {
 
 					m=3;
 
-				mod_angle=SinOsc.ar(0.1,phase:0.degrad).range(90.neg.degrad,90.degrad);
-				mod_angle1=SinOsc.ar(0.1,phase:90.degrad).range(90.neg.degrad,90.degrad);
+				mod_angle=SinOsc.ar(lfo,phase:0.degrad).range(90.neg.degrad,90.degrad);
+				mod_angle1=SinOsc.ar(lfo,phase:90.degrad).range(90.neg.degrad,90.degrad);
 				//mod_angle0=SinOsc.ar(0.1,phase:45.degrad).range(90.neg.degrad,90.degrad);
+			~lb=~lb.scramble;
 
 					rq1=In.kr(0);
 				rq2=In.kr(1);
 				rq3=In.kr(2);
 
 				//env=EnvGen.ar(Env.adsr(0.05,0.5,0.5,decay),gate,doneAction:2,levelScale:0.1);
-				//env=EnvGen.ar(Env.perc(0.025,decay,amp),doneAction:2,levelScale:1 );
-				env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:10);
+				env=EnvGen.ar(Env.perc(0.025,decay,amp),doneAction:2,levelScale:1 );
+			//	env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:1);
 
 				scale=49.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 
@@ -170,30 +178,30 @@ amp3=(ton3.reciprocal*octave.reciprocal).round(0.00000001);
 
 			chain = FFT(LocalBuf(frames), sig);
 
-	128.do{
+	32.do{
 
 	chain1 = chain.pvcollect(frames, {|mag, phase, index|
     // Print debugging info
    // ("Index: " ++ index ++ ", Magnitude: " ++ mag ++ ", Phase: " ++ phase).postln;
 
     [mag, phase]  // Return values
-}, frombin: b, tobin: b, zeroothers: 1);
+}, frombin: ~lb.[b], tobin: ~lb.[b], zeroothers: 1);
 
 		chain2 = chain.pvcollect(frames, {|mag, phase, index|
 
     [mag, phase]  // Return values
-}, frombin: b, tobin: b, zeroothers: 1);
+}, frombin: ~lb.[b], tobin: ~lb.[b], zeroothers: 1);
 
 		chain3 = chain.pvcollect(frames, {|mag, phase, index|
 
     [mag, phase]  // Return values
-}, frombin: b, tobin: b, zeroothers: 1);
+}, frombin: ~lb.[b], tobin: ~lb.[b], zeroothers: 1);
 
 
 					(
-						sph3=Spherical(1,~az.[b],~el.[b]);
-					sph4=Spherical(1,~az.[b],~el.[b]);
-		sph5=Spherical(1,~az.[b],~el.[b]);
+					sph3=Spherical(1,~az.[~lb.[b]],~el.[~lb.[b]]);
+					sph4=Spherical(1,~az.[~lb.[b]],~el.[~lb.[b]]);
+		sph5=Spherical(1,~az.[~lb.[b]],~el.[~lb.[b]]);
 
 			mag_x=(
 					mag_x=(Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi))).rho*Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
@@ -270,10 +278,11 @@ sphere.theta.raddeg,sphere.phi.raddeg
 	~list1=~list1.scramble;
 ///pattern
 
-		~aa=Pdef(\2, Pbind(\instrument, \ospace1,
+		~aa=Pdef(\2, Pbind(\instrument, \ospace,
 			//\dur,Pseq(~dur,1),
 			\dur,1,
 			\pl1,Pseq(~list1,inf),
+		\lfo,Pexprand(0.1,10,inf),
 			\amp,1;
 ));
 
@@ -302,7 +311,7 @@ SynthDef.new(\obuff, {
 
 			//env= EnvGen.ar(Env.sine(10),doneAction:2);
 
-			sig1=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum),startPos:0, loop: 0, doneAction:2);
+			sig1=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum),startPos:0, loop: 1, doneAction:2);
 			//sig2=PlayBuf.ar(1, ~c2.bufnum, BufRateScale.kr(~c2.bufnum),startPos:0, loop: 1, doneAction:2);
 
 
@@ -328,7 +337,7 @@ s.meter;
 Buffer.freeAll;
 
 
-TempoClock.default.tempo_(1/2);
+TempoClock.default.tempo_(1);
 
 
 Scale.directory;
