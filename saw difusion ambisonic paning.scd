@@ -204,8 +204,8 @@ wt = signal.asWavetable;
 /////synths////
 		(
 SynthDef.new(\ospace, {
-				var	gain=1/16, lfo_amp=0.05, harm=1;
-	var sph3,sph4,sph5,m=0,pl1=0;
+			var	gain=1/16, lfo_amp=0.05, harm=1;
+	var sph3,sph4,sph5,m=3,pl1=1;
 	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,pl2=0,envp,octave=4;
 	var ton1,ton2,ton3;
 	var fundamental;
@@ -236,8 +236,8 @@ SynthDef.new(\ospace, {
 
 
 			//mod_angle0=SinOsc.ar(lfo_amp.lag(0.1),45.degrad,mul:1).range(90.neg.degrad,90.degrad);
-			mod_angle=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
-			mod_angle1=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
+			mod_angle=SinOsc.ar(1,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
+			mod_angle1=SinOsc.ar(1,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 
 				Out.kr(~controlBus_ang.index,mod_angle);
 			Out.kr(~controlBus_ang1.index,mod_angle1);
@@ -248,9 +248,7 @@ SynthDef.new(\ospace, {
 			octave=harm.lag(0.1);
 freq=(fundamental*octave);
 
-				4.do{
-				m=m+1;
-				16.do{
+				1.do{
 
 					sph3=Spherical(1,~az.[pl1],~el.[pl1]);
 					sph4=Spherical(1,~az.[pl1],~el.[pl1]);
@@ -283,11 +281,11 @@ magz=(Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2)
 
 
 						);
-				mag_x=magx.value;
-				mag_y= magy.value;
-				mag_z=magz.value;
+
+				mag_x=magx.value;mag_y= magy.value;mag_z=magz.value;
 
 				interval=Cartesian(mag_x,mag_y,mag_z).rho;
+				interval.poll;
 					sphere=Spherical(48,~az.[pl1],~el.[pl1]);
 
 /*n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
@@ -304,17 +302,16 @@ amp1=(ton1.reciprocal*octave.reciprocal).round(0.00000001);amp2=(ton2.reciprocal
 
 
 osc1=VBAP.ar(4,
-					SinOsc.ar(freq*int,mul:int.reciprocal*interval.poll),
+					Saw.ar(freq,mul:interval),
 ~b.bufnum,
 sphere.theta.raddeg,sphere.phi.raddeg
 		);
 
-				Out.ar(0,LeakDC.ar(osc1,mul:0.01*gain));
-					pl1=pl1+1;};int=int+1;pl1=0;}
+				Out.ar(0,LeakDC.ar(osc1,mul:0.1*gain));
+					pl1=pl1+1;}
 
 }).add;
 );
-Synth(\ospace)
 
 //	TempoClock.default.tempo_(2);
 
@@ -325,6 +322,7 @@ s.meter;s.freqscope;s.scope;
 }
 )
 
+Synth(\ospace)
 (
 			 var data;
 			 var az=0,el=0;
@@ -415,7 +413,6 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 		//	amplitudez=~controlBus_az.getSynchronous;
 	mod_angle=~controlBus_ang.getSynchronous;
 	mod_angle1=~controlBus_ang1.getSynchronous;
-	mod_angle0=~controlBus_ang0.getSynchronous;
 			 	//	a.symbolColor = Color.new(amplitude,1,amplitude);
 
 			 	(
@@ -486,7 +483,7 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 			 					pl5=(pl5+1).mod(12);
 
 			 					sph5=Spherical(1,(az5.degrad),(el5.degrad));
-					mag_z=Complex(cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
+					mag_z=Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 
 
