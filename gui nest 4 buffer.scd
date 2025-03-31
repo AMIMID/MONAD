@@ -234,13 +234,12 @@ SynthDef.new(\ospace, {
 					sph4=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
 		sph5=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
 
+					mag_x=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi))).rho*Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
 
-		magx=(
-					mag_x=(Complex(cos(((sph3.theta+mod_angle).round(0.00001)*n).wrap(pi.neg,pi)),cos((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi))).rho*Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
-
-
-	/*	(Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),
-			cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi))).rho*
+////for in-between harmonics multiply sin(phi) after cos, when m is 2 then harm 3/2 is formed in oder 3, when m is 3 harm 4/3 is formed in oder 4 and when m is 3 for theta and 2 for phi harm 4/2 is formed for order4//////same for y axis
+/*
+		(Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),
+			cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho*
 		 	Complex(sin((sph3.phi.round(0.00001)*(m_x-1)).wrap((pi/2).neg,(pi/2))),sin((sph3.phi.round(0.00001)*(m_x-1)).wrap((pi/
 		 	2).neg,(pi/2)))).rho*
 		 Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;*/
