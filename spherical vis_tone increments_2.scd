@@ -528,7 +528,7 @@ mag_z=Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((sp
 
 (
 {
-var  sph1,sph2,sph3,sph4,sph5,m_x=3,m_y=3,m_z=2;
+var  sph1,sph2,sph3,sph4,sph5,m_x=1,m_y=1,m_z=1;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
 var az4=0,el4=0,az5=0,el5=0,pl1=0,pl2=0,pl3=0,pl4=0,pl5=0;
 var angle=0,ang=0;
@@ -536,7 +536,10 @@ var azimuth,elevation,magnitudex,magnitudey,magnitudez;
 var durx,dury,durz;
 var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
 var num=1.neg;
-			~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
+	var ellipsis=[1,1,1];
+	var spread;
+
+	~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
 
 		360.do{
 durx=(12).collect{
@@ -591,16 +594,16 @@ magnitudex=(12).collect{
 			el3 = (angle+ (180*2.pow(pl3/12))).wrap(90.neg,90);
 		pl3=(pl3+1).mod(12);
 
-sph3=(Spherical(1,(az3.degrad),(el3.degrad))/Cartesian([1,1,1].normalizeSum.sqrt.[0],[1,1,1].normalizeSum.sqrt.[1],[1,1,1].normalizeSum.sqrt.[2]));
-	 mag_x=(Complex(cos(((sph3.theta+0.degrad).round(0.00001)*m_x).wrap(pi.neg,pi)),cos(((sph3.theta+0.degrad).round(0.00001)*m_x).wrap(pi.neg,pi))).rho*Complex(cos(((sph3.phi+0.degrad).round(0.00001)).wrap((pi/2).neg,(pi/2))),cos(((sph3.phi+0.degrad).round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
+sph3=(Spherical(1,(az3.degrad),(el3.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
+	 mag_x=((Complex(cos(((sph3.theta+0.degrad).round(0.00001)*m_x).wrap(pi.neg,pi)),cos(((sph3.theta+0.degrad).round(0.00001)*m_x).wrap(pi.neg,pi))).rho*Complex(cos(((sph3.phi+0.degrad).round(0.00001)).wrap((pi/2).neg,(pi/2))),cos(((sph3.phi+0.degrad).round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho).pow(spread)/spread)*sph3.rho;
 
 ////for in-between harmonics multiply sin(phi) after cos, when m is 2 then harm 3/2 is formed in oder 3, when m is 3 harm 4/3 is formed in oder 4 and when m is 3 for theta and 2 for phi harm 4/2 is formed for order4//////same for y axis
 
-/*		mag_x=(Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),
+/*		mag_x=((Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),
 			cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho*
 		 	Complex(sin((sph3.phi.round(0.00001)*(m_x-1)).wrap((pi/2).neg,(pi/2))),sin((sph3.phi.round(0.00001)*(m_x-1)).wrap((pi/
 		 	2).neg,(pi/2)))).rho*
-		 Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;*/
+		 Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho).pow(spread)/spread)*sph3.rho;*/
 
 };
 
@@ -610,15 +613,13 @@ magnitudey=(12).collect{
 			el4 = (angle+(180*2.pow(pl4/12))).wrap(90.neg,90);
 		pl4=(pl4+1).mod(12);
 
-	sph4=(Spherical(1,(az4.degrad),(el4.degrad))/Cartesian([1,1,1].normalizeSum.sqrt.[0],[1,1,1].normalizeSum.sqrt.[1],[1,1,1].normalizeSum.sqrt.[2]));
+	sph4=(Spherical(1,(az4.degrad),(el4.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
-	mag_y=(Complex(sin(((sph4.theta+0.degrad).round(0.00001)*m_y).wrap(pi.neg,pi)),
-		sin(((sph4.theta+0.degrad).round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
-		Complex(cos(((sph4.phi).round(0.00001)).wrap((pi/2).neg,(pi/2))),cos(((sph4.phi).round(0.00001)).wrap((pi/2).neg,(pi/
-		2)))).rho)*sph4.rho;
-//		mag_y=(Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
+mag_y=((Complex(sin(((sph4.theta+0.degrad).round(0.00001)*m_y).wrap(pi.neg,pi)),sin(((sph4.theta+0.degrad).round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
+		Complex(cos(((sph4.phi).round(0.00001)).wrap((pi/2).neg,(pi/2))),cos(((sph4.phi).round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho).pow(spread)/spread)*sph4.rho;
+//		mag_y=((Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
 //Complex(sin((sph4.phi.round(0.00001)*(m_y-1)).wrap((pi/2).neg,(pi/2))),sin((sph4.phi.round(0.00001)*(m_y-1)).wrap((pi/2).neg,(pi/2)))).rho*
-//Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph4.rho;
+//Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho).pow(spread)/spread)*sph4.rho;
 };
 
 magnitudez=(12).collect{
@@ -627,9 +628,9 @@ magnitudez=(12).collect{
 				el5 = (angle+(180*2.pow(pl5/12))).wrap(90.neg,90);
 		pl5=(pl5+1).mod(12);
 
-			sph5=(Spherical(1,(az5.degrad),(el5.degrad))/Cartesian([1,1,1].normalizeSum.sqrt.[0],[1,1,1].normalizeSum.sqrt.[1],[1,1,1].normalizeSum.sqrt.[2]));
+			sph5=(Spherical(1,(az5.degrad),(el5.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
-				mag_z=Complex(cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))/2).rho*sph5.rho
+			mag_z=((Complex(cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))))).pow(spread)/spread).rho*sph5.rho;
 
 
 };angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;
@@ -656,10 +657,10 @@ data = (360*12).collect{
 
 	az=~az.[pl];
 	el=~el.[pl];
-	//mag=~magx.[pl];
-	mag=Cartesian(~magx.[pl],0,~magz.[pl]).rho/(2.sqrt);
+	mag=~magz.[pl];
+	//mag=Cartesian(~magx.[pl],~magy.[pl],~magz.[pl]).rho/(2.sqrt);
 	pl=pl+1;
-		sph=Spherical(mag*200,az,el).asCartesian.asArray;
+		sph=Spherical(mag*400,az,el).asCartesian.asArray;
 
 
 
