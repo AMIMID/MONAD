@@ -39,12 +39,10 @@ Buffer.freeAll
 (
 Buffer.freeAll;
 
-~controlBus_mx = Bus.control(s, 1);
-~controlBus_my = Bus.control(s, 1);
-~controlBus_mz = Bus.control(s, 1);
+~controlBus_m = Bus.control(s, 1);
 ~controlBus_a = Bus.control(s, 1);
 ~controlBus_a1 = Bus.control(s, 1);
-~controlBus_a0 = Bus.control(s, 1);
+~controlBus_spread = Bus.control(s, 1);
 
 
 SynthDef.new(\player,{
@@ -54,12 +52,10 @@ SynthDef.new(\player,{
 
 	sig=SinOsc.kr(0.01).range(1,4);
 
-	Out.kr(~controlBus_mx.index, sig);
-Out.kr(~controlBus_my.index, sig);
-	Out.kr(~controlBus_mz.index, sig);
+	Out.kr(~controlBus_m.index, sig);
+	//Out.kr(~controlBus_m.index, sig);
 	Out.kr(~controlBus_a.index, SinOsc.kr(0.1,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
 	Out.kr(~controlBus_a1.index, SinOsc.kr(0.1,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
-		Out.kr(~controlBus_a0.index, SinOsc.kr(0.1,45.degrad,mul:1).range(90.neg.degrad,90.degrad));
 
 //Out.ar(0,sig*1);
 //Out.ar(1,sig*1);
@@ -106,12 +102,11 @@ a.background = Color.black;
 	//m_x=~controlBus_mx.getSynchronous;
 	//m_y=~controlBus_my.getSynchronous;
 	//m_z=~controlBus_mz.getSynchronous;
-		m_x=3;
-	m_y=3;
-	m_z=3;
+		//m=~controlBus_m.getSynchronous;
+	m=2;
 	mod_angle=~controlBus_a.getSynchronous;
 	mod_angle1=~controlBus_a1.getSynchronous;
-	mod_angle0=~controlBus_a0.getSynchronous;
+	//mod_angle0=~controlBus_a0.getSynchronous;
 	//	a.symbolColor = Color.new(amplitude,1,amplitude);
 
 	(
@@ -146,7 +141,7 @@ magnitudex=(12).collect{
 			 					pl3=(pl3+1).mod(12);
 
 			 					sph3=Spherical(1,(az3.degrad),(el3.degrad));
-			 					mag_x=(Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m_x).wrap(pi.neg,pi)),cos(((sph3.theta+mod_angle).round(0.00001)*m_x).wrap(pi.neg,pi))).rho*Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
+			 					mag_x=(Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi))).rho*Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;
 
 			 					/*		mag_x=(Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),
 			 					cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho*
@@ -164,8 +159,8 @@ magnitudey=(12).collect{
 
 			 					sph4=Spherical(1,(az4.degrad),(el4.degrad));
 
-			 					mag_y=(Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m_y).wrap(pi.neg,pi)),
-			 						sin(((sph4.theta+mod_angle1).round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
+			 					mag_y=(Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
+			 						sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho*
 			 						Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/
 			 					2)))).rho)*sph4.rho;
 			 					//		mag_y=(Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
@@ -180,7 +175,7 @@ magnitudez=(12).collect{
 			 					pl5=(pl5+1).mod(12);
 
 			 					sph5=Spherical(1,(az5.degrad),(el5.degrad));
-					mag_z=Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
+					mag_z=Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 
 
@@ -199,7 +194,7 @@ magnitudez=(12).collect{
 	az=~az.[pla];
 	el=~el.[pla];
 
-	magg=Cartesian(~magz.[pla],~magz.[pla],~magz.[pla]).rho/(2.sqrt);
+	magg=Cartesian(~magx.[pla],~magy.[pla],~magz.[pla]).rho/(2.sqrt);
 	pla=pla+1;
 
 		sph=Spherical((magg)*600,az,el).asCartesian.asArray;
@@ -224,7 +219,7 @@ Pen.translate(400,400);
 		a.rot(ot,ot,ot);
     ~v.refresh;
 
-		ot=ot+1.degrad;
+		ot=ot+0.5.degrad;
 
 };
 { while { run } {~v.background_(Color.black); ~v.refresh; (0.001).wait } }.fork(AppClock);
