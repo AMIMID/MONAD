@@ -9,7 +9,7 @@ s.options.numInputBusChannels=0;
 TempoClock.default.tempo_(1);
 s.options.memSize = 8192*4*2;
 s.options.blockSize = 64;
-s.options.maxNodes = 1024 * 16;
+s.options.maxNodes = 6 * 16;
 s.options.sampleRate= 48000;
 );
 
@@ -164,7 +164,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 
 	({
 		var n=1.neg;
-		~lb=(128).collect{
+		~lb=(64).collect{
 		n=n+1;
 		}
 		}.value
@@ -185,7 +185,7 @@ SynthDef.new(\ospace, {
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var sig,rq,chain,chain1,chain2,chain3,b=0;
 	var ratio1,ratio2,ratio3;
-	var scale,nn=25.neg,frames=64;
+	var scale,nn=25.neg,frames=128;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
 	var ellipsis=[1,1,1],mag;
 
@@ -321,8 +321,8 @@ osc3=VBAP.ar(4,BPF.ar(IFFT(chain3),pitch3,rq3,mul:amp3*magz* (rq3.sqrt.reciproca
 			//\dur,Pseq(~dur,1),
 			\dur,1,
 			\pl1,Pseq(~list1,inf),
-		\lfo,0.001,
-		\spread,1,
+		\lfo,Pexprand(0.01,1,inf),
+		\spread,Pbrown(1,5,1,inf),
 			\amp,1;
 ));
 
