@@ -537,7 +537,7 @@ var durx,dury,durz;
 var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
 var num=1.neg;
 	var ellipsis=[1,1,1];
-	var spread=4;
+	var spread=3;
 
 	~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
 
@@ -594,7 +594,8 @@ magnitudex=(12).collect{
 		pl3=(pl3+1).mod(12);
 
 sph3=(Spherical(1,(az3.degrad),(el3.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
-			mag_x=((Complex(cos(((sph3.theta+0.degrad).round(0.00001)*m_x).wrap(pi.neg,pi)),cos(((sph3.theta+0.degrad).round(0.00001)*m_x).wrap(pi.neg,pi))).rho.pow(spread)/spread)*(Complex(cos(((sph3.phi+0.degrad).round(0.00001)).wrap((pi/2).neg,(pi/2))),cos(((sph3.phi+0.degrad).round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho.pow(spread)/spread));
+
+			mag_x=(((Complex(cos(((sph3.theta+0.degrad).round(0.00001)*m_x).wrap(pi.neg,pi)),cos(((sph3.theta+0.degrad).round(0.00001)*m_x).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread))*((Complex(cos(((sph3.phi+0.degrad).round(0.00001)).wrap((pi/2).neg,(pi/2))),cos(((sph3.phi+0.degrad).round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)));
 
 ////for in-between harmonics multiply sin(phi) after cos, when m is 2 then harm 3/2 is formed in oder 3, when m is 3 harm 4/3 is formed in oder 4 and when m is 3 for theta and 2 for phi harm 4/2 is formed for order4//////same for y axis
 
@@ -613,7 +614,7 @@ magnitudey=(12).collect{
 
 	sph4=(Spherical(1,(az4.degrad),(el4.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
-			mag_y=((Complex(sin(((sph4.theta+0.degrad).round(0.00001)*m_y).wrap(pi.neg,pi)),sin(((sph4.theta+0.degrad).round(0.00001)*m_y).wrap(pi.neg,pi))).rho.pow(spread)/spread)*(Complex(cos(((sph4.phi).round(0.00001)).wrap((pi/2).neg,(pi/2))),cos(((sph4.phi).round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho.pow(spread)/spread));
+			mag_y=(((Complex(sin(((sph4.theta+0.degrad).round(0.00001)*m_y).wrap(pi.neg,pi)),sin(((sph4.theta+0.degrad).round(0.00001)*m_y).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread))*((Complex(cos(((sph4.phi).round(0.00001)).wrap((pi/2).neg,(pi/2))),cos(((sph4.phi).round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)));
 
 /*		mag_y=Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
 				Complex(sin((sph4.phi.round(0.00001)*(m_y-1)).wrap((pi/2).neg,(pi/2))),sin((sph4.phi.round(0.00001)*(m_y-1)).wrap((pi/2).neg,(pi/2)))).rhoComplex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho;*/
@@ -627,18 +628,17 @@ magnitudez=(12).collect{
 
 			sph5=(Spherical(1,(az5.degrad),(el5.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
-			mag_z=(Complex(cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))))).rho.pow(spread)/spread;
+			mag_z=((Complex(cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))))).rho/(2.sqrt)).pow(spread);
 
 
 };angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;
 
 				12.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];};num=1.neg;};
 }.value;
-(
-~magx=~magx/(2.sqrt);
-~magy=~magy/(2.sqrt);
-~magz=~magz/(2.sqrt);
- );
+
+~magx = ~magx.collect { |z| z / ~magx.maxItem };
+~magy = ~magy.collect { |z| z / ~magy.maxItem };
+~magz = ~magz.collect { |z| z / ~magz.maxItem };
 )
 
 
@@ -654,10 +654,10 @@ data = (360*12).collect{
 
 	az=~az.[pl];
 	el=~el.[pl];
-	mag=~magz.[pl];
-	mag=Cartesian(~magx.[pl],~magy.[pl],~magz.[pl]).rho/(2.sqrt);
+	//mag=~magz.[pl];
+	mag=Cartesian(~magx.[pl],0,~magz.[pl]).rho/(2.sqrt);
 	pl=pl+1;
-		sph=Spherical(mag*400,az,el).asCartesian.asArray;
+		sph=Spherical(mag*800,az,el).asCartesian.asArray;
 
 
 
