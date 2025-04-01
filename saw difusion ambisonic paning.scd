@@ -55,8 +55,7 @@ var azimuth,elevation,magnitudex,magnitudey,magnitudez;
 var durx,dury,durz;
 var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
 var num=1.neg;
-var ellipsis=[1,1,1];
-var spread=1;
+var ellipsis=[1,1,1],spread=1;
 			~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
 
 		360.do{
@@ -251,7 +250,7 @@ freq=(fundamental*octave);
 		sph3=(Spherical(1,~az.[pl1],~el.[pl1])/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 		sph4=(Spherical(1,~az.[pl1],~el.[pl1])/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 		sph5=(Spherical(1,~az.[pl1],~el.[pl1])/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
-
+(
 					magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
 	(Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
 
@@ -273,10 +272,11 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),s
 
 magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-				mag=[magx,magy,magz].round(0.000001).poll;
+				mag=[magx,magy,magz].round(0.000001);
 				magx=mag.[0];magy=mag.[1];magz=mag.[2];
 
 				mag_x=magx.value; mag_y= magy.value; mag_z=magz.value; interval=Cartesian(mag_x,mag_y,mag_z).rho;
+				);
 /*n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
@@ -391,7 +391,7 @@ f.string = "reverb2";
 if(~synth.isPlaying,{~synth.set(\harm,harm)});
 });
 );
-/*(
+(
 
 			 ~v = UserView.new(w,Rect(220,150,200,200)).background_(Color.black);
 			 a = ScatterView3d(~v, Rect(0,0, 200,200), data, [-1000, 1000].asSpec,[-1000, 1000].asSpec,[-1000, 1000].asSpec);
@@ -524,6 +524,6 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~azz=~azz++azimuth;~ell=~e
 
 			 };
 			 { while { run } {~v.background_(Color.black); ~v.refresh; (0.001).wait } }.fork(AppClock);
-)*/)
+))
 Scale.directory;
 s.record(numChannels:4);
