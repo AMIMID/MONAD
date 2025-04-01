@@ -213,12 +213,12 @@ SynthDef.new(\ospace, {
 	var freq,pitch1,pitch2,pitch3,env;
 	var pitch,int=1;
 	var n1,n2,n3,rq1,rq2,rq3;
-	var mag,magx,magy,magz,mag_x,mag_y,mag_z;
+	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3;
 	var scale,nn=49.neg;
 	var ampx,ampy,ampz;
 	var interval,mod_angle,mod_angle0,mod_angle1;
-	var ellipsis=[1,1,1];
+	var ellipsis=[1,1,1],mag;
 
 			// var wrappedOut1 = { |busArray, signalArray|
 			// 	[busArray, signalArray].flop.do { |pair|
@@ -246,7 +246,7 @@ SynthDef.new(\ospace, {
 			//octave=harm.lag(0.1);
 freq=(fundamental*octave);
 
-				8.do{
+				1.do{
 
 		sph3=(Spherical(1,~az.[pl1],~el.[pl1])/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 		sph4=(Spherical(1,~az.[pl1],~el.[pl1])/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
@@ -273,11 +273,10 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),s
 
 magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-//magx = max(magx, 1);
-//magy = max(magy, 1);
-//magz = max(magz, 1);
+				mag=[magx,magy,magz].round(0.000001).poll;
+				magx=mag.[0];magy=mag.[1];magz=mag.[2];
 
-mag_x=magx.value; mag_y= magy.value; mag_z=magz.value; interval=Cartesian(mag_x,mag_y,mag_z).rho;
+				mag_x=magx.value; mag_y= magy.value; mag_z=magz.value; interval=Cartesian(mag_x,mag_y,mag_z).rho;
 /*n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
@@ -293,7 +292,7 @@ amp1=(ton1.reciprocal*octave.reciprocal).round(0.00000001);amp2=(ton2.reciprocal
 
 osc1=VBAP.ar(4,Saw.ar(freq,mul:interval.round(0.000001)),~b.bufnum,sph3.theta.raddeg,sph3.phi.raddeg);
 
-			Out.ar(0,LeakDC.ar(osc1,mul:0.01*gain));  pl1=pl1+1;
+			Out.ar(0,LeakDC.ar(osc1,mul:0.1*gain));  pl1=pl1+1;
 					}
 
 }).add;
