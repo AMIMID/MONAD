@@ -8,7 +8,7 @@ s.options.numOutputBusChannels=5;
 s.options.numInputBusChannels=0;
 TempoClock.default.tempo_(1);
 s.options.memSize = 8192*4*2;
-s.options.blockSize = 64*4;
+s.options.blockSize = 64;
 s.options.maxNodes = 1024 * 16;
 s.options.sampleRate= 48000;
 );
@@ -185,7 +185,7 @@ SynthDef.new(\ospace, {
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var sig,rq,chain,chain1,chain2,chain3,b=0;
 	var ratio1,ratio2,ratio3;
-	var scale,nn=25.neg,frames=256;
+	var scale,nn=25.neg,frames=64;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
 	var ellipsis=[1,1,1],mag;
 
