@@ -195,7 +195,7 @@ wt = signal.asWavetable;
 SynthDef.new(\ospace, {
 	arg gain, lfo_amp, harm, azimuth, elevation, spread=1;
 	var sph3,sph4,sph5,m=1;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,pl2=0,envp,octave=4;
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,pl2=0,envp,octave=2;
 	var ton1,ton2,ton3;
 	var fundamental;
 	var freq,pitch1,pitch2,pitch3,env;
@@ -225,7 +225,7 @@ SynthDef.new(\ospace, {
 			mod_angle=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			mod_angle1=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 
-
+				//rq=MouseX.kr(0.00001,1);
 		sph3=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
 		sph4=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
 		sph5=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
@@ -251,9 +251,6 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),s
 				);
 
 magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
-
-				mag=[magx,magy,magz].round(0.000001);
-				magx=mag.[0];magy=mag.[1];magz=mag.[2];
 
 				mag_x=magx.value; mag_y= magy.value; mag_z=magz.value;
 				);
@@ -283,11 +280,11 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
 pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);
 
 
-osc1=VBAP.ar(4,BPF.ar(sig, pitch1+mag_x, rq, mul: amp1 * mag_x* (rq.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc1=VBAP.ar(4,Normalizer.ar(BPF.ar(sig, pitch1+mag_x, rq, mul: amp1 * mag_x* (rq.sqrt.reciprocal))),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
-osc2=VBAP.ar(4,BPF.ar(sig, pitch1+mag_y, rq, mul: amp1 * mag_y* (rq.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc2=VBAP.ar(4,Normalizer.ar(BPF.ar(sig, pitch1+mag_y, rq, mul: amp1 * mag_y* (rq.sqrt.reciprocal))),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
-osc3=VBAP.ar(4,BPF.ar(sig, pitch1+mag_z, rq, mul: amp1 * mag_z* (rq.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc3=VBAP.ar(4,Normalizer.ar(BPF.ar(sig, pitch1+mag_z, rq, mul: amp1 * mag_z* (rq.sqrt.reciprocal))),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
 	//wrappedOut3.value(out1,LeakDC.ar(osc3,mul:env));
 				Out.ar(0,LeakDC.ar(osc3,mul:gain*20));
