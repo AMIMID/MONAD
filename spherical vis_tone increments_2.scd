@@ -537,7 +537,7 @@ var durx,dury,durz;
 var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
 var num=1.neg;
 	var ellipsis=[1,1,1];
-	var spread=3;
+	var spread=100;
 
 	~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
 
@@ -631,14 +631,14 @@ magnitudez=(12).collect{
 			mag_z=((Complex(cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+90.degrad).round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))))).rho/(2.sqrt)).pow(spread);
 
 
-};angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;
+		};angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;
 
 				12.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];};num=1.neg;};
 }.value;
 
-~magx = ~magx.collect { |z| z / ~magx.maxItem };
-~magy = ~magy.collect { |z| z / ~magy.maxItem };
-~magz = ~magz.collect { |z| z / ~magz.maxItem };
+//~magx = ~magx.collect { |z| z / ~magx.maxItem };
+//~magy = ~magy.collect { |z| z / ~magy.maxItem };
+//~magz = ~magz.collect { |z| z / ~magz.maxItem };
 )
 
 
