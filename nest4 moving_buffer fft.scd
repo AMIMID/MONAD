@@ -155,9 +155,9 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 				12.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];};num=1.neg;};
 }.value;
 (
-~magx = ~magx.collect { |z| z / ~magx.maxItem };
-~magy = ~magy.collect { |z| z / ~magy.maxItem };
-~magz = ~magz.collect { |z| z / ~magz.maxItem };
+//~magx = ~magx.collect { |z| z / ~magx.maxItem };
+//~magy = ~magy.collect { |z| z / ~magy.maxItem };
+//~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
 );
 ~dur=~dur*2;
@@ -285,13 +285,13 @@ magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2
 
 					b=b+1;
 
-osc1=VBAP.ar(4,Normalizer.ar(BPF.ar(IFFT(chain1), pitch1,rq1,mul:amp1*magx* (rq1.sqrt.reciprocal))),
+osc1=VBAP.ar(4,BPF.ar(IFFT(chain1), pitch1,rq1,mul:amp1*magx* (rq1.sqrt.reciprocal)),
 ~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
-osc2=VBAP.ar(4,Normalizer.ar(BPF.ar(IFFT(chain2),pitch2,rq2,mul:amp2*magy* (rq2.sqrt.reciprocal))),
+osc2=VBAP.ar(4,BPF.ar(IFFT(chain2),pitch2,rq2,mul:amp2*magy* (rq2.sqrt.reciprocal)),
 ~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
-osc3=VBAP.ar(4,Normalizer.ar(BPF.ar(IFFT(chain3),pitch3,rq3,mul:amp3*magz* (rq3.sqrt.reciprocal))),
+osc3=VBAP.ar(4,BPF.ar(IFFT(chain3),pitch3,rq3,mul:amp3*magz* (rq3.sqrt.reciprocal)),
 ~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
 	//wrappedOut3.value(out1,LeakDC.ar(osc3,mul:env));
