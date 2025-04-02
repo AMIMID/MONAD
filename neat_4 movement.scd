@@ -530,9 +530,6 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),s
 
 magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-				mag=[magx,magy,magz].round(0.000001);
-				magx=mag.[0];magy=mag.[1];magz=mag.[2];
-
 				mag_x=magx.value; mag_y= magy.value; mag_z=magz.value;
 				);
 				//mag_x.poll;
@@ -561,23 +558,11 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
 
 				phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 
-osc1=VBAP.ar(4,
-					SinOsc.ar(pitch1,mul:amp1*mag_x,phase:phase),
-~b.bufnum,
-sphere.theta.raddeg,sphere.phi.raddeg
-		);
+osc1=VBAP.ar(4,Normalizer.ar(SinOsc.ar(pitch1,mul:amp1*mag_x,phase:phase)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
-osc2=VBAP.ar(4,
-						SinOsc.ar(pitch2,mul:amp2*mag_y,phase:phase),
-~b.bufnum,
-sphere.theta.raddeg,sphere.phi.raddeg
-		);
+osc2=VBAP.ar(4,Normalizer.ar(SinOsc.ar(pitch2,mul:amp2*mag_y,phase:phase)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
-osc3=VBAP.ar(4,
-					SinOsc.ar(pitch3,mul:amp3*mag_z,phase:phase),
-~b.bufnum,
-sphere.theta.raddeg,sphere.phi.raddeg
-		);
+osc3=VBAP.ar(4,Normalizer.ar(SinOsc.ar(pitch3,mul:amp3*mag_z,phase:phase)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
 	//wrappedOut3.value(out1,LeakDC.ar(osc3,mul:env));
 				Out.ar(0,LeakDC.ar(osc3,mul:env));
@@ -607,8 +592,8 @@ sphere.theta.raddeg,sphere.phi.raddeg
 			//\dur,Pseq(~dur,1),
 			\dur,1,
 			\pl1,Pseq(~list1,inf),
-		\lfo,Pexprand(0.01,1,inf),
-		\spread,Pbrown(1,4,1,inf),
+		\lfo,Pbrown(0.01,20,0.1,inf),
+		\spread,Pbrown(1,100,1,inf),
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
 ));
