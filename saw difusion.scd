@@ -160,9 +160,9 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 				12.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];};num=1.neg;};
 }.value;
 (
-~magx = ~magx.collect { |z| z / ~magx.maxItem };
-~magy = ~magy.collect { |z| z / ~magy.maxItem };
-~magz = ~magz.collect { |z| z / ~magz.maxItem };
+//~magx = ~magx.collect { |z| z / ~magx.maxItem };
+//~magy = ~magy.collect { |z| z / ~magy.maxItem };
+//~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
 );
 ~dur=~dur*2;
@@ -275,8 +275,6 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),s
 
 magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-				mag=[magx,magy,magz].round(0.000001);
-				magx=mag.[0];magy=mag.[1];magz=mag.[2];
 
 				mag_x=magx.value; mag_y= magy.value; mag_z=magz.value; interval=Cartesian(mag_x,mag_y,mag_z).rho;
 				);
@@ -295,11 +293,7 @@ amp1=(ton1.reciprocal*octave.reciprocal).round(0.00000001);amp2=(ton2.reciprocal
 	pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);*/
 
 
-osc1=VBAP.ar(4,
-					SinOsc.ar(freq*int,mul:int.reciprocal*interval),
-~b.bufnum,
-sphere.theta.raddeg,sphere.phi.raddeg
-		);
+osc1=VBAP.ar(4,SinOsc.ar(freq*int,mul:int.reciprocal*interval),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
 				Out.ar(0,LeakDC.ar(osc1,mul:0.01*gain));
 					pl1=pl1+1;};int=int+1;pl1=0;}
