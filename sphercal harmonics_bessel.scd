@@ -58,7 +58,7 @@ SynthDef.new(\player,{
 Out.kr(~controlBus_angle.index, SinOsc.kr(1,90.degrad,mul:1).range(360.neg.degrad,360.degrad));
 	Out.kr(~controlBus_a.index, SinOsc.kr(0.05,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
 	Out.kr(~controlBus_a1.index, SinOsc.kr(0.05,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_t.index, SinOsc.kr(0.01, 0).range(1, 100));
+	Out.kr(~controlBus_t.index, SinOsc.kr(0.001, 0).range(0, 100));
 
 //Out.ar(0,sig*1);
 //Out.ar(1,sig*1);
@@ -107,7 +107,7 @@ a.background = Color.black;
   r= Routine({loop{
 	data=[];
 		//m=~controlBus_m.getSynchronous;
-	m=2;
+	m=0;
 	t = ~controlBus_t.getSynchronous;
 	mod_angle=~controlBus_a.getSynchronous;
 	mod_angle1=~controlBus_a1.getSynchronous;
@@ -199,9 +199,9 @@ magnitudez=(12).collect{
 ~magy=~magy/(2.sqrt);
 ~magz=~magz/(2.sqrt);
 			~magxx = ~magx.collect { |val, i|
-	var waveSpeed = 0.2;
+	var waveSpeed = 1;
 	var waveFreq = 6;
-	var amp=0.7;
+	var amp=0.6;
 	var theta = ~az[i].degrad;
     var phi = ~el[i].degrad;
    // var wave = sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
