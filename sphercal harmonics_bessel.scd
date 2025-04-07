@@ -43,6 +43,7 @@ Buffer.freeAll;
 ~controlBus_a = Bus.control(s, 1);
 ~controlBus_a1 = Bus.control(s, 1);
 ~controlBus_angle = Bus.control(s, 1);
+~controlBus_t = Bus.control(s, 1);
 
 
 SynthDef.new(\player,{
@@ -57,6 +58,7 @@ SynthDef.new(\player,{
 Out.kr(~controlBus_angle.index, SinOsc.kr(1,90.degrad,mul:1).range(360.neg.degrad,360.degrad));
 	Out.kr(~controlBus_a.index, SinOsc.kr(0.05,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
 	Out.kr(~controlBus_a1.index, SinOsc.kr(0.05,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_t.index, SinOsc.kr(0.01, 0).range(1, 100));
 
 //Out.ar(0,sig*1);
 //Out.ar(1,sig*1);
@@ -89,7 +91,7 @@ var k = pi/2; // wave number
 var n = 0;   // order of the spherical Bessel function
 var radius =1; //bas radius
 var vibration = 0.1; //amplitude of vibration
-var rrx,rry, jnx,jny;
+var rrx,rry, jnx,jny,t;
 Synth.new(\player);
 data = [];
 
@@ -103,10 +105,10 @@ a.symbolColor = Color.white;
 a.background = Color.black;
 
   r= Routine({loop{
-
 	data=[];
 		//m=~controlBus_m.getSynchronous;
-	m=3;
+	m=2;
+	t = ~controlBus_t.getSynchronous;
 	mod_angle=~controlBus_a.getSynchronous;
 	mod_angle1=~controlBus_a1.getSynchronous;
 	anglex=~controlBus_angle.getSynchronous;
@@ -120,9 +122,9 @@ a.background = Color.black;
 
 	(
 {
-			~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
+			~az=[];~el=[];~magx=[];~magy=[];~magz=[];
 
-		360.do{
+		180.do{
 azimuth=(12).collect{
 
 			az1 = (angle+(360*2.pow(pl1/12))).wrap(180.neg,180);  // Increment azimuth
@@ -196,15 +198,27 @@ magnitudez=(12).collect{
 ~magx=~magx/(2.sqrt);
 ~magy=~magy/(2.sqrt);
 ~magz=~magz/(2.sqrt);
+			~magxx = ~magx.collect { |val, i|
+	var waveSpeed = 0.2;
+	var waveFreq = 6;
+	var amp=0.7;
+	var theta = ~az[i].degrad;
+    var phi = ~el[i].degrad;
+   // var wave = sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
+	var wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
+    val * wave;
+};
+
  );
 );
-	dota=(360*6).collect{
+	dota=(180*6).collect{
 
 	az=~az.[pla];
 	el=~el.[pla];
 
-	//magg=Cartesian(~magx.[pla],~magy.[pla],~magz.[pla]).rho;
-		magg=Cartesian(~magx.[pla]*jnx,~magy.[pla]*jny,~magz.[pla]).rho;
+	magg=Cartesian(~magxx.[pla],~magy.[pla],~magz.[pla]).rho;
+		//magg=Cartesian(~magxx.[pla]*jnx,~magyy.[pla]*jny,~magzz.[pla]).rho;
+	//	magg=Cartesian(jnx,*jny,1).rho;
 	pla=pla+1;
 
 		sph=Spherical((magg)*400,az,el).asCartesian.asArray;
@@ -229,7 +243,7 @@ Pen.translate(400,400);
 		a.rot(ot,ot,ot);
     ~v.refresh;
 
-		ot=ot+0.5.degrad;
+		ot=ot+0.1.degrad;
 
 };
 { while { run } {~v.background_(Color.black); ~v.refresh; (0.001).wait } }.fork(AppClock);
