@@ -163,14 +163,13 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 //~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
 );
-~dur=~dur*2;
 
 
 /////synths////
 	(
 		(
 SynthDef.new(\ospace, {
-	arg gain, lfo_amp, harm, azimuth, elevation, spread;
+	arg gain, lfo_amp, harm, azimuth, elevation, spread, ripple;
 	var sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
 	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,pl2=0,envp,octave=4;
 	var ton1,ton2,ton3;
@@ -181,35 +180,24 @@ SynthDef.new(\ospace, {
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3;
 	var scale,nn=49.neg;
-	var ampx,ampy,ampz,mod_angle,mod_angle1,mod_angle0;
-	var ellipsis=[1,1,1],mag;
+	var ampx,ampy,ampz,mod_angle,mod_angle1,mod_angle0,magxx;
+	var ellipsis=[1,1,1],mag,wave;
+	var waveSpeed=1,waveFreq=4,amp=1,theta,phi,t;
 
-			// var wrappedOut1 = { |busArray, signalArray|
-			// 	[busArray, signalArray].flop.do { |pair|
-			// Out.ar(pair[0], pair[1])}};
-			// var wrappedOut2 = { |busArray, signalArray|
-			// 	[busArray, signalArray].flop.do { |pair|
-			// Out.ar(pair[0], pair[1])}};
-			// var wrappedOut3 = { |busArray, signalArray|
-			// 	[busArray, signalArray].flop.do { |pair|
-			// Out.ar(pair[0], pair[1])}};
-			// var out1 = NamedControl.kr(\out1, [0, 1, 2, 3]);  // multiple buses!
-//	var out2 = NamedControl.kr(\out2, [0, 1, 2, 3, 4, 5]);  // multiple buses!
-//	var out3 = NamedControl.kr(\out3, [0, 1, 2, 3, 4, 5]);  // multiple buses!
-					m=harm.lag(0.1);
+m=harm.lag(0.1);
+t=SinOsc.kr(ripple.lag(0.1)).range(1, 100);
+mod_angle=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
+mod_angle1=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 
-			mod_angle=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
-			mod_angle1=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
-
-				sph3=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
-					sph4=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
+		sph3=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
+		sph4=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
 		sph5=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
 
 (
-magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-	(Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
-
-////for in-between harmonics multiply sin(phi) after cos, when m is 2 then harm 3/2 is formed in oder 3, when m is 3 harm 4/3 is formed in oder 4 and when m is 3 for theta and 2 for phi harm 4/2 is formed for order4//////same for y axis
+magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),
+						cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+	(Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+						cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
 /*
 		(Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),
 			cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho*
@@ -218,22 +206,29 @@ magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),co
 		 Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;*/
 				);
 
-magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-		(Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
+magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
+						sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+		(Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+						cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
 //		mag_y=(Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
 //Complex(sin((sph4.phi.round(0.00001)*(m_y-1)).wrap((pi/2).neg,(pi/2))),sin((sph4.phi.round(0.00001)*(m_y-1)).wrap((pi/2).neg,(pi/2)))).rho*
 //Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph4.rho;
 				);
 
-magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
+magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),
+						cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-				mag_x=magx.value;mag_y=magy.value;mag_z=magz.value;
+ theta = azimuth.lag(0.1).degrad;
+  phi = elevation.lag(0.1).degrad;
+	 wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
+  magxx=  magx * wave;
+
+				mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;
 				//mag_x.poll;
 				);
 				//env=EnvGen.ar(Env.adsr(0.05,0.5,0.5,decay),gate,doneAction:2,levelScale:0.1);
 				//env=EnvGen.ar(Env.perc(0.1,decay,amp),doneAction:2,levelScale:0.01);
 				//env=EnvGen.ar(Env.sine(decay,1),doneAction:2,levelScale:0.001);
-//fundamental=(12*6);
 	scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 
 fundamental=(12*128);freq=(fundamental*octave);
@@ -266,11 +261,8 @@ osc2=VBAP.ar(4,SinOsc.ar(pitch2+mag_y,mul:amp2*mag_y,phase:phase),~b.bufnum,sphe
 osc3=VBAP.ar(4,SinOsc.ar(pitch3+mag_z,mul:amp3*mag_z,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg
 		);
 
-	//wrappedOut3.value(out1,LeakDC.ar(osc3,mul:env));
 				Out.ar(0,LeakDC.ar(osc3,mul:gain*0.1));
-	//	wrappedOut2.value(out1,LeakDC.ar( osc2,mul:env));
 					Out.ar(0,LeakDC.ar(osc2,mul:gain*0.1));
-		//wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env));
 					Out.ar(0,LeakDC.ar(osc1,mul:gain*0.1));
 
 }).add;
@@ -280,43 +272,45 @@ osc3=VBAP.ar(4,SinOsc.ar(pitch3+mag_z,mul:amp3*mag_z,phase:phase),~b.bufnum,sphe
 
 	TempoClock.default.tempo_(2);
 
-((
+(
 
 Window.closeAll;
 w=Window.new("gui",Rect.new(750,100,500,420)).front.alwaysOnTop_(true);
 
-~aa = Slider.new(w.view,Rect.new(20,20,160,30));
+~aa = Slider.new(w.view,Rect.new(20,20,400,30));
 
-~dd = Slider.new(w.view,Rect.new(20,100,160,30));
+~bb = Slider.new(w.view,Rect.new(20,60,400,30));
 
-~bb = Slider.new(w.view,Rect.new(20,60,160,30));
+~cc = Slider2D.new(w.view,Rect.new(60,220,400,180));
 
-~cc = Slider2D.new(w.view,Rect.new(200,150,200,200));
-~ee = Slider.new(w.view,Rect.new(20,140,160,30));
+~dd = Slider.new(w.view,Rect.new(20,100,400,30));
 
-~on = Button(w,Rect(20,350,40,40)).states_([
+~ee = Slider.new(w.view,Rect.new(20,140,400,30));
+
+~ff = Slider.new(w.view,Rect.new(20,180,400,30));
+
+~on = Button(w,Rect(10,370,30,30)).states_([
 	["off",Color.black],Color.gray,["on",Color.white,Color.gray]]).action_({
 	arg obj;
 	if(
 		obj.value==1,{~synth=Synth.new(\ospace,[
-\gain,~aa.value,\lfo_amp,~bb.value.linlin(0,1,0.01,100),\harm,~dd.value.linlin(0,1,1,4).round(1),\spread,~ee.value.linlin(0,1,1,100),
+	\gain,~aa.value,\lfo_amp,~bb.value.linlin(0,1,0.01,100).round(1/32),\harm,~dd.value.linlin(0,1,1,4).round(1),\spread,~ee.value.linlin(0,1,1,100),\ripple,~ff.value.linlin(0,1,1,100),
 \elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register;},
 		{~synth.free}
 )});
-/*(
-a = StaticText(w, Rect(190,20,100, 20));
-a.string = "gain1";
-b = StaticText(w, Rect(190,60,100, 20));
-b.string = "gain2";
-c = StaticText(w, Rect(20,300,200, 20));
-c.string = "3d bandpass s_real";
-d = StaticText(w, Rect(240,300,200, 20));
-d.string = "3d bandpass s_imag";
-e = StaticText(w, Rect(420,20,200, 20));
-e.string = "reverb1";
-f = StaticText(w, Rect(420,60,200, 20));
-f.string = "reverb2";
-)*/
+(
+a = StaticText(w, Rect(430,20,100, 20));
+a.string = "gain";
+b = StaticText(w, Rect(430,60,100, 20));
+b.string = "lfo";
+c = StaticText(w, Rect(430,100,100, 20));
+c.string = "harm";
+d = StaticText(w, Rect(430,140,100, 20));
+d.string = "spread";
+e = StaticText(w, Rect(430,180,100, 20));
+e.string = "ripple";
+f = StaticText(w, Rect(430,180,100, 20));
+f.string = "ripple";
 );
 
 (
@@ -332,7 +326,7 @@ f.string = "reverb2";
 ~bb.value_(1).action_({
 	arg obj;
 			var lfo_amp;
-	lfo_amp=obj.value.linlin(0,1,0.01,20);
+	lfo_amp=obj.value.linlin(0,1,0.01,20).round(1/32);
 				lfo_amp.value.postln;
 		if(~synth.isPlaying,{~synth.set(\lfo_amp,lfo_amp)});
 });
@@ -362,6 +356,15 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 			spread=obj.value.linlin(0,1,1,100);
 				spread.value.postln;
 if(~synth.isPlaying,{~synth.set(\spread,spread)});
+});
+);
+	(
+~ff.action_({
+	arg obj;
+			var ripple;
+			ripple=obj.value.linlin(0,1,1,100);
+				ripple.value.postln;
+if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 });
 );
 	)
