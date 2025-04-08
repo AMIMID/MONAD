@@ -77,7 +77,7 @@ word.do({|i| ~r = ~r ++ dictnotes[i.asSymbol];});
 
 
 //////////////////////////////////////////////////basis
-/*(
+(
 {
 var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
@@ -91,7 +91,7 @@ var ellipsis=[1,1,1];
 var spread=1;
 	~dur=[];
 
-durx=(360*8).collect{
+durx=(360*12).collect{
 			azx = (azx+1).wrap(180.neg,180);  // Increment azimuth
 				elx = (elx+(360-(360/1.6180339887499))).wrap(90.neg,90);
 
@@ -99,14 +99,14 @@ durx=(360*8).collect{
 
 	};
 
-dury=(360*8).collect{
+dury=(360*12).collect{
 		azy = (azy+1).wrap(180.neg,180);  // Increment azimuth
 			ely = (ely+(360-(360/1.6180339887499))).wrap(90.neg,90);
 
 		sphy=(Spherical(1,(azy.degrad),(ely.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).y.round(0.000000001).abs;
 
 	};
-durz=(360*8).collect{
+durz=(360*12).collect{
 			azz = (azz+1).wrap(180.neg,180);  // Increment azimuth
 				elz = (elz+(360-(360/1.6180339887499))).wrap(90.neg,90);
 
@@ -114,7 +114,7 @@ durz=(360*8).collect{
 
 	};
 
-~az=(360*8).collect{
+~az=(360*12).collect{
 
 			az1 = (az1+1).wrap(180.neg,180);  // Increment azimuth
 				el1 = (el1+(360-(360/1.6180339887499))).wrap(90.neg,90);
@@ -123,7 +123,7 @@ durz=(360*8).collect{
 
 	};
 
-~el=(360*8).collect{
+~el=(360*12).collect{
 
 				az2 = (az2+1).wrap(180.neg,180);  // Increment azimuth
 			el2 = (el2+(360-(360/1.6180339887499))).wrap(90.neg,90);
@@ -132,7 +132,7 @@ durz=(360*8).collect{
 
 	};
 
-~magx=(360*8).collect{
+~magx=(360*12).collect{
 
 			az3 = (az3+1).wrap(180.neg,180);  // Increment azimuth
 			el3 = (el3+ (360-(360/1.6180339887499))).wrap(90.neg,90);
@@ -150,7 +150,7 @@ durz=(360*8).collect{
 
 };
 
-~magy=(360*8).collect{
+~magy=(360*12).collect{
 
 			az4 = (az4+1).wrap(180.neg,180);  // Increment azimuth
 			el4 = (el4+(360-(360/1.6180339887499))).wrap(90.neg,90);
@@ -164,7 +164,7 @@ mag_y=((Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.t
 //Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph4.rho;
 };
 
-~magz=(360*8).collect{
+~magz=(360*12).collect{
 
 			az5 = (az5+1).wrap(180.neg,180);  // Increment azimuth
 			el5 = (el5+(360-(360/1.6180339887499))).wrap(90.neg,90);
@@ -189,7 +189,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
  );
 )*/
 	////no0
-	(
+	/*(
 {
 var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
@@ -307,8 +307,8 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 //~magy = ~magy.collect { |z| z / ~magy.maxItem };
 //~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
-);
-~dur=~dur*2;
+)*/
+~dur=~dur*1;
 
 
 
@@ -316,9 +316,9 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 
 		(
 SynthDef.new(\ospace, {
-	arg amp=1,pl1=1,lfo,m=3,spread=1;
+	arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,varamp=10;
 	var sph3,sph4,sph5;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,pl2=0,envp,octave=16;
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,pl2=0,envp,octave=4;
 	var ton1,ton2,ton3;
 	var fundamental;
 	var freq,pitch1,pitch2,pitch3,env;
@@ -328,17 +328,20 @@ SynthDef.new(\ospace, {
 	var ratio1,ratio2,ratio3;
 	var scale,nn=49.neg;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
-	var ellipsis=[1,1,1],mag;
+	var ellipsis=[1,1,1],mag,magxx;
+	var waveSpeed = 1, waveFreq = 8, theta,phi,wave,t;
 
+
+	t=SinOsc.kr(ripple).range(1, 100);
 
 		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
-		//	mod_angle=SinOsc.ar(lfo,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
-		//	mod_angle1=SinOsc.ar(lfo,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
+			//mod_angle=SinOsc.ar(lfo,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
+			//mod_angle1=SinOsc.ar(lfo,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
-			mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
+	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
 					(
 					magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
@@ -362,12 +365,18 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),s
 
 magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-				mag_x=magx.value; mag_y= magy.value; mag_z=magz.value;
+	theta = Select.kr(pl1,~az).degrad;
+     phi = Select.kr(pl1,~el).degrad;
+ wave = varamp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
+magxx=  magx * wave;
+
+				mag_x=magxx.value; mag_y= magy.value; mag_z=magz.value;
 				);
+
 				//mag_x.poll;
 
-				env=EnvGen.ar(Env.perc(0.02,decay,amp),doneAction:2,levelScale:0.1);
-//scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+				env=EnvGen.ar(Env.perc(0.05,decay,amp),doneAction:2,levelScale:0.01);
+scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 
 fundamental=(12*128);freq=(fundamental*octave);
 
@@ -376,14 +385,14 @@ sphere=Spherical(48,Select.kr(pl1,~az),Select.kr(pl1,~el));
 n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
 
-//ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
+ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
 
-//ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 96), scale) / 12);
-//ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 96), scale) / 12);
-//ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
-ton1 = 2.pow(n1 / 12);
-ton2 = 2.pow(n2 / 12);
-ton3 = 2.pow(n3 / 12);
+ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 96), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 96), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
+//ton1 = 2.pow(n1 / 12);
+//ton2 = 2.pow(n2 / 12);
+//ton3 = 2.pow(n3 / 12);
 
 	amp1=(ton1.reciprocal*octave.reciprocal).round(0.00000001);
 	amp2=(ton2.reciprocal*octave.reciprocal).round(0.00000001);
@@ -419,15 +428,18 @@ Out.ar(0,LeakDC.ar(osc1,mul:env*In.kr(0)));
 //////////pattern for mobius strib of sequential or parallel play of directions
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
-			//\dur,Pseq(~dur,1),
-			\dur,1,
+			\dur,Pseq(~dur,inf),
+			//\dur,1,
 			\pl1,Pseq(~list1,inf),
-		\lfo,Pbrown(0.01,1,0.1,inf),
-		\spread,Pbrown(1,10,9,inf),
+		//\lfo,Pbrown(0.01,0.1,0.1,inf),
+		\lfo,0.1,
+		\spread,Pbrown(1,10,10,inf),
+		\ripple,Pbrown(0.001,1,0.1,inf),
+		\varamp,Pbrown(1,10,1,inf),
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
 ));
-	TempoClock.default.tempo_(2);
+	TempoClock.default.tempo_(4);
 
 
 s.meter;s.freqscope;s.scope;
@@ -437,7 +449,7 @@ Scale.directory;
 
 (
 ~aa.play;
-{Out.kr(0,SinOsc.kr(0.001))}.play;
+{Out.kr(0,SinOsc.kr(0.001,0.01))}.play;
 );
 
 s.record(numChannels:4);
