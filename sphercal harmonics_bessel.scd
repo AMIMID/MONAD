@@ -1,6 +1,6 @@
 (
 s.options.numWireBufs = 1024*4;
-s.options.numOutputBusChannels=6;
+s.options.numOutputBusChannels=5;
 s.options.numInputBusChannels=0;
 TempoClock.default.tempo_(1);
 s.options.memSize = 8192*32*2;
@@ -9,29 +9,6 @@ s.options.maxNodes = 1024 * 16;
 s.options.sampleRate= 44100;
 s.boot;
 )
-
-
-Buffer.freeAll
-
-// OSCdef(\amp1, { |msg|
-// 	~a = msg[3];
-// 	defer { ~v.refresh };
-// }, '/a', s.addr);
-//
-// OSCdef(\freq1, { |msg|
-// 	~b = msg[3];
-// 	defer { ~v.refresh };
-// }, '/b', s.addr);
-//
-// OSCdef(\amp2, { |msg|
-// 	~c = msg[3];
-// 	defer { ~v.refresh };
-// }, '/a', s.addr);
-//
-// OSCdef(\freq2, { |msg|
-// 	~d = msg[3];
-// 	defer { ~v.refresh };
-// }, '/b', s.addr);
 
 
 
@@ -58,7 +35,7 @@ SynthDef.new(\player,{
 Out.kr(~controlBus_angle.index, SinOsc.kr(1,90.degrad,mul:1).range(360.neg.degrad,360.degrad));
 	Out.kr(~controlBus_a.index, SinOsc.kr(0.05,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
 	Out.kr(~controlBus_a1.index, SinOsc.kr(0.05,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_t.index, SinOsc.kr(0.01, 0).range(1, 100));
+	Out.kr(~controlBus_t.index, SinOsc.kr(0.01).range(0, 100));
 
 //Out.ar(0,sig*1);
 //Out.ar(1,sig*1);
@@ -207,7 +184,7 @@ magnitudez=(12).collect{
 						~magxx = ~magx.collect { |val, i|
 	var waveSpeed = 1;
 	var waveFreq = 4;
-	var amp=0.6;
+	var amp=0.4;
 	var theta = ~az[i].degrad;
     var phi = ~el[i].degrad;
    // var wave = sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
