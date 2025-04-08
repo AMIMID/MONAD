@@ -182,7 +182,7 @@ SynthDef.new(\ospace, {
 	var scale,nn=49.neg;
 	var ampx,ampy,ampz,mod_angle,mod_angle1,mod_angle0,magxx;
 	var ellipsis=[1,1,1],mag,wave;
-	var waveSpeed=1,waveFreq=4,amp=1,theta,phi,t;
+	var waveSpeed=1,waveFreq=4,amp=5,theta,phi,t;
 
 m=harm.lag(0.1);
 t=SinOsc.kr(ripple.lag(0.1)).range(1, 100);
