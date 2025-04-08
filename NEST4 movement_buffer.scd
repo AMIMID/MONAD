@@ -3,7 +3,7 @@ Server.default = s = Server.local;
 ////server setup
 (
 s.options.numWireBufs = 1024*4;
-s.options.numOutputBusChannels=6;
+s.options.numOutputBusChannels=5;
 s.options.numInputBusChannels=0;
 TempoClock.default.tempo_(1);
 s.options.memSize = 8192*128*2;
@@ -305,15 +305,15 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 //~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
 )*/
-
 /////synths////
 
 		(
 SynthDef.new(\ospace, {
-		arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,varamp=10,decay1=8,decay2=8,decay3=8;
+	arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,varamp=10,decay1=8,decay2=8,decay3=8;
 	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave=4;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5;
-	var freq,pitch1,pitch2,pitch3,env1,env2,env3,sig,n1,n2,n3;
+	var freq,pitch1,pitch2,pitch3,env1,env2,env3,sig;
+	var n1,n2,n3,rq1,rq2,rq3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3;
 	var scale,nn=49.neg;
@@ -336,6 +336,8 @@ SynthDef.new(\ospace, {
 					(
 					magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
 	(Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
+
+////for in-between harmonics multiply sin(phi) after cos, when m is 2 then harm 3/2 is formed in oder 3, when m is 3 harm 4/3 is formed in oder 4 and when m is 3 for theta and 2 for phi harm 4/2 is formed for order4//////same for y axis
 /*
 		(Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),
 			cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho*
@@ -360,19 +362,18 @@ magxx=  magx * wave;
 
 				mag_x=magxx.value; mag_y= magy.value; mag_z=magz.value;
 				);
-				    env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.01);
-				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.01);
-				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.01);
-			// env1=EnvGen.ar(Env.sine(decay1,amp),doneAction:2,levelScale:0.01);
-			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
-			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
+			    env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:1);
+				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:1);
+				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:1);
+			// env1=EnvGen.ar(Env.sine(decay1,amp),doneAction:2,levelScale:1);
+			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:1);
+			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:1);
 
 scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 fundamental=(12*128);freq=(fundamental*octave);
+
 sphere=Spherical(48,Select.kr(pl1,~az),Select.kr(pl1,~el));
-n1=(sphere.x).round(0.00000001);
-n2=(sphere.y).round(0.00000001);
-n3=(sphere.z).round(0.00000005);
+n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
 ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 96), scale) / 12);
 ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 96), scale) / 12);
@@ -384,15 +385,19 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
 	amp2=(ton2.reciprocal*octave.reciprocal).round(0.00000001);
 	amp3=(ton3.reciprocal*octave.reciprocal).round(0.00000001);
 	pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);
-phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
+sig=InFeedback.ar(4,1);
+//rq1=In.kr(0).lag(0.1);rq2=In.kr(1).lag(0.1);rq3=In.kr(2).lag(0.1);
+rq1=0.0001;rq2=0.0001;rq3=0.0001;
 
-osc1=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp1*mag_x,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
-osc2=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp2*mag_y,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
-osc3=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp3*mag_z,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc1=VBAP.ar(4,BPF.ar(sig,pitch1,rq1,mul:amp1*mag_x*(rq1.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
-//Out.ar(0,LeakDC.ar(osc3,mul:env1*In.kr(0)));
-//Out.ar(0,LeakDC.ar(osc2,mul:env2*In.kr(0)));
-//Out.ar(0,LeakDC.ar(osc1,mul:env3*In.kr(0)));
+osc2=VBAP.ar(4,BPF.ar(sig,pitch2,rq2,mul:amp2*mag_y*(rq2.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+
+osc3=VBAP.ar(4,BPF.ar(sig,pitch3,rq3,mul:amp3*mag_z*(rq3.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+
+//Out.ar(0,LeakDC.ar(osc3,mul:env1*In.kr(3)));
+//Out.ar(0,LeakDC.ar(osc2,mul:env2*In.kr(3)));
+//Out.ar(0,LeakDC.ar(osc1,mul:env3*In.kr(3)));
 Out.ar(0,LeakDC.ar(osc3,mul:env1));
 Out.ar(0,LeakDC.ar(osc2,mul:env2));
 Out.ar(0,LeakDC.ar(osc1,mul:env3));
@@ -417,7 +422,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 			\dur,1,
 			\pl1,Pseq(~list1,inf),
 		//\lfo,Pbrown(0.01,0.1,0.1,inf),
-		\lfo,Pbrown(0.001,0.01,0.1,inf),
+	\lfo,Pbrown(0.001,0.01,0.1,inf),
 		\spread,Pbrown(0.1,10,1,inf),
 		\ripple,Pbrown(0.001,20,1,inf),
 		\varamp,Pbrown(1,5,1,inf),
@@ -429,15 +434,79 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 ));
 	TempoClock.default.tempo_(4);
 
+~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Dokuments/EXTERNAL/music/band album library/Blazon Stone/Return To Port Royal - Definitive Edition/01 Black Chest In (Intro).wav",channels:0);
+/*	~m=Buffer.alloc(s,2048);
+			{
+var signal,wt,env;
 
+	//	env=Env([0.0001,0.0001,0.05,0.1,0.1,0.05,0.0001,0.0001],[40,30,20,10,20,30,40],[0,12,-4,0,4,-12,0]);
+		env=Env([0.0001,0.001,0.01,0.1,0.1,0.01,0.001,0.0001],[40,30,20,10,20,30,40],[0,12,-4,0,4,-12,0]);
+		signal=env.asSignal(1024);
+wt=signal.asWavetable;
+		//signal.plot;
+~m.loadCollection(wt);
+		}.value;*/
+
+(
+SynthDef.new(\obuff, {
+	arg buffer=0;
+	var sig1,sig2,env,gain=0.1;
+
+			//env= EnvGen.ar(Env.sine(10),doneAction:2);
+			sig1=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum),startPos:0, loop: 1, doneAction:2);
+			//sig2=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum),startPos:0, loop: 1, doneAction:2)
+			Out.ar(4,sig1*gain);
+				//Out.kr(3,sig2*gain);
+				//Out.kr(0,Osc.kr(~m.bufnum,0.01,phase:0.degrad));
+				//Out.kr(1,Osc.kr(~m.bufnum,0.01,phase:0.degrad));
+				//Out.kr(2,Osc.kr(~m.bufnum,0.01,phase:0.degrad));
+			Out.kr(3,SinOsc.kr(0.001,mul:1));
+}).add;
+);
 s.meter;s.freqscope;s.scope;
 }
 )
 Scale.directory;
 
 (
+Synth(\obuff);
 ~aa.play;
-{Out.kr(0,SinOsc.kr(0.001,mul:0.1))}.play;
 );
 
 s.record(numChannels:4);
+
+///////
+
+///sp freeze
+~c3 = Buffer.readChannel(s,,channels:0 );
+
+(
+~fftsize=8192;
+~hop=0.25;
+~win=0;
+~f={Buffer.alloc(s,~c1.duration.calcPVRecSize(~fftsize,~hop))}!2;
+)
+(
+{
+	var sig,chain,localbuf;
+	sig=PlayBuf.ar(2, ~c3.bufnum, BufRateScale.kr(~c3), loop: 0,doneAction:2);
+	localbuf={LocalBuf.new(~fftsize)}!2;
+	chain=FFT(localbuf,sig,~hop,~win);
+	chain=PV_RecordBuf(chain,~f,run:1,hop:~hop,wintype:~win);
+	0;
+}.play;
+)
+
+(
+x={
+	var sig,chain,localbuf;
+	localbuf={LocalBuf.new(~fftsize)}!2;
+		chain=PV_PlayBuf(localbuf,~f,\rate.kr(1),loop:inf);
+		sig=IFFT(chain,~win);
+	}.play;
+)
+
+x.set(\rate,0);
+x.set(\rate,1/1);
+x.set(\rate,-2/3);
+x.release(2);
