@@ -58,7 +58,7 @@ SynthDef.new(\player,{
 Out.kr(~controlBus_angle.index, SinOsc.kr(1,90.degrad,mul:1).range(360.neg.degrad,360.degrad));
 	Out.kr(~controlBus_a.index, SinOsc.kr(0.05,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
 	Out.kr(~controlBus_a1.index, SinOsc.kr(0.05,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_t.index, SinOsc.kr(0.001, 0).range(0, 100));
+	Out.kr(~controlBus_t.index, SinOsc.kr(0.01, 0).range(1, 100));
 
 //Out.ar(0,sig*1);
 //Out.ar(1,sig*1);
@@ -66,7 +66,7 @@ Out.kr(~controlBus_angle.index, SinOsc.kr(1,90.degrad,mul:1).range(360.neg.degra
 }).add;
 )
 
-
+//t= Main.elapsedTime
 
 Server.freeAll
 
@@ -87,11 +87,7 @@ var azimuth,elevation,magnitudex,magnitudey,magnitudez;
 var durx,dury,durz;
 var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
 var num=1.neg,amplitude,amplitude1,amplitude2,a,mod_angle,mod_angle1,mod_angle0;
-var k = pi/2; // wave number
-var n = 0;   // order of the spherical Bessel function
-var radius =1; //bas radius
-var vibration = 0.1; //amplitude of vibration
-var rrx,rry, jnx,jny,t;
+var t;
 Synth.new(\player);
 data = [];
 
@@ -111,12 +107,8 @@ a.background = Color.black;
 	t = ~controlBus_t.getSynchronous;
 	mod_angle=~controlBus_a.getSynchronous;
 	mod_angle1=~controlBus_a1.getSynchronous;
-	anglex=~controlBus_angle.getSynchronous;
-	angley=~controlBus_angle.getSynchronous+90.degrad;
-    rrx = radius + vibration * sin(anglex); // simulate vibrating radius
-	rry = radius + vibration * sin(angley);
-    jnx = sin(k * rrx) / (k * rrx); // approximation of j_0(kr)
-	jny = sin(k * rry) / (k * rry);
+	angle=~controlBus_angle.getSynchronous;
+
 	//jn = (sin(k*rr)/(k*rr).pow(2)) - (cos(k*rr)/(k*rr));
 	//	a.symbolColor = Color.new(amplitude,1,amplitude);
 
@@ -198,9 +190,23 @@ magnitudez=(12).collect{
 ~magx=~magx/(2.sqrt);
 ~magy=~magy/(2.sqrt);
 ~magz=~magz/(2.sqrt);
-			~magxx = ~magx.collect { |val, i|
+/*	~magxx = ~magx.collect { |val, i|
 	var waveSpeed = 1;
-	var waveFreq = 6;
+	var waveFreq = 3;
+	var vibration_amp = 0.2;
+	var amp =0.4;
+	var k = 4pi;
+	var theta = ~az[i].degrad;
+	var phi = ~el[i].degrad;
+	var rr = 1 + vibration_amp * sin(theta + phi);  // pseudo-radius depending on angle
+	var jn = sin(k * rr) / (k * rr);  // j₀(kr)
+	var phase = waveFreq * theta + waveFreq * phi - waveSpeed * t;
+	amp*val * (1 + vibration_amp * sin(phase)) * jn;
+};*/
+
+						~magxx = ~magx.collect { |val, i|
+	var waveSpeed = 1;
+	var waveFreq = 4;
 	var amp=0.6;
 	var theta = ~az[i].degrad;
     var phi = ~el[i].degrad;
