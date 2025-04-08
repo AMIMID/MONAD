@@ -204,7 +204,7 @@ wt = signal.asWavetable;
 /////synths////
 		(
 SynthDef.new(\ospace, {
-	arg	gain=1/16, lfo_amp=0.05, harm=1, spread=1, ripple=0.01;
+	arg	gain=1/16, lfo_amp=0.05, harm=1, spread=1,ripple=0.01;
 	var sph3,sph4,sph5,m=0,pl1=0;
 	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,pl2=0,envp,octave=8;
 	var ton1,ton2,ton3;
@@ -217,7 +217,7 @@ SynthDef.new(\ospace, {
 	var scale,nn=49.neg,ampx,ampy,ampz;
 	var interval,mod_angle,mod_angle0,mod_angle1;
 	var ellipsis=[1,1,1],mag,magxx;
-	var waveSpeed = 1, waveFreq = 4,amp=1, theta,phi,wave,t;
+	var waveSpeed = 1, waveFreq = 4,amp=5, theta,phi,wave,t;
 
 			// var wrappedOut1 = { |busArray, signalArray|
 			// 	[busArray, signalArray].flop.do { |pair|
@@ -280,7 +280,6 @@ magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2
 
 	 theta = ~az[pl1].degrad;
      phi = ~el[pl1].degrad;
-   // var wave = sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
  wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
 magxx=  magx * wave;
 
@@ -410,7 +409,7 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 });
 );
-/*(
+(
 
 			 ~v = UserView.new(w,Rect(220,150,200,200)).background_(Color.black);
 			 a = ScatterView3d(~v, Rect(0,0, 200,200), data, [-1000, 1000].asSpec,[-1000, 1000].asSpec,[-1000, 1000].asSpec);
@@ -433,7 +432,7 @@ spread=~controlBus_spread.getSynchronous;
 
 			~azz=[];~ell=[];~magxx=[];~magyy=[];~magzz=[];
 
-		360.do{
+		45.do{
 
 azimuth=(12).collect{
 
@@ -502,9 +501,9 @@ mag_z=(Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2
 angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~azz=~azz++azimuth;~ell=~ell++elevation;~magxx=~magxx++magnitudex;~magyy=~magyy++magnitudey;~magzz=~magzz++magnitudez;
 };
 (
-~magxx = ~magxx.collect { |z| z / ~magxx.maxItem };
-~magyy = ~magyy.collect { |z| z / ~magyy.maxItem };
-~magzz = ~magzz.collect { |z| z / ~magzz.maxItem };
+//~magxx = ~magxx.collect { |z| z / ~magxx.maxItem };
+//~magyy = ~magyy.collect { |z| z / ~magyy.maxItem };
+//~magzz = ~magzz.collect { |z| z / ~magzz.maxItem };
 						~magxxx = ~magxx.collect { |val, i|
 	var waveSpeed = 1;
 	var waveFreq = 4;
@@ -517,12 +516,12 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~azz=~azz++azimuth;~ell=~e
 };
  );
 );
-				dota=(360*6).collect{
+				dota=(45).collect{
 
 			 		az=~azz.[pla];
 				el=~ell.[pla];
 
-					magg=Cartesian(~magxx.[pla],~magyy.[pla],~magzz.[pla]).rho;
+					magg=Cartesian(~magxxx.[pla],~magyy.[pla],~magzz.[pla]).rho;
 					pla=pla+1;
 
 					sph=Spherical((magg)*400,az,el).asCartesian.asArray;
@@ -547,10 +546,10 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~azz=~azz++azimuth;~ell=~e
 			 	a.rot(ot,ot,ot);
 			~v.refresh;
 
-			 	ot=ot+1.degrad;
+			 	ot=ot+0.01.degrad;
 
 			 };
 			 { while { run } {~v.background_(Color.black); ~v.refresh; (0.001).wait } }.fork(AppClock);
-)*/)
+))
 Scale.directory;
 s.record(numChannels:4);
