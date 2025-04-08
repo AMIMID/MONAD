@@ -74,7 +74,7 @@ word.do({|i| ~r = ~r ++ dictnotes[i.asSymbol];});
 
 
 //////////////////////////////////////////////////basis
-(
+/*(
 {
 var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
@@ -184,9 +184,9 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 //~magy = ~magy.collect { |z| z / ~magy.maxItem };
 //~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
-);
+)*/
 	////no0
-	/*(
+	(
 {
 var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
@@ -304,7 +304,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 //~magy = ~magy.collect { |z| z / ~magy.maxItem };
 //~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
-)*/
+)
 
 /////synths////
 
@@ -333,6 +333,17 @@ SynthDef.new(\ospace, {
 			mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
+				env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.01);
+				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.01);
+				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.01);
+			// env1=EnvGen.ar(Env.sine(decay1,amp),doneAction:2,levelScale:0.01);
+			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
+			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
+
+scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+fundamental=(12*128);freq=(fundamental*octave);
+sphere=Spherical(48,Select.kr(pl1,~az),Select.kr(pl1,~el));
+
 					(
 					magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
 	(Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
@@ -360,16 +371,7 @@ magxx=  magx * wave;
 
 				mag_x=magxx.value; mag_y= magy.value; mag_z=magz.value;
 				);
-				    env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.01);
-				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.01);
-				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.01);
-			// env1=EnvGen.ar(Env.sine(decay1,amp),doneAction:2,levelScale:0.01);
-			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
-			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
-scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-fundamental=(12*128);freq=(fundamental*octave);
-sphere=Spherical(48,Select.kr(pl1,~az),Select.kr(pl1,~el));
 n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
 n3=(sphere.z).round(0.00000005);
@@ -413,17 +415,16 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 //////////pattern for mobius strib of sequential or parallel play of directions
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
-			//\dur,Pseq(~dur,inf),
-			\dur,1,
-			\pl1,Pseq(~list1,inf),
-		//\lfo,Pbrown(0.01,0.1,0.1,inf),
-		\lfo,Pbrown(0.001,0.01,0.1,inf),
-		\spread,Pbrown(0.1,10,1,inf),
-		\ripple,Pbrown(0.001,20,1,inf),
-		\varamp,Pbrown(1,5,1,inf),
-		\decay1,Pbrown(6,12,1,inf),
-		\decay2,Pbrown(6,12,1,inf),
-		\decay3,Pbrown(6,12,1,inf),
+			\dur,Pseq(~dur,inf),
+			//\dur,1,
+			\pl1,Pseq(~list1,inf),    ///////coordinate selection
+		\lfo,Pbrown(0.001,0.1,0.1,inf), /////spherical harmonic oscillation
+		\spread,Pbrown(0.1,10,1,inf),  //////spherical harmonic width
+		\ripple,Pbrown(0.001,0.1,0.1,inf),  /////sphere ripple wave oscillation speed
+		\varamp,Pbrown(1,10,1,inf),   /////sphere ripple wave oscillation amp amount
+		\decay1,Pbrown(6,8,1,inf),
+		\decay2,Pbrown(6,8,1,inf),
+		\decay3,Pbrown(6,8,1,inf),
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
 ));

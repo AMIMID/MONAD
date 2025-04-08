@@ -74,7 +74,7 @@ word.do({|i| ~r = ~r ++ dictnotes[i.asSymbol];});
 
 
 //////////////////////////////////////////////////basis
-(
+/*(
 {
 var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
@@ -184,9 +184,9 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 //~magy = ~magy.collect { |z| z / ~magy.maxItem };
 //~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
-);
+)*/
 	////no0
-	/*(
+	(
 {
 var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
@@ -304,7 +304,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 //~magy = ~magy.collect { |z| z / ~magy.maxItem };
 //~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
-)*/
+)
 /////synths////
 
 		(
@@ -422,15 +422,16 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 			\dur,1,
 			\pl1,Pseq(~list1,inf),
 		//\lfo,Pbrown(0.01,0.1,0.1,inf),
-	\lfo,Pbrown(0.001,0.01,0.1,inf),
-		\spread,Pbrown(0.1,10,1,inf),
-		\ripple,Pbrown(0.001,20,1,inf),
-		\varamp,Pbrown(1,5,1,inf),
-		\decay1,Pbrown(6,12,1,inf),
-		\decay2,Pbrown(6,12,1,inf),
-		\decay3,Pbrown(6,12,1,inf),
+		\lfo,Pbrown(0.001,0.1,0.1,inf), /////spherical harmonic oscillation
+		\spread,Pbrown(0.1,10,1,inf),  //////spherical harmonic width
+		\ripple,Pbrown(0.001,0.1,0.1,inf),  /////sphere ripple wave oscillation speed
+		\varamp,Pbrown(1,10,1,inf),   /////sphere ripple wave oscillation amp amount
+		\decay1,Pbrown(6,8,1,inf),
+		\decay2,Pbrown(6,8,1,inf),
+		\decay3,Pbrown(6,8,1,inf),
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
+));
 ));
 	TempoClock.default.tempo_(4);
 
