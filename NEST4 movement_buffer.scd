@@ -304,12 +304,12 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 //~magy = ~magy.collect { |z| z / ~magy.maxItem };
 //~magz = ~magz.collect { |z| z / ~magz.maxItem };
  );
-)
+);
 /////synths////
 
 		(
 SynthDef.new(\ospace, {
-	arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,varamp=10,decay1=8,decay2=8,decay3=8;
+	arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,amount=1,decay1=8,decay2=8,decay3=8,varamp=1;
 	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave=4;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5;
 	var freq,pitch1,pitch2,pitch3,env1,env2,env3,sig;
@@ -323,7 +323,7 @@ SynthDef.new(\ospace, {
 
 
 	t=SinOsc.kr(ripple).range(1, 100);
-
+waveFreq=amount.round(1);
 		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
@@ -388,12 +388,11 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
 sig=InFeedback.ar(4,1);
 //rq1=In.kr(0).lag(0.1);rq2=In.kr(1).lag(0.1);rq3=In.kr(2).lag(0.1);
 rq1=0.0001;rq2=0.0001;rq3=0.0001;
+mag=Cartesian(mag_x,mag_y,mag_z).rho;
 
-osc1=VBAP.ar(4,BPF.ar(sig,pitch1,rq1,mul:amp1*mag_x*(rq1.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
-
-osc2=VBAP.ar(4,BPF.ar(sig,pitch2,rq2,mul:amp2*mag_y*(rq2.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
-
-osc3=VBAP.ar(4,BPF.ar(sig,pitch3,rq3,mul:amp3*mag_z*(rq3.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc1=VBAP.ar(4,BPF.ar(sig,pitch1,rq1,mul:amp1*mag*(rq1.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc2=VBAP.ar(4,BPF.ar(sig,pitch2,rq2,mul:amp2*mag*(rq2.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc3=VBAP.ar(4,BPF.ar(sig,pitch3,rq3,mul:amp3*mag*(rq3.sqrt.reciprocal)),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
 //Out.ar(0,LeakDC.ar(osc3,mul:env1*In.kr(3)));
 //Out.ar(0,LeakDC.ar(osc2,mul:env2*In.kr(3)));
@@ -424,8 +423,9 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 		//\lfo,Pbrown(0.01,0.1,0.1,inf),
 		\lfo,Pbrown(0.001,0.1,0.1,inf), /////spherical harmonic oscillation
 		\spread,Pbrown(0.1,10,1,inf),  //////spherical harmonic width
-		\ripple,Pbrown(0.001,0.1,0.1,inf),  /////sphere ripple wave oscillation speed
-		\varamp,Pbrown(1,10,1,inf),   /////sphere ripple wave oscillation amp amount
+		\ripple,Pbrown(0.001,1,0.1,inf),  /////sphere ripple wave oscillation speed
+			\amount,Pbrown(1,100,1,inf),   /////sphere ripple waves amount
+		\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
 		\decay1,Pbrown(6,8,1,inf),
 		\decay2,Pbrown(6,8,1,inf),
 		\decay3,Pbrown(6,8,1,inf),
@@ -433,7 +433,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 			\amp,1;
 ));
 ));
-	TempoClock.default.tempo_(4);
+	TempoClock.default.tempo_(2);
 
 ~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Dokuments/EXTERNAL/music/band album library/Blazon Stone/Return To Port Royal - Definitive Edition/01 Black Chest In (Intro).wav",channels:0);
 /*	~m=Buffer.alloc(s,2048);
