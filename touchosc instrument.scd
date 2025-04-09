@@ -8,7 +8,7 @@ s.waitForBoot{
 	(
 		(
 SynthDef.new(\ospace, {
-	arg gain=1, lfo_amp=1, harm=1, azimuth=0, elevation=0, spread=1, ripple=1,amp=1;
+	arg gain=1, lfo_amp=1, harm=1, azimuth=0, elevation=0, spread=1, ripple=1,amount=1;
 	var sph3,sph4,sph5;
 	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,octave=8;
 	var ton1,ton2,ton3,fundamental;
@@ -16,17 +16,18 @@ SynthDef.new(\ospace, {
 	var pitch,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3,scale,nn=49.neg;
-	var mod_angle,mod_angle1,mod_angle0,magxx,magyy,magzz;
-	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,t;
+	var mod_angle,mod_angle1,mod_angle0,magxx;
+	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,t,amp=1;
 
-m=harm.lag(0.1);
-t=SinOsc.kr(ripple.lag(0.1)).range(1, 100);
-mod_angle=SinOsc.ar(lfo_amp.lag(0.1),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
-mod_angle1=SinOsc.ar(lfo_amp.lag(0.1),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
+m=harm.lag(0.01);
+waveFreq=amount.lag(0.01);
+t=SinOsc.kr(ripple.lag(0.01),phase:0.degrad).range(1, 100);
+mod_angle=SinOsc.ar(lfo_amp.lag(0.01),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
+mod_angle1=SinOsc.ar(lfo_amp.lag(0.01),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 
-		sph3=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
-		sph4=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
-		sph5=Spherical(1,azimuth.lag(0.1),elevation.lag(0.1));
+		sph3=Spherical(1,azimuth.lag(0.01),elevation.lag(0.01));
+		sph4=Spherical(1,azimuth.lag(0.01),elevation.lag(0.01));
+		sph5=Spherical(1,azimuth.lag(0.01),elevation.lag(0.01));
 
 (
 magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),
@@ -44,21 +45,18 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
 magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),
 						cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
- theta = azimuth.lag(0.1).degrad;
-  phi = elevation.lag(0.1).degrad;
-	 wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
+ theta = azimuth.lag(0.01).degrad;
+  phi = elevation.lag(0.01).degrad;
+	wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
   magxx=  magx * wave;
- magyy=  magy * wave;
- magzz=  magz * wave;
-
-				mag_x=magxx.value;mag_y=magyy.value;mag_z=magzz.value;
+	mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;
 				);
 
 	scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 
 fundamental=(12*128);freq=(fundamental*octave);
 
-sphere=Spherical(48,azimuth.lag(0.1),elevation.lag(0.1));
+sphere=Spherical(48,azimuth.lag(0.01),elevation.lag(0.01));
 
 n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
@@ -76,17 +74,15 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
 	amp3=(ton3.reciprocal*octave.reciprocal).round(0.00000001);
 
 	pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);
+mag=Cartesian(mag_x,mag_y,mag_z).rho;
 
-
-osc1=Pan2.ar(SinOsc.ar(pitch1+mag_x,mul:amp1*mag_x),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
-
-osc2=Pan2.ar(SinOsc.ar(pitch2+mag_y,mul:amp2*mag_y),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
-
-osc3=Pan2.ar(SinOsc.ar(pitch3+mag_z,mul:amp3*mag_z),sphere.phi.raddeg.linlin(90.neg,90,1.neg,1));
+				osc1=Pan2.ar(SinOsc.ar(pitch1,mul:amp1*mag),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
+				osc2=Pan2.ar(SinOsc.ar(pitch2,mul:amp2*mag),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
+				osc3=Pan2.ar(SinOsc.ar(pitch3,mul:amp3*mag),sphere.phi.raddeg.linlin(90.neg,90,1.neg,1));
 
 				Out.ar(0,LeakDC.ar(osc3,mul:gain*0.03));
-					Out.ar(0,LeakDC.ar(osc2,mul:gain*0.03));
-					Out.ar(0,LeakDC.ar(osc1,mul:gain*0.03));
+				Out.ar(0,LeakDC.ar(osc2,mul:gain*0.03));
+				Out.ar(0,LeakDC.ar(osc1,mul:gain*0.03));
 
 }).add;
 );
@@ -121,8 +117,8 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 	\lfo_amp,~bb.value.linlin(0,1,0.01,20).round(1/64),
 	\harm,~dd.value.linlin(0,1,1,4).round(1/8),
 	\spread,~ee.value.linlin(0,1,1,20),
-	\ripple,~ff.value.linlin(0,1,0.0001,20),
-	\amp,~gg.value.linlin(0,1,1,2),
+	\ripple,~ff.value.linlin(0,1,0.0001,0.5),
+	\amount,~gg.value.linlin(0,1,1,100).round(1),
 \elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),
 	\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register},
 		{~synth.free}
@@ -139,7 +135,7 @@ d.string = "spherical harmonic width";
 e = StaticText(w, Rect(530,180,200, 20));
 e.string = "ripple speed";
 f = StaticText(w, Rect(530,220,200, 20));
-f.string = "ripple amp";
+f.string = "ripple waves";
 g = StaticText(w, Rect(670,400,100, 70));
 g.string = "3d tone coordinate (x_azimuth,
 y_elevation)";
@@ -194,22 +190,21 @@ if(~synth.isPlaying,{~synth.set(\spread,spread)});
 ~ff.action_({
 	arg obj;
 			var ripple;
-			ripple=obj.value.linlin(0,1,0.0001,20);
-				//ripple.value.postln;
+			ripple=obj.value.linlin(0,1,0.0001,0.5);
+				ripple.value.postln;
 if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 });
 );
 			(
 ~gg.action_({
 	arg obj;
-			var amp;
-				amp=obj.value.linlin(0,1,1,2);
-				//amp.value.postln;
-if(~synth.isPlaying,{~synth.set(\amp,amp)});
+			var amount;
+				amount=obj.value.linlin(0,1,1,100).round(1);
+				amount.value.postln;
+if(~synth.isPlaying,{~synth.set(\amount,amount)});
 });
 );
 	);
-	//s.meter;
 }
 )
 
