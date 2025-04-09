@@ -1,27 +1,8 @@
 (
 Server.default = s = Server.local;
 ////server setup
-(
-s.options.numWireBufs = 1024*2;
-s.options.numOutputBusChannels=4;
-s.options.numInputBusChannels=0;
-TempoClock.default.tempo_(1);
-s.options.memSize = 8192*4*2;
-s.options.blockSize = 64*2;
-s.options.maxNodes = 1024 * 4;
-s.options.sampleRate= 44100;
-);
 
 s.waitForBoot{
-
-Buffer.freeAll;
-
-////////////////////////////////////speaker setup///other
-
-	~a = VBAPSpeakerArray.new(3, [[0, 45], [180, 45], [90, 45.neg], [90.neg, 45.neg]]);
-	 ~b = Buffer.loadCollection(s, ~a.getSetsAndMatrices);
-
-
 
 	////no0
 	(
@@ -73,7 +54,7 @@ elevation=(12).collect{
 	(
 		(
 SynthDef.new(\ospace, {
-	arg gain=1, lfo_amp=1, harm=1, azimuth, elevation, spread=1, ripple=1,amp=5;
+	arg gain=1, lfo_amp=1, harm=1, azimuth=0, elevation=0, spread=1, ripple=1,amp=1;
 	var sph3,sph4,sph5;
 	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,octave=4;
 	var ton1,ton2,ton3,fundamental;
@@ -143,12 +124,11 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
 	pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);
 
 
-osc1=VBAP.ar(4,SinOsc.ar(pitch1+mag_x,mul:amp1*mag_x,phase:0),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc1=Pan2.ar(SinOsc.ar(pitch1,mul:amp1*mag_x),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
 
-osc2=VBAP.ar(4,SinOsc.ar(pitch2+mag_y,mul:amp2*mag_y,phase:0),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc2=Pan2.ar(SinOsc.ar(pitch2,mul:amp2*mag_y),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
 
-osc3=VBAP.ar(4,SinOsc.ar(pitch3+mag_z,mul:amp3*mag_z,phase:0),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg
-		);
+osc3=Pan2.ar(SinOsc.ar(pitch3,mul:amp3*mag_z),sphere.phi.raddeg.linlin(90.neg,90,1.neg,1));
 
 				Out.ar(0,LeakDC.ar(osc3,mul:gain*0.01));
 					Out.ar(0,LeakDC.ar(osc2,mul:gain*0.01));
@@ -184,11 +164,11 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 	if(
 		obj.value==1,{~synth=Synth.new(\ospace,[
 	\gain,~aa.value,
-	\lfo_amp,~bb.value.linlin(0,1,0.01,20).round(1/32),
+	\lfo_amp,~bb.value.linlin(0,1,0.01,20).round(1/64),
 	\harm,~dd.value.linlin(0,1,1,4).round(1/8),
 	\spread,~ee.value.linlin(0,1,1,20),
 	\ripple,~ff.value.linlin(0,1,0.01,20).round(1/128),
-	\amp,~gg.value.linlin(0,1,0.1,10).round(1/64);,
+	\amp,~gg.value.linlin(0,1,0.1,10),
 \elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),
 	\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register},
 		{~synth.free}
@@ -212,7 +192,7 @@ y_elevation)";
 );
 
 (
-~aa.value_(1).action_({
+	~aa.value_(0).action_({
 	arg obj;
 					var gain;
 	obj.value.postln;
@@ -221,10 +201,10 @@ y_elevation)";
 });
 );
 (
-~bb.value_(1).action_({
+~bb.action_({
 	arg obj;
 			var lfo_amp;
-	lfo_amp=obj.value.linlin(0,1,0.01,20).round(1/32);
+	lfo_amp=obj.value.linlin(0,1,0.01,20).round(1/64);
 				lfo_amp.value.postln;
 		if(~synth.isPlaying,{~synth.set(\lfo_amp,lfo_amp)});
 });
@@ -269,7 +249,7 @@ if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 ~gg.action_({
 	arg obj;
 			var amp;
-				amp=obj.value.linlin(0,1,0.1,10).round(1/64);
+				amp=obj.value.linlin(0,1,0.1,10);
 				amp.value.postln;
 if(~synth.isPlaying,{~synth.set(\amp,amp)});
 });
