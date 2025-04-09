@@ -4,59 +4,13 @@ Server.default = s = Server.local;
 
 s.waitForBoot{
 
-	////no0
-	(
-{
-var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
-var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
-var az4=0,el4=0,az5=0,el5=0,pl1=0,pl2=0,pl3=0,pl4=0,pl5=0;
-var angle=0,ang=0;
-var azimuth,elevation,magnitudex,magnitudey,magnitudez;
-var durx,dury,durz;
-var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
-var num=1.neg;
-var ellipsis=[1,1,1];
-var spread=1;
-			~az=[];~el=[];~magx=[];~magy=[];~magz=[];
-
-		360.do{
-
-
-azimuth=(12).collect{
-
-			az1 = (angle+(360*2.pow(pl1/12))).wrap(180.neg,180);  // Increment azimuth
-				el1 = (angle+(180*2.pow(pl1/12))).wrap(90.neg,90);
-		pl1=(pl1+1).mod(12);
-
-		sph1=(Spherical(1,(az1.degrad),(el1.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).theta.round(0.00001);
-
-	};
-
-elevation=(12).collect{
-
-				az2 = (angle+(360*2.pow(pl2/12))).wrap(180.neg,180);  // Increment azimuth
-			el2 = (angle+(180*2.pow(pl2/12))).wrap(90.neg,90);
-		pl2=(pl2+1).mod(12);
-
-		sph2=(Spherical(1,(az2.degrad),(el2.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).phi.round(0.00001);
-
-	};
-
-
-};angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;
-
-
-}.value;
-);
-
-
 /////synth////
 	(
 		(
 SynthDef.new(\ospace, {
 	arg gain=1, lfo_amp=1, harm=1, azimuth=0, elevation=0, spread=1, ripple=1,amp=1;
 	var sph3,sph4,sph5;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,octave=4;
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,octave=8;
 	var ton1,ton2,ton3,fundamental;
 	var freq,pitch1,pitch2,pitch3;
 	var pitch,n1,n2,n3;
@@ -124,15 +78,15 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
 	pitch1=(freq*ton1).round(0.0000001);pitch2=(freq*ton2).round(0.0000001);pitch3=(freq*ton3).round(0.0000001);
 
 
-osc1=Pan2.ar(SinOsc.ar(pitch1,mul:amp1*mag_x),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
+osc1=Pan2.ar(SinOsc.ar(pitch1+mag_x,mul:amp1*mag_x),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
 
-osc2=Pan2.ar(SinOsc.ar(pitch2,mul:amp2*mag_y),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
+osc2=Pan2.ar(SinOsc.ar(pitch2+mag_y,mul:amp2*mag_y),sphere.theta.raddeg.linlin(180.neg,180,1.neg,1));
 
-osc3=Pan2.ar(SinOsc.ar(pitch3,mul:amp3*mag_z),sphere.phi.raddeg.linlin(90.neg,90,1.neg,1));
+osc3=Pan2.ar(SinOsc.ar(pitch3+mag_z,mul:amp3*mag_z),sphere.phi.raddeg.linlin(90.neg,90,1.neg,1));
 
-				Out.ar(0,LeakDC.ar(osc3,mul:gain*0.01));
-					Out.ar(0,LeakDC.ar(osc2,mul:gain*0.01));
-					Out.ar(0,LeakDC.ar(osc1,mul:gain*0.01));
+				Out.ar(0,LeakDC.ar(osc3,mul:gain*0.03));
+					Out.ar(0,LeakDC.ar(osc2,mul:gain*0.03));
+					Out.ar(0,LeakDC.ar(osc1,mul:gain*0.03));
 
 }).add;
 );
@@ -167,8 +121,8 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 	\lfo_amp,~bb.value.linlin(0,1,0.01,20).round(1/64),
 	\harm,~dd.value.linlin(0,1,1,4).round(1/8),
 	\spread,~ee.value.linlin(0,1,1,20),
-	\ripple,~ff.value.linlin(0,1,0.01,20).round(1/128),
-	\amp,~gg.value.linlin(0,1,0.1,10),
+	\ripple,~ff.value.linlin(0,1,0.0001,20),
+	\amp,~gg.value.linlin(0,1,1,2),
 \elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),
 	\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register},
 		{~synth.free}
@@ -205,7 +159,7 @@ y_elevation)";
 	arg obj;
 			var lfo_amp;
 	lfo_amp=obj.value.linlin(0,1,0.01,20).round(1/64);
-				lfo_amp.value.postln;
+				//lfo_amp.value.postln;
 		if(~synth.isPlaying,{~synth.set(\lfo_amp,lfo_amp)});
 });
 );
@@ -223,7 +177,7 @@ y_elevation)";
 	arg obj;
 			var harm;
 				harm=obj.value.linlin(0,1,1,4).round(1/8);
-				harm.value.postln;
+				//harm.value.postln;
 if(~synth.isPlaying,{~synth.set(\harm,harm)});
 });
 );
@@ -232,7 +186,7 @@ if(~synth.isPlaying,{~synth.set(\harm,harm)});
 	arg obj;
 			var spread;
 			spread=obj.value.linlin(0,1,1,20);
-				spread.value.postln;
+				//spread.value.postln;
 if(~synth.isPlaying,{~synth.set(\spread,spread)});
 });
 );
@@ -240,8 +194,8 @@ if(~synth.isPlaying,{~synth.set(\spread,spread)});
 ~ff.action_({
 	arg obj;
 			var ripple;
-			ripple=obj.value.linlin(0,1,0.01,20).round(1/128);
-				ripple.value.postln;
+			ripple=obj.value.linlin(0,1,0.0001,20);
+				//ripple.value.postln;
 if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 });
 );
@@ -249,8 +203,8 @@ if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 ~gg.action_({
 	arg obj;
 			var amp;
-				amp=obj.value.linlin(0,1,0.1,10);
-				amp.value.postln;
+				amp=obj.value.linlin(0,1,1,2);
+				//amp.value.postln;
 if(~synth.isPlaying,{~synth.set(\amp,amp)});
 });
 );
