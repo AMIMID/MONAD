@@ -180,7 +180,7 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 ~gg = Slider.new(w.view,Rect.new(20,220,500,30));
 
 ~on = Button(w,Rect(10,500,30,30)).states_([
-	["off",Color.black],Color.gray,["on",Color.white,Color.gray]]).action_({
+			["off",Color.black,Color.gray],["on",Color.white,Color.gray]]).action_({
 	arg obj;
 	if(
 		obj.value==1,{~synth=Synth.new(\ospace,[
@@ -191,7 +191,7 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 	\ripple,~ff.value.linlin(0,1,0.01,20).round(1/128),
 	\amp,~gg.value.linlin(0,1,0.1,10).round(1/64);,
 \elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),
-	\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register;},
+	\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register},
 		{~synth.free}
 )});
 (
