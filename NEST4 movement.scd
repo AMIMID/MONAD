@@ -311,7 +311,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		(
 SynthDef.new(\ospace, {
 		arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,amount=1,decay1=8,decay2=8,decay3=8,varamp=5;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave=8;
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave=4;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5;
 	var freq,pitch1,pitch2,pitch3,env1,env2,env3,sig,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
@@ -341,7 +341,7 @@ SynthDef.new(\ospace, {
 			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
 scale=49.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-fundamental=(12*16);freq=(fundamental*octave);
+fundamental=(6*32);freq=(fundamental*octave);
 sphere=Spherical(24,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 
