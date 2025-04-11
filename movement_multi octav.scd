@@ -343,7 +343,7 @@ SynthDef.new(\ospace, {
 			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
 scale=49.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-fundamental=(6*32);freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
+fundamental=(12*32);freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
 sphere=Spherical(24,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 
@@ -379,9 +379,9 @@ n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
 n3=(sphere.z).round(0.00000005);
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 96), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 96), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
+ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 49), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 49), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 49), scale) / 12);
 //ton1 = 2.pow(n1 / 12);
 //ton2 = 2.pow(n2 / 12);
 //ton3 = 2.pow(n3 / 12);
@@ -454,7 +454,7 @@ Out.ar(0,LeakDC.ar(osc4,mul:env3));
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
 ));
-	TempoClock.default.tempo_(4);
+	TempoClock.default.tempo_(2);
 
 
 s.meter;s.freqscope;s.scope;

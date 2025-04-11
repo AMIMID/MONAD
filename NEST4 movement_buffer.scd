@@ -375,9 +375,9 @@ fundamental=(12*16);freq=(fundamental*octave);
 sphere=Spherical(24,Select.kr(pl1,~az),Select.kr(pl1,~el));
 n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 96), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 96), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 96), scale) / 12);
+ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 49), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 49), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 49), scale) / 12);
 //ton1 = 2.pow(n1 / 12);
 //ton2 = 2.pow(n2 / 12);
 //ton3 = 2.pow(n3 / 12);
@@ -421,15 +421,15 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 		\m,Prand([1,2,3,4],inf),    /////spherical harmonic
 			//\dur,1,
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
-		\lfo,Pbrown(0.001,10,0.1,inf), /////spherical harmonic oscillation
-		\spread,Pbrown(0.1,10,1,inf),  //////spherical harmonic width
+		\lfo,Pbrown(0.001,1,0.1,inf), /////spherical harmonic oscillation
+		\spread,Pbrown(0.1,5,1,inf),  //////spherical harmonic width
 		\ripple,Pbrown(0.0001,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
-		\amount,Pbrown(1,64,4,inf),   /////sphere ripple waves amount
+		\amount,Pbrown(1,32,2,inf),   /////sphere ripple waves amount
 		//\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
-		\decay1,Pbrown(6,8,1,inf),
-		\decay2,Pbrown(6,8,1,inf),
-		\decay3,Pbrown(6,8,1,inf),
-		\varamp,5,
+		\decay1,Pbrown(4,6,0.1,inf),
+		\decay2,Pbrown(4,6,0.1,inf),
+		\decay3,Pbrown(4,6,0.1,inf),
+		\varamp,2,
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
 ));
