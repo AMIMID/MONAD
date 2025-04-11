@@ -11,7 +11,7 @@ s.options.blockSize = 64*4;
 s.options.maxNodes = 1024 * 16;
 s.options.sampleRate= 44100;
 );
-
+(12*16*4)*2.pow(24.neg/12)
 s.waitForBoot{
 Buffer.freeAll;
 ////////////////////////////////////speaker setup///other
@@ -310,8 +310,8 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 
 		(
 SynthDef.new(\ospace, {
-		arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,amount=1,decay1=8,decay2=8,decay3=8,varamp=1;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave=4;
+		arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,amount=1,decay1=8,decay2=8,decay3=8,varamp=5;
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave=8;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5;
 	var freq,pitch1,pitch2,pitch3,env1,env2,env3,sig,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
@@ -340,9 +340,10 @@ SynthDef.new(\ospace, {
 			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
 			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
-scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-fundamental=(12*128);freq=(fundamental*octave);
-sphere=Spherical(48,Select.kr(pl1,~az),Select.kr(pl1,~el));
+scale=49.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+fundamental=(12*16);freq=(fundamental*octave);
+sphere=Spherical(24,Select.kr(pl1,~az),Select.kr(pl1,~el));
+
 
 					(
 					magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
@@ -426,6 +427,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 		\decay1,Pbrown(6,8,1,inf),
 		\decay2,Pbrown(6,8,1,inf),
 		\decay3,Pbrown(6,8,1,inf),
+		\varamp,5,
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
 ));
