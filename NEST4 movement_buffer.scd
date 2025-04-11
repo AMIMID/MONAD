@@ -415,24 +415,21 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 	);
 ~list1=~list1.scramble;
 //////////pattern for mobius strib of sequential or parallel play of directions
-
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
-			//\dur,Pseq(~dur,inf),
-			\dur,1,
-			\pl1,Pseq(~list1,inf),
-		//\lfo,Pbrown(0.01,0.1,0.1,inf),
+			\dur,Pseq(~dur,inf),
+			//\dur,1,
+			\pl1,Pseq(~list1,inf),    ///////coordinate selection
 		\lfo,Pbrown(0.001,0.1,0.1,inf), /////spherical harmonic oscillation
 		\spread,Pbrown(0.1,10,1,inf),  //////spherical harmonic width
-		\ripple,Pbrown(0.001,1,0.1,inf),  /////sphere ripple wave oscillation speed
-			\amount,Pbrown(1,100,1,inf),   /////sphere ripple waves amount
-		\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
+		\ripple,Pbrown(0.0001,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
+		\amount,Pbrown(1,64,4,inf),   /////sphere ripple waves amount
+		//\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
 		\decay1,Pbrown(6,8,1,inf),
 		\decay2,Pbrown(6,8,1,inf),
 		\decay3,Pbrown(6,8,1,inf),
 		\varamp,5,
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
-));
 ));
 	TempoClock.default.tempo_(2);
 

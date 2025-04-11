@@ -11,7 +11,7 @@ s.options.blockSize = 64*4;
 s.options.maxNodes = 1024 * 16;
 s.options.sampleRate= 44100;
 );
-(12*16*4)*2.pow(24.neg/12)
+
 s.waitForBoot{
 Buffer.freeAll;
 ////////////////////////////////////speaker setup///other
@@ -333,9 +333,9 @@ SynthDef.new(\ospace, {
 			mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
-				env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.01);
-				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.01);
-				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.01);
+				env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.05);
+				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.05);
+				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.05);
 			// env1=EnvGen.ar(Env.sine(decay1,amp),doneAction:2,levelScale:0.01);
 			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
 			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
@@ -421,9 +421,9 @@ Out.ar(0,LeakDC.ar(osc1,mul:env3));
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
 		\lfo,Pbrown(0.001,0.1,0.1,inf), /////spherical harmonic oscillation
 		\spread,Pbrown(0.1,10,1,inf),  //////spherical harmonic width
-		\ripple,Pbrown(0.001,0.5,0.1,inf),  /////sphere ripple wave oscillation speed
-		\amount,Pbrown(1,10,1,inf),   /////sphere ripple waves amount
-		\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
+		\ripple,Pbrown(0.0001,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
+		\amount,Pbrown(1,64,4,inf),   /////sphere ripple waves amount
+		//\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
 		\decay1,Pbrown(6,8,1,inf),
 		\decay2,Pbrown(6,8,1,inf),
 		\decay3,Pbrown(6,8,1,inf),
