@@ -17,7 +17,7 @@ SynthDef.new(\ospace, {
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3,scale,nn=49.neg;
 	var mod_angle,mod_angle1,mod_angle0,magxx;
-	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,t,amp=1;
+	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,t,amp=5;
 
 m=harm.lag(0.01);
 waveFreq=amount.lag(0.01);
@@ -52,11 +52,11 @@ magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2
 	mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;
 				);
 
-	scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+scale=49.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 
-fundamental=(12*128);freq=(fundamental*octave);
+fundamental=(12*16);freq=(fundamental*octave);
 
-sphere=Spherical(48,azimuth.lag(0.01),elevation.lag(0.01));
+sphere=Spherical(24,azimuth.lag(0.01),elevation.lag(0.01));
 
 n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
@@ -117,7 +117,7 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 	\lfo_amp,~bb.value.linlin(0,1,0.01,20).round(1/64),
 	\harm,~dd.value.linlin(0,1,1,4).round(1/8),
 	\spread,~ee.value.linlin(0,1,1,20),
-	\ripple,~ff.value.linlin(0,1,0.0001,0.5),
+	\ripple,~ff.value.linlin(0,1,0.0001,1),
 	\amount,~gg.value.linlin(0,1,1,100).round(1),
 \elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),
 	\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register},
@@ -190,8 +190,8 @@ if(~synth.isPlaying,{~synth.set(\spread,spread)});
 ~ff.action_({
 	arg obj;
 			var ripple;
-			ripple=obj.value.linlin(0,1,0.0001,0.5);
-				ripple.value.postln;
+			ripple=obj.value.linlin(0,1,0.0001,1);
+				//ripple.value.postln;
 if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 });
 );
@@ -200,7 +200,7 @@ if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 	arg obj;
 			var amount;
 				amount=obj.value.linlin(0,1,1,100).round(1);
-				amount.value.postln;
+				//amount.value.postln;
 if(~synth.isPlaying,{~synth.set(\amount,amount)});
 });
 );

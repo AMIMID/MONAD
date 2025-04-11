@@ -75,14 +75,14 @@ elevation=(12).collect{
 SynthDef.new(\ospace, {
 	arg gain=1, lfo_amp=1, harm=1, azimuth, elevation, spread=1, ripple=1,amount=1;
 	var sph3,sph4,sph5;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,octave=4;
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,decay=8,octave=8;
 	var ton1,ton2,ton3,fundamental;
 	var freq,pitch1,pitch2,pitch3;
 	var pitch,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3,scale,nn=49.neg;
 	var mod_angle,mod_angle1,mod_angle0,magxx;
-	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,t,amp=1;
+	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,t,amp=5;
 
 m=harm.lag(0.01);
 waveFreq=amount.lag(0.01);
@@ -117,12 +117,11 @@ magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2
 
 				mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;
 				);
+scale=49.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 
-	scale=97.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+fundamental=(12*16);freq=(fundamental*octave);
 
-fundamental=(12*128);freq=(fundamental*octave);
-
-sphere=Spherical(48,azimuth.lag(0.01),elevation.lag(0.01));
+sphere=Spherical(24,azimuth.lag(0.01),elevation.lag(0.01));
 
 n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
