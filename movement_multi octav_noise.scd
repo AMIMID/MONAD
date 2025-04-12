@@ -335,15 +335,15 @@ SynthDef.new(\ospace, {
 			mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
-				env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.05);
-				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.05);
-				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.05);
+				env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.01);
+				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.01);
+				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.01);
 			// env1=EnvGen.ar(Env.sine(decay1,amp),doneAction:2,levelScale:0.01);
 			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
 			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-fundamental=(12*64);freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
+fundamental=(12*128);freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
 sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 
@@ -379,9 +379,9 @@ n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
 n3=(sphere.z).round(0.00000005);
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-ton1 = 2.pow(Select.kr(ratio1.linlin(48.neg, 48, 0, 57), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(48.neg, 48, 0, 57), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(48.neg, 48, 0, 57), scale) / 12);
+ton1 = 2.pow(Select.kr(ratio1.linlin(24.neg, 24, 0, 56), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(24.neg, 24, 0, 56), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(24.neg, 24, 0, 56), scale) / 12);
 //ton1 = 2.pow(n1 / 12);
 //ton2 = 2.pow(n2 / 12);
 //ton3 = 2.pow(n3 / 12);
@@ -444,12 +444,12 @@ Out.ar(0,LeakDC.ar(osc4,mul:env3));
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
 		\lfo,Pbrown(0.001,1,0.1,inf), /////spherical harmonic oscillation
 		\spread,Pbrown(0.1,5,1,inf),  //////spherical harmonic width
-		\ripple,Pbrown(0.0001,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
+		\ripple,Pbrown(0.0001,0.3,0.01,inf),  /////sphere ripple wave oscillation speed
 		\amount,Pbrown(1,32,2,inf),   /////sphere ripple waves amount
 		//\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
-		\decay1,Pbrown(6,8,1,inf),
-		\decay2,Pbrown(6,8,1,inf),
-		\decay3,Pbrown(6,8,1,inf),
+		\decay1,Pbrown(4,6,1,inf),
+		\decay2,Pbrown(4,6,1,inf),
+		\decay3,Pbrown(4,6,1,inf),
 		\varamp,2,
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
