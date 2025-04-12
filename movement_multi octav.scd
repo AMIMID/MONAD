@@ -311,7 +311,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		(
 SynthDef.new(\ospace, {
 		arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,amount=1,decay1=8,decay2=8,decay3=8,varamp=5;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave1=2,octave2=4,octave3=8;
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave1=8,octave2=16,octave3=32;
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5;
@@ -342,10 +342,9 @@ SynthDef.new(\ospace, {
 			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
 			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
-scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-fundamental=(12*32);freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
-sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
-
+scale=29.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+fundamental=(12*256);freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
+sphere=Spherical(14,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 					(
 					magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
@@ -379,9 +378,9 @@ n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
 n3=(sphere.z).round(0.00000005);
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton1 = 2.pow(Select.kr(ratio1.linlin(14.neg, 14, 0, 29), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(14.neg, 14, 0, 29), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(14.neg, 14, 0, 29), scale) / 12);
 //ton1 = 2.pow(n1 / 12);
 //ton2 = 2.pow(n2 / 12);
 //ton3 = 2.pow(n3 / 12);
@@ -447,12 +446,12 @@ Out.ar(0,LeakDC.ar(osc4,mul:env3*In.kr(0)));
 		\ripple,Pbrown(0.0001,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
 		\amount,Pbrown(1,32,2,inf),   /////sphere ripple waves amount
 		//\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
-		\decay1,Pbrown(6,8,1,inf),
-		\decay2,Pbrown(6,8,1,inf),
-		\decay3,Pbrown(6,8,1,inf),
-		\varamp,2,
+		\decay1,Pbrown(4,6,1,inf),
+		\decay2,Pbrown(4,6,1,inf),
+		\decay3,Pbrown(4,6,1,inf),
+		\varamp,1,
 			//\amp,Pseq(~r,inf);///l system
-			\amp,1/2;
+			\amp,1/16;
 ));
 	TempoClock.default.tempo_(2);
 
@@ -464,7 +463,7 @@ Scale.directory;
 
 (
 ~aa.play;
-{Out.kr(0,SinOsc.kr(0.001,mul:0.1))}.play;
+{Out.kr(0,SinOsc.kr(0.001,mul:1))}.play;
 );
 
 s.record(numChannels:4);
