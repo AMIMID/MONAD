@@ -342,9 +342,10 @@ SynthDef.new(\ospace, {
 			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
 			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
-scale=29.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 fundamental=(12*256);freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
-sphere=Spherical(14,Select.kr(pl1,~az),Select.kr(pl1,~el));
+sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
+
 
 					(
 					magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
@@ -378,9 +379,9 @@ n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
 n3=(sphere.z).round(0.00000005);
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-ton1 = 2.pow(Select.kr(ratio1.linlin(14.neg, 14, 0, 29), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(14.neg, 14, 0, 29), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(14.neg, 14, 0, 29), scale) / 12);
+ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
 //ton1 = 2.pow(n1 / 12);
 //ton2 = 2.pow(n2 / 12);
 //ton3 = 2.pow(n3 / 12);
