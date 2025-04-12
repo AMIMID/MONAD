@@ -335,16 +335,16 @@ SynthDef.new(\ospace, {
 			mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
-				env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.05);
-				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.05);
-				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.05);
+				env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.01);
+				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.01);
+				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.01);
 			// env1=EnvGen.ar(Env.sine(decay1,amp),doneAction:2,levelScale:0.01);
 			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
 			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
-scale=49.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 fundamental=(12*32);freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
-sphere=Spherical(24,Select.kr(pl1,~az),Select.kr(pl1,~el));
+sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 
 					(
@@ -379,9 +379,9 @@ n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
 n3=(sphere.z).round(0.00000005);
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-ton1 = 2.pow(Select.kr(ratio1.linlin(24.neg, 24, 0, 48), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(24.neg, 24, 0, 48), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(24.neg, 24, 0, 48), scale) / 12);
+ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
 //ton1 = 2.pow(n1 / 12);
 //ton2 = 2.pow(n2 / 12);
 //ton3 = 2.pow(n3 / 12);
@@ -452,7 +452,7 @@ Out.ar(0,LeakDC.ar(osc4,mul:env3));
 		\decay3,Pbrown(6,8,1,inf),
 		\varamp,2,
 			//\amp,Pseq(~r,inf);///l system
-			\amp,1;
+			\amp,1/2;
 ));
 	TempoClock.default.tempo_(2);
 
