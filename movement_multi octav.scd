@@ -412,15 +412,15 @@ osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,sphere.theta
 //Out.ar(0,LeakDC.ar(osc3,mul:env1*In.kr(0)));
 //Out.ar(0,LeakDC.ar(osc2,mul:env2*In.kr(0)));
 //Out.ar(0,LeakDC.ar(osc1,mul:env3*In.kr(0)));
-Out.ar(0,LeakDC.ar(osc3,mul:env1));
-Out.ar(0,LeakDC.ar(osc2,mul:env2));
-Out.ar(0,LeakDC.ar(osc1,mul:env3));
-Out.ar(0,LeakDC.ar(osc9,mul:env1));
-Out.ar(0,LeakDC.ar(osc8,mul:env2));
-Out.ar(0,LeakDC.ar(osc7,mul:env3));
-Out.ar(0,LeakDC.ar(osc6,mul:env1));
-Out.ar(0,LeakDC.ar(osc5,mul:env2));
-Out.ar(0,LeakDC.ar(osc4,mul:env3));
+Out.ar(0,LeakDC.ar(osc3,mul:env1*In.kr(0)));
+Out.ar(0,LeakDC.ar(osc2,mul:env2)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc1,mul:env3)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc9,mul:env1)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc8,mul:env2)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc7,mul:env3)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc6,mul:env1)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc5,mul:env2)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc4,mul:env3*In.kr(0)));
 
 }).add;
 );
