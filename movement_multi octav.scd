@@ -3,7 +3,7 @@ Server.default = s = Server.local;
 ////server setup
 (
 s.options.numWireBufs = 1024*4;
-s.options.numOutputBusChannels=6;
+s.options.numOutputBusChannels=4;
 s.options.numInputBusChannels=0;
 TempoClock.default.tempo_(1);
 s.options.memSize = 8192*128*2;
@@ -444,27 +444,26 @@ Out.ar(0,LeakDC.ar(osc4,mul:env3*In.kr(0)));
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
 		\lfo,Pbrown(0.001,1,0.1,inf), /////spherical harmonic oscillation
 		\spread,Pbrown(0.1,5,1,inf),  //////spherical harmonic width
-		\ripple,Pbrown(0.0001,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
-		\amount,Pbrown(1,32,2,inf),   /////sphere ripple waves amount
+		\ripple,Pbrown(0.001,0.1,0.1,inf),  /////sphere ripple wave oscillation speed
+		\amount,Pbrown(1,16,2,inf),   /////sphere ripple waves amount
 		//\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
-		\decay1,Pbrown(4,6,1,inf),
-		\decay2,Pbrown(4,6,1,inf),
-		\decay3,Pbrown(4,6,1,inf),
-		\varamp,1,
+		\decay1,Pbrown(6,8,1,inf),
+		\decay2,Pbrown(6,8,1,inf),
+		\decay3,Pbrown(6,8,1,inf),
+		\varamp,2,
 			//\amp,Pseq(~r,inf);///l system
-			\amp,1/16;
+			\amp,1/8;
 ));
-	TempoClock.default.tempo_(2);
+	TempoClock.default.tempo_(1.5);
 
 
 s.meter;s.freqscope;s.scope;
 }
 )
-Scale.directory;
 
 (
 ~aa.play;
 {Out.kr(0,SinOsc.kr(0.001,mul:1))}.play;
 );
 
-s.record(numChannels:4);
+//s.record(numChannels:4);
