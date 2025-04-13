@@ -325,7 +325,7 @@ SynthDef.new(\ospace, {
 
 
 	t=SinOsc.kr(ripple).range(1, 100);
-			waveFreq=amount.round(1);
+			waveFreq=amount;
 		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
@@ -335,12 +335,12 @@ SynthDef.new(\ospace, {
 			mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
-				env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.01);
-				env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.01);
-				env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.01);
-			// env1=EnvGen.ar(Env.sine(decay1,amp),doneAction:2,levelScale:0.01);
-			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
-			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
+			//	env1=EnvGen.ar(Env.perc(0.05,decay1,amp),doneAction:2,levelScale:0.01);
+			//	env2=EnvGen.ar(Env.perc(0.05,decay2,amp),doneAction:2,levelScale:0.01);
+			//	env3=EnvGen.ar(Env.perc(0.05,decay3,amp),doneAction:2,levelScale:0.01);
+			env1=EnvGen.ar(Env.sine(decay1,amp),doneAction:2,levelScale:0.01);
+				env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
+				env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 fundamental=(12*256);freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
@@ -442,17 +442,17 @@ Out.ar(0,LeakDC.ar(osc4,mul:env3*In.kr(0)));
 		\m,Prand([1,2,3,4],inf),    /////spherical harmonic
 			//\dur,1,
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
-		\lfo,Pbrown(0.001,1,0.1,inf), /////spherical harmonic oscillation
-		\spread,Pbrown(0.1,5,1,inf),  //////spherical harmonic width
+		\lfo,Pbrown(0.01,2,0.1,inf), /////spherical harmonic oscillation
+		\spread,Pbrown(0.1,4,1,inf),  //////spherical harmonic width
 		\ripple,Pbrown(0.001,0.1,0.1,inf),  /////sphere ripple wave oscillation speed
-		\amount,Pbrown(1,16,2,inf),   /////sphere ripple waves amount
+		\amount,Prand([2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],inf),   /////sphere ripple waves amount
 		//\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
 		\decay1,Pbrown(6,8,1,inf),
 		\decay2,Pbrown(6,8,1,inf),
 		\decay3,Pbrown(6,8,1,inf),
-		\varamp,2,
+		\varamp,1,
 			//\amp,Pseq(~r,inf);///l system
-			\amp,1/8;
+			\amp,1/24;
 ));
 	TempoClock.default.tempo_(1.5);
 
