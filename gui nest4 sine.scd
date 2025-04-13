@@ -117,11 +117,11 @@ magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2
 
 				mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;
 				);
-scale=49.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 
-fundamental=(12*16);freq=(fundamental*octave);
+fundamental=(12*128);freq=(fundamental*octave);
 
-sphere=Spherical(24,azimuth.lag(0.01),elevation.lag(0.01));
+sphere=Spherical(28,azimuth.lag(0.01),elevation.lag(0.01));
 
 n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).round(0.00000005);
 
@@ -130,9 +130,9 @@ n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).
 
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
 
-		ton1 = 2.pow(Select.kr(ratio1.linlin(24.neg, 24, 0, 48), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(24.neg, 24, 0, 48), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(24.neg, 24, 0, 48), scale) / 12);
+		ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
 
 	amp1=(ton1.reciprocal*octave.reciprocal).round(0.00000001);
 	amp2=(ton2.reciprocal*octave.reciprocal).round(0.00000001);
