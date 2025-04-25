@@ -336,11 +336,11 @@ SynthDef.new(\ospace, {
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
 			//env=EnvGen.ar(Env.perc(0.05,decay,amp),doneAction:2,levelScale:0.01);
-			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.001);
+			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.01);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 			scale_coo=57.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
-			scalar=2.pow(Select.kr(coo.round(1).linlin(24.neg, 24, 0, 56), scale_coo) / 12);
+			scalar=2.pow(Select.kr(coo.round(1).linlin(28.neg, 28, 0, 56), scale_coo) / 12);
 fundamental=(6*multiplier)*scalar;freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
 sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
