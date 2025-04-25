@@ -80,7 +80,7 @@ SynthDef.new(\ospace, {
 	var freq,pitch1,pitch2,pitch3;
 	var pitch,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
-	var ratio1,ratio2,ratio3,scale,nn=49.neg;
+	var ratio1,ratio2,ratio3,scale,nn=29.neg;
 	var mod_angle,mod_angle1,mod_angle0,magxx;
 	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,t,amp=5;
 
@@ -119,7 +119,7 @@ magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2
 				);
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 
-fundamental=(12*128);freq=(fundamental*octave);
+fundamental=(6*64);freq=(fundamental*octave);
 
 sphere=Spherical(28,azimuth.lag(0.01),elevation.lag(0.01));
 
