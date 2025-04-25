@@ -186,6 +186,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
  );
 )*/
 	////no0
+	///Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])
 	(
 {
 var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
@@ -205,7 +206,7 @@ durx=(12).collect{
 				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
 		plx=(plx+1).mod(12);
 
-		sphx=(Spherical(1,(azx.degrad),(elx.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).x.round(0.000000001);
+		sphx=(Spherical(14,(azx.degrad),(elx.degrad))).x.round(0.000000001);
 
 	};
 
@@ -214,7 +215,7 @@ dury=(12).collect{
 			ely = (angle+(180*2.pow(ply/12))).wrap(90.neg,90);
 		ply=(ply+1).mod(12);
 
-		sphy=(Spherical(1,(azy.degrad),(ely.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).y.round(0.000000001);
+		sphy=(Spherical(14,(azy.degrad),(ely.degrad))).y.round(0.000000001);
 
 	};
 durz=(12).collect{
@@ -222,7 +223,7 @@ durz=(12).collect{
 				elz = (angle+(180*2.pow(plz/12))).wrap(90.neg,90);
 		plz=(plz+1).mod(12);
 
-		sphz=(Spherical(1,(azz.degrad),(elz.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).z.round(0.000000001);
+		sphz=(Spherical(14,(azz.degrad),(elz.degrad))).z.round(0.000000001);
 
 	};
 
@@ -232,7 +233,7 @@ azimuth=(12).collect{
 				el1 = (angle+(180*2.pow(pl1/12))).wrap(90.neg,90);
 		pl1=(pl1+1).mod(12);
 
-		sph1=(Spherical(1,(az1.degrad),(el1.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).theta.round(0.00001);
+		sph1=(Spherical(1,(az1.degrad),(el1.degrad))).theta.round(0.00001);
 
 	};
 
@@ -242,7 +243,7 @@ elevation=(12).collect{
 			el2 = (angle+(180*2.pow(pl2/12))).wrap(90.neg,90);
 		pl2=(pl2+1).mod(12);
 
-		sph2=(Spherical(1,(az2.degrad),(el2.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).phi.round(0.00001);
+		sph2=(Spherical(1,(az2.degrad),(el2.degrad))).phi.round(0.00001);
 
 	};
 
@@ -252,7 +253,7 @@ magnitudex=(12).collect{
 			el3 = (angle+ (180*2.pow(pl3/12))).wrap(90.neg,90);
 		pl3=(pl3+1).mod(12);
 
-	sph3=(Spherical(1,(az3.degrad),(el3.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
+	sph3=(Spherical(1,(az3.degrad),(el3.degrad)));
 
 	 mag_x=((Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
 			(Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
@@ -311,7 +312,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		(
 SynthDef.new(\ospace, {
 		arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave1=8,octave2=16,octave3=32;
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave1=8,octave2=16,octave3=32,multiplier=1024*32;
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5;
@@ -334,12 +335,12 @@ SynthDef.new(\ospace, {
 			mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
-			env=EnvGen.ar(Env.perc(0.05,decay,amp),doneAction:2,levelScale:0.01);
-			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.01);
+			//env=EnvGen.ar(Env.perc(0.05,decay,amp),doneAction:2,levelScale:0.01);
+			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.0001/8);
 
 scale=29.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-			scalar=2.pow(coo.round(1)/12);
-fundamental=(24*64)*scalar;freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
+			scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale) / 12);
+fundamental=(6*multiplier)*scalar;freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
 sphere=Spherical(14,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 
@@ -434,22 +435,22 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 //////////pattern for mobius strib of sequential or parallel play of directions
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
-			\dur,Pseq(~dur.abs,inf),
+			\dur,Pseq(~dur.abs/14,inf),
 		\m,Prand([1,2,3],inf),    /////spherical harmonic
 		\coo,Pseq(~dur,inf),
 			//\dur,1,
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
-		//\lfo,Pbrown(0.01,1,0.1,inf), /////spherical harmonic oscillation
-		\lfo,1/2,
+		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
+		//\lfo,1/2,
 		\spread,Pbrown(0.1,4,1,inf),  //////spherical harmonic width
-		\spread,2,
+		//\spread,2,
 		//\ripple,Pbrown(0.0001,0.001,0.001,inf),  /////sphere ripple wave oscillation speed
 		\ripple,0.05,
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
-		//\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
+		\varamp,Pbrown(0.1,1,0.1,inf), /////ripple amp
 		\decay,Pbrown(6,8,1,inf),
-		\varamp,1,
+		//\varamp,1,
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
