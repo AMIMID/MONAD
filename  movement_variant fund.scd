@@ -312,14 +312,14 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		(
 SynthDef.new(\ospace, {
 		arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave1=8,octave2=16,octave3=32,multiplier=1024*32;
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave1=8,octave2=16,octave3=32,multiplier=64;
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5;
 	var freq1,freq2,freq3,pitch1,pitch2,pitch3,env,sig,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3;
-	var scale,nn=49.neg,scale_coo;
+	var scale,nn=29.neg,nnn=29.neg,scale_coo;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
 	var ellipsis=[1,1,1],mag,magxx;
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t,scalar;
@@ -336,13 +336,13 @@ SynthDef.new(\ospace, {
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
 			//env=EnvGen.ar(Env.perc(0.05,decay,amp),doneAction:2,levelScale:0.01);
-			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.0001/8);
+			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.001);
 
-scale=29.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-			scale_coo=29.collect{nn=nn+1;Scale.minor.performDegreeToKey(nn,12)};
-			scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
+scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+			scale_coo=57.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
+			scalar=2.pow(Select.kr(coo.round(1).linlin(24.neg, 24, 0, 56), scale_coo) / 12);
 fundamental=(6*multiplier)*scalar;freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
-sphere=Spherical(14,Select.kr(pl1,~az),Select.kr(pl1,~el));
+sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 
 					(
