@@ -11,27 +11,27 @@ s.boot;
 )
 
 
-Buffer.freeAll
-
-OSCdef(\amp1, { |msg|
-	~a = msg[3];
-	defer { ~v.refresh };
-}, '/a', s.addr);
-
-OSCdef(\freq1, { |msg|
-	~b = msg[3];
-	defer { ~v.refresh };
-}, '/b', s.addr);
-
-OSCdef(\amp2, { |msg|
-	~c = msg[3];
-	defer { ~v.refresh };
-}, '/a', s.addr);
-
-OSCdef(\freq2, { |msg|
-	~d = msg[3];
-	defer { ~v.refresh };
-}, '/b', s.addr);
+// Buffer.freeAll
+//
+// OSCdef(\amp1, { |msg|
+// 	~a = msg[3];
+// 	defer { ~v.refresh };
+// }, '/a', s.addr);
+//
+// OSCdef(\freq1, { |msg|
+// 	~b = msg[3];
+// 	defer { ~v.refresh };
+// }, '/b', s.addr);
+//
+// OSCdef(\amp2, { |msg|
+// 	~c = msg[3];
+// 	defer { ~v.refresh };
+// }, '/a', s.addr);
+//
+// OSCdef(\freq2, { |msg|
+// 	~d = msg[3];
+// 	defer { ~v.refresh };
+// }, '/b', s.addr);
 
 
 
@@ -39,13 +39,13 @@ OSCdef(\freq2, { |msg|
 (
 Buffer.freeAll;
 (
-~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Dokuments/EXTERNAL/music/band album library/Blazon Stone/Return To Port Royal - Definitive Edition/02 Return To Port Royal.wav",channels:0);
-~c2 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Dokuments/EXTERNAL/music/band album library/Blazon Stone/Return To Port Royal - Definitive Edition/02 Return To Port Royal.wav",channels:1);
+~c1 = Buffer.readChannel(s,,channels:0);
 );
 ~controlBus_m = Bus.control(s, 1);
 ~controlBus_a = Bus.control(s, 1);
-~controlBus_ab = Bus.control(s, 1);
-~controlBus_ac = Bus.control(s, 1);
+~controlBus_a1 = Bus.control(s, 1);
+~controlBus_angle = Bus.control(s, 1);
+~controlBus_t = Bus.control(s, 1);
 
 
 SynthDef.new(\player,{
@@ -57,12 +57,12 @@ SynthDef.new(\player,{
 
 	Out.kr(~controlBus_m.index, (ZeroCrossing.ar(sig1)*0.005));
 	Out.kr(~controlBus_a.index, SinOsc.ar(Amplitude.ar(sig1,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_ac.index, SinOsc.ar(Amplitude.ar(sig1,45.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_ab.index, SinOsc.ar(Amplitude.ar(sig1,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_a1.index, SinOsc.ar(Amplitude.ar(sig1,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_t.index, SinOsc.kr(0.02).range(0, 100));
 
 
-Out.ar(0,sig1*1);
-Out.ar(1,sig1*1);
+//Out.ar(0,sig1*1);
+//Out.ar(1,sig1*1);
 
 }).add;
 )
@@ -80,14 +80,15 @@ var az=0,el=0;
 var sph,pl=0,magg,r;
 var run = true;
 var ot=0.degrad,dota,pla=0;
-var  sph1,sph2,sph3,sph4,sph5,m=1.5;
+var sph1,sph2,sph3,sph4,sph5;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
 var az4=0,el4=0,az5=0,el5=0,pl1=0,pl2=0,pl3=0,pl4=0,pl5=0;
-var angle=0,ang=0;
+var angle=0,ang=0,anglex,angley;
 var azimuth,elevation,magnitudex,magnitudey,magnitudez;
 var durx,dury,durz;
 var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
 var num=1.neg,amplitude,amplitude1,amplitude2,a,mod_angle,mod_angle1,mod_angle0;
+var t;
 Synth.new(\player);
 data = [];
 
@@ -96,24 +97,27 @@ w = Window.new("3D Scatterplot", Rect(40,40, 800, 800)).front;
 ~v = UserView.new(w,Rect(0,0,800,800)).background_(Color.black);
 a = ScatterView3d(~v, Rect(0,0, 800,800), data, [-1000, 1000].asSpec,[-1000, 1000].asSpec,[-1000, 1000].asSpec);
 a.drawMethod = \fillRect;
-a.symbolSize = 1;
+a.symbolSize = 1.5;
 a.symbolColor = Color.white;
 a.background = Color.black;
 
   r= Routine({loop{
-
 	data=[];
-	m=~controlBus_my.getSynchronous;
+		//m=~controlBus_m.getSynchronous;
+	m=2;
+	t = ~controlBus_t.getSynchronous;
 	mod_angle=~controlBus_a.getSynchronous;
-	mod_angle1=~controlBus_ab.getSynchronous;
-	mod_angle0=~controlBus_ac.getSynchronous;
+	mod_angle1=~controlBus_a1.getSynchronous;
+	//angle=~controlBus_angle.getSynchronous;
+
+	//jn = (sin(k*rr)/(k*rr).pow(2)) - (cos(k*rr)/(k*rr));
 	//	a.symbolColor = Color.new(amplitude,1,amplitude);
 
 	(
 {
-			~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
+			~az=[];~el=[];~magx=[];~magy=[];~magz=[];
 
-		360.do{
+		180.do{
 azimuth=(12).collect{
 
 			az1 = (angle+(360*2.pow(pl1/12))).wrap(180.neg,180);  // Increment azimuth
@@ -175,7 +179,7 @@ magnitudez=(12).collect{
 			 					pl5=(pl5+1).mod(12);
 
 			 					sph5=Spherical(1,(az5.degrad),(el5.degrad));
-					mag_z=Complex(cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle0).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
+					mag_z=Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 
 
@@ -187,17 +191,45 @@ magnitudez=(12).collect{
 ~magx=~magx/(2.sqrt);
 ~magy=~magy/(2.sqrt);
 ~magz=~magz/(2.sqrt);
+/*	~magxx = ~magx.collect { |val, i|
+	var waveSpeed = 1;
+	var waveFreq = 3;
+	var vibration_amp = 0.2;
+	var amp =0.4;
+	var k = 4pi;
+	var theta = ~az[i].degrad;
+	var phi = ~el[i].degrad;
+	var rr = 1 + vibration_amp * sin(theta + phi);  // pseudo-radius depending on angle
+	var jn = sin(k * rr) / (k * rr);  // j₀(kr)
+	var phase = waveFreq * theta + waveFreq * phi - waveSpeed * t;
+	amp*val * (1 + vibration_amp * sin(phase)) * jn;
+};*/
+
+						~magxx = ~magx.collect { |val, i|
+	var waveSpeed = 1;
+	var waveFreq = 6;
+	var amp=0.4;
+	var theta = ~az[i].degrad;
+    var phi = ~el[i].degrad;
+   // var wave = sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
+	var wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
+    val * wave.postln;
+};
+
+
  );
 );
-	dota=(360*6).collect{
+	dota=(180*6).collect{
 
 	az=~az.[pla];
 	el=~el.[pla];
 
-	magg=Cartesian(~magx.[pla],~magy.[pla],~magz.[pla]).rho/(2.sqrt);
+	magg=Cartesian(~magxx.[pla],~magy.[pla],~magz.[pla]).rho;
+		//magg=Cartesian(~magxx.[pla]*jnx,~magyy.[pla]*jny,~magzz.[pla]).rho;
+	//	magg=Cartesian(jnx,*jny,1).rho;
 	pla=pla+1;
 
-		sph=Spherical((magg)*500,az,el).asCartesian.asArray;
+		sph=Spherical((magg)*400,az,el).asCartesian.asArray;
 
 
 
@@ -207,6 +239,7 @@ magnitudez=(12).collect{
 	data =data++dota;
 	//data.postln;
  	a.data = data;            // Update ScatterView3d
+
 0.065.wait
 }});
 r.play;
@@ -219,10 +252,10 @@ Pen.translate(400,400);
 		a.rot(ot,ot,ot);
     ~v.refresh;
 
-		ot=ot+1.degrad;
+		ot=ot+0.1.degrad;
 
 };
-{ while { run } {~v.background_(Color.black); ~v.refresh; (0.0001).wait } }.fork(AppClock);
+{ while { run } {~v.background_(Color.black); ~v.refresh; (0.001).wait } }.fork(AppClock);
 );
 
 
