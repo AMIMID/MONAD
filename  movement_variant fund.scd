@@ -323,7 +323,6 @@ SynthDef.new(\ospace, {
 	var ellipsis=[1,1,1],mag,magxx;
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t,scalar;
 
-
 	t=SinOsc.kr(ripple).range(1, 100);
 			waveFreq=amount;
 		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
@@ -340,7 +339,7 @@ SynthDef.new(\ospace, {
 
 scale=29.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 			scalar=2.pow(coo.round(1)/12);
-fundamental=(24*128)*scalar;freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
+fundamental=(24*64)*scalar;freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
 sphere=Spherical(14,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 
@@ -451,8 +450,8 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		//\varamp,Pbrown(0.1,1,0.5,inf), /////ripple amp
 		\decay,Pbrown(6,8,1,inf),
 		\varamp,1,
-			//\amp,Pseq(~r,inf);///l system
-			\amp,1;
+			\amp,Pseq(~r,inf);///l system
+			//\amp,1;
 ));
 	TempoClock.default.tempo_(2);
 
