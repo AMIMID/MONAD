@@ -319,7 +319,7 @@ SynthDef.new(\ospace, {
 	var freq1,freq2,freq3,pitch1,pitch2,pitch3,env,sig,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3;
-	var scale,nn=49.neg;
+	var scale,nn=49.neg,scale_coo;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
 	var ellipsis=[1,1,1],mag,magxx;
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t,scalar;
@@ -339,7 +339,8 @@ SynthDef.new(\ospace, {
 			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.0001/8);
 
 scale=29.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-			scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale) / 12);
+			scale_coo=29.collect{nn=nn+1;Scale.minor.performDegreeToKey(nn,12)};
+			scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
 fundamental=(6*multiplier)*scalar;freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
 sphere=Spherical(14,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
@@ -454,7 +455,7 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(2);
+	TempoClock.default.tempo_(3);
 
 
 s.meter;s.freqscope;s.scope;

@@ -316,7 +316,7 @@ SynthDef.new(\ospace, {
 	var freq,pitch1,pitch2,pitch3,env1,env2,env3,sig,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3;
-	var scale,nn=49.neg;
+	var scale,nn=25.neg;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
 	var ellipsis=[1,1,1],mag,magxx;
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t;
