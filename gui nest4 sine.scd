@@ -119,7 +119,7 @@ magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2
 				);
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 
-fundamental=(12*64);freq=(fundamental*octave);
+fundamental=(6*64);freq=(fundamental*octave);
 
 sphere=Spherical(28,azimuth.lag(0.01),elevation.lag(0.01));
 
