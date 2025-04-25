@@ -336,7 +336,7 @@ SynthDef.new(\ospace, {
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
 			//env=EnvGen.ar(Env.perc(0.05,decay,amp),doneAction:2,levelScale:0.01);
-			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.01);
+			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.01/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 			scale_coo=57.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
@@ -410,7 +410,7 @@ osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,sphere.theta
 //Out.ar(0,LeakDC.ar(osc3,mul:env1*In.kr(0)));
 //Out.ar(0,LeakDC.ar(osc2,mul:env2*In.kr(0)));
 //Out.ar(0,LeakDC.ar(osc1,mul:env3*In.kr(0)));
-Out.ar(0,LeakDC.ar(osc3,mul:env*In.kr(0)));
+Out.ar(0,LeakDC.ar(osc3,mul:env)*In.kr(0));
 Out.ar(0,LeakDC.ar(osc2,mul:env)*In.kr(0));
 Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 Out.ar(0,LeakDC.ar(osc9,mul:env)*In.kr(0));
