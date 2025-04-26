@@ -335,12 +335,13 @@ SynthDef.new(\ospace, {
 			mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 	    	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
-			//env=EnvGen.ar(Env.perc(0.05,decay,amp),doneAction:2,levelScale:0.01);
-			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.01/4);
+			env=EnvGen.ar(Env.perc(0.05,decay,amp),doneAction:2,levelScale:0.01/4);
+			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.01/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-			scale_coo=57.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
-			scalar=2.pow(Select.kr(coo.round(1).linlin(28.neg, 28, 0, 56), scale_coo) / 12);
+scale_coo=57.collect{nnn=nnn+1;Scale.minor.performDegreeToKey(nnn,12)};
+
+scalar=2.pow(Select.kr(coo.round(1).linlin(28.neg, 28, 0, 56), scale_coo) / 12);
 fundamental=(6*multiplier)*scalar;freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
 sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
@@ -449,13 +450,13 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		\ripple,0.05,
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
-		\varamp,Pbrown(0.1,1,0.1,inf), /////ripple amp
+		\varamp,Pbrown(0.1,2,0.1,inf), /////ripple amp
 		\decay,Pbrown(6,8,1,inf),
 		//\varamp,1,
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(3);
+	TempoClock.default.tempo_(4);
 
 
 s.meter;s.freqscope;s.scope;
