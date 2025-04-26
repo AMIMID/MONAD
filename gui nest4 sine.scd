@@ -130,9 +130,9 @@ n1=(sphere.x).round(0.00000001); n2=(sphere.y).round(0.00000001); n3=(sphere.z).
 
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
 
-		ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton1 = 2.pow(Select.kr(ratio1, scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2, scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3, scale) / 12);
 
 	amp1=(ton1.reciprocal*octave.reciprocal).round(0.00000001);
 	amp2=(ton2.reciprocal*octave.reciprocal).round(0.00000001);
