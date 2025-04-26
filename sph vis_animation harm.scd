@@ -1,6 +1,6 @@
 (
 s.options.numWireBufs = 1024*4;
-s.options.numOutputBusChannels=6;
+s.options.numOutputBusChannels=4;
 s.options.numInputBusChannels=0;
 TempoClock.default.tempo_(1);
 s.options.memSize = 8192*32*2;
@@ -39,12 +39,12 @@ s.boot;
 (
 Buffer.freeAll;
 (
-~c1 = Buffer.readChannel(s,,channels:0);
+~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/bees, war and tv-sets.wav",channels:0);
+~c2 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/bees, war and tv-sets.wav",channels:1);
 );
 ~controlBus_m = Bus.control(s, 1);
 ~controlBus_a = Bus.control(s, 1);
 ~controlBus_a1 = Bus.control(s, 1);
-~controlBus_angle = Bus.control(s, 1);
 ~controlBus_t = Bus.control(s, 1);
 
 
@@ -53,16 +53,17 @@ SynthDef.new(\player,{
 	var env;
 	var sig1, sig2, sig3, sig4;
 
-	sig1=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum), loop: 1, doneAction:2);
+	sig1=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum), loop: 0, doneAction:2);
+	sig2=PlayBuf.ar(1, ~c2.bufnum, BufRateScale.kr(~c2.bufnum), loop: 0, doneAction:2);
 
-	Out.kr(~controlBus_m.index, (ZeroCrossing.ar(sig1)*0.005));
-	Out.kr(~controlBus_a.index, SinOsc.ar(Amplitude.ar(sig1,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_a1.index, SinOsc.ar(Amplitude.ar(sig1,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_t.index, SinOsc.kr(0.02).range(0, 100));
+	Out.kr(~controlBus_m.index, (ZeroCrossing.ar(sig1)*0.006).poll);
+	Out.kr(~controlBus_a.index, SinOsc.ar(Amplitude.ar(sig1,mul:10),0.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_a1.index, SinOsc.ar(Amplitude.ar(sig1,mul:10),90.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_t.index, SinOsc.kr(0.01).range(0, 100));
 
 
-//Out.ar(0,sig1*1);
-//Out.ar(1,sig1*1);
+Out.ar(0,sig1*1);
+Out.ar(1,sig2*1);
 
 }).add;
 )
@@ -104,10 +105,10 @@ a.background = Color.black;
   r= Routine({loop{
 	data=[];
 		//m=~controlBus_m.getSynchronous;
-	m=2;
+	m=~controlBus_m.getSynchronous.lag(0.1);
 	t = ~controlBus_t.getSynchronous;
-	mod_angle=~controlBus_a.getSynchronous;
-	mod_angle1=~controlBus_a1.getSynchronous;
+	mod_angle=~controlBus_a.getSynchronous.lag(0.1);
+	mod_angle1=~controlBus_a1.getSynchronous.lag(0.1);
 	//angle=~controlBus_angle.getSynchronous;
 
 	//jn = (sin(k*rr)/(k*rr).pow(2)) - (cos(k*rr)/(k*rr));
@@ -213,7 +214,7 @@ magnitudez=(12).collect{
     var phi = ~el[i].degrad;
    // var wave = sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
 	var wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
-    val * wave.postln;
+    val * wave;
 };
 
 
@@ -224,7 +225,7 @@ magnitudez=(12).collect{
 	az=~az.[pla];
 	el=~el.[pla];
 
-	magg=Cartesian(~magxx.[pla],~magy.[pla],~magz.[pla]).rho;
+	magg=Cartesian(~magz.[pla],~magz.[pla],~magz.[pla]).rho;
 		//magg=Cartesian(~magxx.[pla]*jnx,~magyy.[pla]*jny,~magzz.[pla]).rho;
 	//	magg=Cartesian(jnx,*jny,1).rho;
 	pla=pla+1;
@@ -252,7 +253,7 @@ Pen.translate(400,400);
 		a.rot(ot,ot,ot);
     ~v.refresh;
 
-		ot=ot+0.1.degrad;
+		ot=ot+0.2.degrad;
 
 };
 { while { run } {~v.background_(Color.black); ~v.refresh; (0.001).wait } }.fork(AppClock);
