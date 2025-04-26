@@ -316,7 +316,7 @@ SynthDef.new(\ospace, {
 	var freq,pitch1,pitch2,pitch3,env1,env2,env3,sig,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z;
 	var ratio1,ratio2,ratio3;
-	var scale,nn=25.neg;
+	var scale,nn=29.neg;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
 	var ellipsis=[1,1,1],mag,magxx;
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t;
@@ -340,9 +340,9 @@ SynthDef.new(\ospace, {
 			//	env2=EnvGen.ar(Env.sine(decay2,amp),doneAction:2,levelScale:0.01);
 			//	env3=EnvGen.ar(Env.sine(decay3,amp),doneAction:2,levelScale:0.01);
 
-scale=49.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 fundamental=(6*32);freq=(fundamental*octave);
-sphere=Spherical(24,Select.kr(pl1,~az),Select.kr(pl1,~el));
+sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 
 					(
@@ -377,9 +377,9 @@ n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
 n3=(sphere.z).round(0.00000005);
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-ton1 = 2.pow(Select.kr(ratio1.linlin(24.neg, 24, 0, 48), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(24.neg, 24, 0, 48), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(24.neg, 24, 0, 48), scale) / 12);
+ton1 = 2.pow(Select.kr(ratio1, scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2, scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3, scale) / 12);
 //ton1 = 2.pow(n1 / 12);
 //ton2 = 2.pow(n2 / 12);
 //ton3 = 2.pow(n3 / 12);
