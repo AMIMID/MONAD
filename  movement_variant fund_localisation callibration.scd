@@ -312,7 +312,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		(
 SynthDef.new(\ospace, {
 		arg amp=1,pl1=1,lfo,m=3,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo;
-	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave1=2,octave2=4,octave3=8,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
+	var phase,osc1,osc2,osc3,sphere,amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5;
