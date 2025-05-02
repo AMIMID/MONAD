@@ -161,7 +161,8 @@ magnitudey=(12).collect{
 			el4 = (angle+(180*2.pow(pl4/12))).wrap(90.neg,90);
 		pl4=(pl4+1).mod(12);
 
-	sph4=(Spherical(1,(az4.degrad),(el4.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
+	sph4=Spherical(1,(az4.degrad),(el4.degrad));
+	///Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
 mag_y=((Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
 		(Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
@@ -176,7 +177,8 @@ magnitudez=(12).collect{
 				el5 = (angle+(180*2.pow(pl5/12))).wrap(90.neg,90);
 		pl5=(pl5+1).mod(12);
 
-		sph5=(Spherical(1,(az5.degrad),(el5.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
+		sph5=Spherical(1,(az5.degrad),(el5.degrad));
+///Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
 if(
 m_z.even,
@@ -248,13 +250,19 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),s
 
 magz=((Complex(cos(((sph7.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph7.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-magqx=(((Complex(cos(((sph5.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi)),cos(((sph5.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-					(Complex(sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)*
-					(Complex(cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)));
+magqx=((((Complex(cos(((sph5.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi)),
+cos(((sph5.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi))))*
+(Complex(sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+(Complex(cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 
-magqy=(((Complex(sin(((sph6.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi)),sin(((sph6.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-(Complex(sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)*
-(Complex(cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)));
+ magqy=((((Complex(sin(((sph6.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi)),
+sin(((sph6.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi))))*
+(Complex(sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+(Complex(cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 
 	theta = Select.kr(pl1,~az).degrad;
      phi = Select.kr(pl1,~el).degrad;
@@ -316,7 +324,6 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 
 }).add;
 );
-
 
 ////////////list
 	({

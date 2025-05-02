@@ -50,13 +50,19 @@ magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
 magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),
 						cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-magqx=(((Complex(cos(((sph5.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi)),cos(((sph5.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-(Complex(sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)*
-(Complex(cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)));
+ magqy=((((Complex(sin(((sph6.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi)),
+sin(((sph6.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi))))*
+(Complex(sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+(Complex(cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 
-magqy=(((Complex(sin(((sph6.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi)),sin(((sph6.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-(Complex(sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)*
-(Complex(cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)));
+magqx=((((Complex(cos(((sph5.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi)),
+cos(((sph5.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi))))*
+(Complex(sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+(Complex(cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 
  theta = azimuth.lag(0.01).degrad;
   phi = elevation.lag(0.01).degrad;
