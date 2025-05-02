@@ -87,13 +87,13 @@ SynthDef.new(\o_reverb, {
 
      in1 = PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum), loop: 0, doneAction:0);
 	 in2 = PlayBuf.ar(1, ~c2.bufnum, BufRateScale.kr(~c2.bufnum), loop: 0, doneAction:0);
-	 in3 = PlayBuf.ar(1, ~c3.bufnum, BufRateScale.kr(~c3.bufnum), loop: 0, doneAction:0);
-	 in4 = PlayBuf.ar(1, ~c4.bufnum, BufRateScale.kr(~c4.bufnum), loop: 0, doneAction:0);
+	// in3 = PlayBuf.ar(1, ~c3.bufnum, BufRateScale.kr(~c3.bufnum), loop: 0, doneAction:0);
+	// in4 = PlayBuf.ar(1, ~c4.bufnum, BufRateScale.kr(~c4.bufnum), loop: 0, doneAction:0);
 	/* in1 = SoundIn.ar(0);in2 = SoundIn.ar(1);
 	 in3 = SoundIn.ar(2) in4 = SoundIn.ar(3);*/
 
 	chaina = FFT(LocalBuf(frames), in1);chainb = FFT(LocalBuf(frames), in2);
-	chainc = FFT(LocalBuf(frames), in3);chaind = FFT(LocalBuf(frames), in4);
+	//chainc = FFT(LocalBuf(frames), in3);chaind = FFT(LocalBuf(frames), in4);
 
 	lfo=0.1;
 	mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
@@ -135,11 +135,12 @@ ph=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).neg,(
 
 chainaa = chaina.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 chainbb = chainb.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
-chaincc = chainc.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
-chaindd = chaind.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
+//chaincc = chainc.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
+//chaindd = chaind.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 b=b+1;
 
-chainaa = chaina.pvcollect(frames,
+		/////for use in case of simple mono inputs
+/*chainaa = chaina.pvcollect(frames,
 {|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+ph)).theta]; },
 frombin: b, tobin: b, zeroothers: 1);
 
@@ -161,20 +162,24 @@ frombin: b, tobin: b, zeroothers: 1);
 
 chainff = chainf.pvcollect(frames,
 {|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+phase1)).theta]; },
-frombin: b, tobin: b, zeroothers: 1);
+frombin: b, tobin: b, zeroothers: 1);*/
 
 delay=;
 decay=;
 
-sig1=CombC.ar(IFFT(chainaa),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-sig2=CombC.ar(IFFT(chainbb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-sig3=CombC.ar(IFFT(chaincc),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-sig4=CombC.ar(IFFT(chaindd),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+/*sig1=CombC.ar(IFFT(chaina),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+sig2=CombC.ar(IFFT(chainb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+sig3=CombC.ar(IFFT(chainc),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+sig4=CombC.ar(IFFT(chaind),maxdelaytime:delay,delaytime:delay,decaytime:decay);*/
+sig1=CombC.ar(IFFT(chaina),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+sig2=CombC.ar(IFFT(chainb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+//sig3=CombC.ar(IFFT(chainc),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+//sig4=CombC.ar(IFFT(chaind),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 
 Out.ar(0,LeakDC.ar(sig1));Out.ar(1,LeakDC.ar(sig2));
-Out.ar(2,LeakDC.ar(sig3));Out.ar(3,LeakDC.ar(sig4));
+//Out.ar(2,LeakDC.ar(sig3));Out.ar(3,LeakDC.ar(sig4));
 
-pl=pl+1;SoundIn.ar(0);};
+pl=pl+1;};
 }).add;
 )
 
