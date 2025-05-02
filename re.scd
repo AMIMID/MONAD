@@ -78,11 +78,12 @@ durz=(360).collect{
 
 (
 SynthDef.new(\o_reverb, {
-    var in1,in2,in3,in4,in5,in6,chaina,chainb,chainc,chaind,chaine,chainf, chainx,chainy,b=0,az1=0,az2=0,el1=0,el2=0,rpr=1;
-	var chainxx,chainyy,pl1=0,pl2=0,pl=0,amp1,amp2,phase;
+    var in1,in2,in3,in4,chaina,chainb,chainc,chaind,b=0;
+	var chainxx,chainyy,pl1=0,pl2=0,pl=0,amp,mag,lfo;
 	var angle1=0,angle2=720,sig,chainaa,chainbb,chaincc,chaindd,chainee,chainff;
-	var phase1,phase2,bank2,frames=1024,sig1,sig2,sig3,sig4,sig5,sig6;
-	var delay,decay;
+	var ph,frames=1024,sig1,sig2,sig3,sig4,spread=1;
+	var delay,decay,sph,mod_angle,mod_angle1,m=3,mq=2;
+	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 
      in1 = PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum), loop: 0, doneAction:0);
 	 in2 = PlayBuf.ar(1, ~c2.bufnum, BufRateScale.kr(~c2.bufnum), loop: 0, doneAction:0);
@@ -94,10 +95,43 @@ SynthDef.new(\o_reverb, {
 	chaina = FFT(LocalBuf(frames), in1);chainb = FFT(LocalBuf(frames), in2);
 	chainc = FFT(LocalBuf(frames), in3);chaind = FFT(LocalBuf(frames), in4);
 
+	lfo=0.1;
+	mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
+	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
+
 	360.do{
-az1=~az.[pl];el1=~el.[pl];
-amp1=Cartesian(~magx[pl],~magy.[pl],~magz.[pl]);
-phase1=Complex(exp(Complex(0,1)*(az1)).real.round(0.000001),exp(Complex(0,1)*(el1)).imag.round(0.000001)).theta;
+
+		sph=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
+		(
+		magx=((Complex(cos(((sph.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+	(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
+				);
+
+magy=((Complex(sin(((sph.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),sin(((sph.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+		(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
+				);
+
+magz=((Complex(cos(((sph.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
+
+magqx=(((Complex(cos(((sph.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi)),
+				cos(((sph.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+	(Complex(sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+				sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)*
+(Complex(cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+				cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)));
+
+magqy=(((Complex(sin(((sph.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi)),
+				sin(((sph.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+(Complex(sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+				sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)*
+(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+				cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)));
+
+				mag_x=magx.value;mag_y=magy.value;mag_z=magz.value;mag_qx=magqx.value;mag_qy=magqy.value
+				);
+
+mag=(Cartesian(mag_x,mag_y,mag_z).rho)+(Cartesian(mag_qx,mag_qy,mag_z).rho);
+ph=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 
 chainaa = chaina.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 chainbb = chainb.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
@@ -106,23 +140,23 @@ chaindd = chaind.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin
 b=b+1;
 
 chainaa = chaina.pvcollect(frames,
-{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+phase1)).theta]; },
+{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+ph)).theta]; },
 frombin: b, tobin: b, zeroothers: 1);
 
 chainbb = chainb.pvcollect(frames,
-{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+phase1)).theta]; },
+{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+ph)).theta]; },
 frombin: b, tobin: b, zeroothers: 1);
 
 chaincc = chainc.pvcollect(frames,
-{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+phase1)).theta]; },
+{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+ph)).theta]; },
 frombin: b, tobin: b, zeroothers: 1);
 
 chaindd = chaind.pvcollect(frames,
-{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+phase1)).theta]; },
+{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+ph)).theta]; },
 frombin: b, tobin: b, zeroothers: 1);
 
 chainee = chaine.pvcollect(frames,
-{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+phase1)).theta]; },
+{|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+ph)).theta]; },
 frombin: b, tobin: b, zeroothers: 1);
 
 chainff = chainf.pvcollect(frames,
