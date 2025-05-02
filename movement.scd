@@ -326,14 +326,20 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		}
 		}.value
 	);
-//~list1=~list1.scramble;
+
+	({
+		var n=0; ~list=[];
+		(360*12*10).do{ n=n+0.1;
+			~list=~list++~list1.[n].round(1);
+	}}.value);
+//~list=~list1.scramble;
 //////////pattern for mobius strib of sequential or parallel play of directions
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq(~dur.abs/14,inf),
 		\coo,Pseq(~dur,inf),
 			//\dur,1,
-			\pl1,Pseq(~list1,inf),    ///////coordinate selection
+			\pl1,Pseq(~list,inf),    ///////coordinate selection
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
 		//\lfo,1/2,
 		\spread,Pbrown(0.1,4,1,inf),  //////spherical harmonic width
