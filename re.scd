@@ -102,8 +102,8 @@ SynthDef.new(\o_reverb, {
 	//chainc = FFT(LocalBuf(frames), in3);chaind = FFT(LocalBuf(frames), in4);
 
 	lfo=0.1;
-	mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
-	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
+	mod_angle=SinOsc.ar(lfo).range(90.neg.degrad,90.degrad);
+	mod_angle1=SinOsc.ar(lfo).range(90.neg.degrad,90.degrad);
 
 	180.do{
 
@@ -139,8 +139,8 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 magg=(Cartesian(mag_x,mag_y,mag_z).rho/2.sqrt)+(Cartesian(mag_qx,mag_qy,mag_z).rho/2.sqrt);
 ph=Complex(sph.theta.linlin(pi.neg,pi,1.neg,1),sph.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 
-chainaa = chaina.pvcollect(frames, {|mag, phase, index| [mag*magg, phase]; }, frombin: b, tobin: b, zeroothers: 1);
-chainbb = chainb.pvcollect(frames, {|mag, phase, index| [mag*magg, phase]; }, frombin: b, tobin: b, zeroothers: 1);
+chainaa = chaina.pvcollect(frames, {|mag, phase, index| [mag*magg/10, phase+ph]; }, frombin: b, tobin: b, zeroothers: 1);
+chainbb = chainb.pvcollect(frames, {|mag, phase, index| [mag*magg/10, phase+ph]; }, frombin: b, tobin: b, zeroothers: 1);
 //chaincc = chainc.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 //chaindd = chaind.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 b=b+1;
