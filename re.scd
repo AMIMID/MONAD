@@ -85,7 +85,7 @@ durz=(360).collect{
 (
 SynthDef.new(\o_reverb, {
     var in1,in2,in3,in4,chaina,chainb,chainc,chaind,b=0;
-	var chainxx,chainyy,pl1=0,amp,mag,lfo;
+	var chainxx,chainyy,pl1=0,amp,magg,lfo;
 	var chainaa,chainbb,chaincc,chaindd,chainee,chainff;
 	var ph,frames=512,sig1,sig2,sig3,sig4,spread=1;
 	var delay,decay,sph,mod_angle,mod_angle1,m=3,mq=2;
@@ -136,11 +136,11 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 				mag_x=magx.value;mag_y=magy.value;mag_z=magz.value;mag_qx=magqx.value;mag_qy=magqy.value
 				);
 
-mag=(Cartesian(mag_x,mag_y,mag_z).rho)+(Cartesian(mag_qx,mag_qy,mag_z).rho);
+magg=(Cartesian(mag_x,mag_y,mag_z).rho/2.sqrt)+(Cartesian(mag_qx,mag_qy,mag_z).rho/2.sqrt);
 ph=Complex(sph.theta.linlin(pi.neg,pi,1.neg,1),sph.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 
-chainaa = chaina.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
-chainbb = chainb.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
+chainaa = chaina.pvcollect(frames, {|mag, phase, index| [mag*magg, phase]; }, frombin: b, tobin: b, zeroothers: 1);
+chainbb = chainb.pvcollect(frames, {|mag, phase, index| [mag*magg, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 //chaincc = chainc.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 //chaindd = chaind.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 b=b+1;
@@ -170,11 +170,13 @@ chainff = chainf.pvcollect(frames,
 {|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+phase1)).theta]; },
 frombin: b, tobin: b, zeroothers: 1);*/
 
-delay=1;
-decay=ph;
+decay=magg*10;
+delay=0.1;
 
 sig1=CombC.ar(IFFT(chainaa),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 sig2=CombC.ar(IFFT(chainbb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+//sig1=Greyhole.ar(IFFT(chainaa),delayTime:delay,damp:0.1);
+//sig2=Greyhole.ar(IFFT(chainbb),delayTime:delay,damp:0.1);
 //sig3=CombC.ar(IFFT(chaincc),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 //sig4=CombC.ar(IFFT(chaindd),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 
