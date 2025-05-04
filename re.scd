@@ -16,10 +16,10 @@ s.waitForBoot
 )
 
 ////speaker setup
-(
+/*(
 	~a = VBAPSpeakerArray.new(3, [[0, 45], [180, 45], [90, 45.neg], [90.neg, 45.neg]]);
 	 ~b = Buffer.loadCollection(s, ~a.getSetsAndMatrices);
-);
+);*/
 
 (
 {
@@ -87,7 +87,7 @@ SynthDef.new(\o_reverb, {
     var in1,in2,in3,in4,chaina,chainb,chainc,chaind,b=0;
 	var chainxx,chainyy,pl1=0,amp,mag,lfo;
 	var chainaa,chainbb,chaincc,chaindd,chainee,chainff;
-	var ph,frames=1024,sig1,sig2,sig3,sig4,spread=1;
+	var ph,frames=512,sig1,sig2,sig3,sig4,spread=1;
 	var delay,decay,sph,mod_angle,mod_angle1,m=3,mq=2;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 
@@ -105,9 +105,9 @@ SynthDef.new(\o_reverb, {
 	mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
-	360.do{
+	180.do{
 
-		sph=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
+		sph=Spherical(1,~az.[pl1],~el.[pl1]);
 		(
 		magx=((Complex(cos(((sph.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
 	(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
@@ -173,14 +173,10 @@ frombin: b, tobin: b, zeroothers: 1);*/
 delay=1;
 decay=ph;
 
-/*sig1=CombC.ar(IFFT(chaina),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-sig2=CombC.ar(IFFT(chainb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-sig3=CombC.ar(IFFT(chainc),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-sig4=CombC.ar(IFFT(chaind),maxdelaytime:delay,delaytime:delay,decaytime:decay);*/
-sig1=CombC.ar(IFFT(chaina),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-sig2=CombC.ar(IFFT(chainb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-//sig3=CombC.ar(IFFT(chainc),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-//sig4=CombC.ar(IFFT(chaind),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+sig1=CombC.ar(IFFT(chainaa),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+sig2=CombC.ar(IFFT(chainbb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+//sig3=CombC.ar(IFFT(chaincc),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+//sig4=CombC.ar(IFFT(chaindd),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 
 Out.ar(0,LeakDC.ar(sig1));Out.ar(1,LeakDC.ar(sig2));
 //Out.ar(2,LeakDC.ar(sig3));Out.ar(3,LeakDC.ar(sig4));
