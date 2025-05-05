@@ -10,16 +10,16 @@ s.options.sampleRate= 44100;
 s.waitForBoot
 )
 (
-~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/filtered/bees, war.wav",channels:0 );
-~c2 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/filtered/bees, war.wav",channels:1 );
+~c1 = Buffer.readChannel(s,,channels:0 );
+~c2 = Buffer.readChannel(s,,channels:1 );
 
 )
 
 ////speaker setup
-/*(
+(
 	~a = VBAPSpeakerArray.new(3, [[0, 45], [180, 45], [90, 45.neg], [90.neg, 45.neg]]);
 	 ~b = Buffer.loadCollection(s, ~a.getSetsAndMatrices);
-);*/
+);
 
 (
 {
@@ -87,7 +87,7 @@ SynthDef.new(\o_reverb, {
     var in1,in2,in3,in4,chaina,chainb,chainc,chaind,b=0;
 	var chainxx,chainyy,pl1=0,amp,magg,lfo;
 	var chainaa,chainbb,chaincc,chaindd,chainee,chainff;
-	var ph,frames=512,sig1,sig2,sig3,sig4,spread=1;
+	var ph,frames=1024,sig1,sig2,sig3,sig4,spread=1;
 	var delay,decay,sph,mod_angle,mod_angle1,m=3,mq=2;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 
@@ -102,10 +102,10 @@ SynthDef.new(\o_reverb, {
 	//chainc = FFT(LocalBuf(frames), in3);chaind = FFT(LocalBuf(frames), in4);
 
 	lfo=0.1;
-	mod_angle=SinOsc.ar(lfo).range(90.neg.degrad,90.degrad);
-	mod_angle1=SinOsc.ar(lfo).range(90.neg.degrad,90.degrad);
+	mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
+	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
 
-	180.do{
+	360.do{
 
 		sph=Spherical(1,~az.[pl1],~el.[pl1]);
 		(
@@ -170,18 +170,21 @@ chainff = chainf.pvcollect(frames,
 {|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+phase1)).theta]; },
 frombin: b, tobin: b, zeroothers: 1);*/
 
-decay=magg*10;
-delay=0.1;
+//decay=magg*10;
+//delay=0.1;
 
-sig1=CombC.ar(IFFT(chainaa),maxdelaytime:delay,delaytime:delay,decaytime:decay);
-sig2=CombC.ar(IFFT(chainbb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+//sig1=CombC.ar(IFFT(chainaa),maxdelaytime:delay,delaytime:delay,decaytime:decay);///echo
+//sig2=CombC.ar(IFFT(chainbb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 //sig1=Greyhole.ar(IFFT(chainaa),delayTime:delay,damp:0.1);
 //sig2=Greyhole.ar(IFFT(chainbb),delayTime:delay,damp:0.1);
 //sig3=CombC.ar(IFFT(chaincc),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 //sig4=CombC.ar(IFFT(chaindd),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 
-Out.ar(0,LeakDC.ar(sig1));Out.ar(1,LeakDC.ar(sig2));
+//Out.ar(0,LeakDC.ar(sig1));Out.ar(1,LeakDC.ar(sig2));
 //Out.ar(2,LeakDC.ar(sig3));Out.ar(3,LeakDC.ar(sig4));
+
+Out.ar(0,VBAP.ar(4,LeakDC.ar(IFFT(chainaa)),~b.bufnum,sph.theta.raddeg,sph.phi.raddeg));			Out.ar(0,VBAP.ar(4,LeakDC.ar(IFFT(chainbb)),~b.bufnum,sph.theta.raddeg,sph.phi.raddeg));
+
 
 pl1=pl1+1;};
 }).add;
@@ -189,4 +192,4 @@ pl1=pl1+1;};
 
 
 Synth(\o_reverb);
-s.record(numChannels:4);
+s.record(numChannels:2);
