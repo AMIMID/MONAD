@@ -1,4 +1,4 @@
-(
+{SinOsc.ar(MouseX.kr(55,55*256))!2}.play(
 Server.default = s = Server.local;
 ////server setup
 (
@@ -14,6 +14,7 @@ s.options.sampleRate= 44100;
 
 s.waitForBoot{
 Buffer.freeAll;
+		~c1 = Buffer.readChannel(s,,channels:0 );
 ////////////////////////////////////speaker setup///other
 /*(
 // 3D///cube
@@ -210,7 +211,7 @@ SynthDef.new(\ospace, {
 	var ratio1,ratio2,ratio3,m=3,mq=2,phase,osc1,osc2,osc3,sphere;
 	var scale,nn=29.neg,nnn=9.neg,scale_coo;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
-	var ellipsis=[1,1,1],mag,magxx;
+	var ellipsis=[1,1,1],mag,magxx,sig,rq;
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t,scalar;
 
 	t=SinOsc.kr(ripple).range(1, 100);
@@ -298,10 +299,12 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(24.neg, 24, 0, 56), scale) / 12);
 
 phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 		mag=(Cartesian(mag_x,mag_y,mag_z).rho/(2.sqrt))+(Cartesian(mag_qx,mag_qy,mag_z).rho/(2.sqrt));
+		sig=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1), loop: 0,doneAction:2);
+				rq=0.00001;
 
-osc1=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp1*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
-osc2=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp2*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
-osc3=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp3*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc1=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp1*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc2=VBAP.ar(4,BPF.ar(sig,pitch2,mul:amp2*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc3=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp3*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 //osc4=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp4*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 //osc5=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp5*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 //osc6=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp6*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
@@ -309,9 +312,9 @@ osc3=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp3*mag,phase:phase),~b.bufnum,sphere.theta
 //osc8=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp8*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 //osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
-Out.ar(0,LeakDC.ar(LPF.ar(osc3,2600,mul:env))*In.kr(0));
-Out.ar(0,LeakDC.ar(LPF.ar(osc2,2600,mul:env))*In.kr(0));
-Out.ar(0,LeakDC.ar(LPF.ar(osc1,2600,mul:env))*In.kr(0));
+Out.ar(0,LeakDC.ar(LPF.ar(osc3,2600,mul:env*(rq.sqrt.reciprocal)))*In.kr(0));
+Out.ar(0,LeakDC.ar(LPF.ar(osc2,2600,mul:env*(rq.sqrt.reciprocal)))*In.kr(0));
+Out.ar(0,LeakDC.ar(LPF.ar(osc1,2600,mul:env*(rq.sqrt.reciprocal)))*In.kr(0));
 //Out.ar(0,LeakDC.ar(osc9,mul:env)*In.kr(0));
 //Out.ar(0,LeakDC.ar(osc8,mul:env)*In.kr(0));
 //Out.ar(0,LeakDC.ar(osc7,mul:env)*In.kr(0));
