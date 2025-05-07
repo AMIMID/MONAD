@@ -227,7 +227,7 @@ SynthDef.new(\ospace, {
 			mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 
-			env=EnvGen.ar(Env.perc(0.5,decay,amp),doneAction:2,levelScale:0.1/16);
+			env=EnvGen.ar(Env.perc(0.5,decay,amp),doneAction:2,levelScale:1);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
