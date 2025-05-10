@@ -10,8 +10,8 @@ s.options.sampleRate= 44100;
 s.waitForBoot
 )
 (
-~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/untitled.mp3",channels:0 );
-//~c2 = Buffer.readChannel(s,,channels:1 );
+~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/fff/B.wav",channels:0 );
+~c2 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/fff/B.wav",channels:1 );
 
 )
 
@@ -92,11 +92,6 @@ magnitudex=(12).collect{
 	 mag_x=((Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
 			(Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-////for in-between harmonics multiply sin(phi) after cos, when m is 2 then harm 3/2 is formed in oder 3, when m is 3 harm 4/3 is formed in oder 4 and when m is 3 for theta and 2 for phi harm 4/2 is formed for order4//////same for y axis
-
-/*mag_x=(Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho*
-		Complex(sin((sph3.phi.round(0.00001)*(m_x-1)).wrap((pi/2).neg,(pi/2))),sin((sph3.phi.round(0.00001)*(m_x-1)).wrap((pi/2).neg,(pi/2)))).rho*
-		 Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph3.rho;*/
 
 };
 
@@ -111,9 +106,6 @@ magnitudey=(12).collect{
 
 mag_y=((Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
 		(Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
-//		mag_y=(Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho*
-//Complex(sin((sph4.phi.round(0.00001)*(m_y-1)).wrap((pi/2).neg,(pi/2))),sin((sph4.phi.round(0.00001)*(m_y-1)).wrap((pi/2).neg,(pi/2)))).rho*
-//Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho)*sph4.rho;
 };
 
 magnitudez=(12).collect{
@@ -154,19 +146,19 @@ SynthDef.new(\o_reverb, {
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 
      in1 = PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum), loop: 0, doneAction:0);
-	 //in2 = PlayBuf.ar(1, ~c2.bufnum, BufRateScale.kr(~c2.bufnum), loop: 0, doneAction:0);
+	in2 = PlayBuf.ar(1, ~c2.bufnum, BufRateScale.kr(~c2.bufnum), loop: 0, doneAction:0);
 	// in3 = PlayBuf.ar(1, ~c3.bufnum, BufRateScale.kr(~c3.bufnum), loop: 0, doneAction:0);
 	// in4 = PlayBuf.ar(1, ~c4.bufnum, BufRateScale.kr(~c4.bufnum), loop: 0, doneAction:0);
 	/* in1 = SoundIn.ar(0);in2 = SoundIn.ar(1);
 	 in3 = SoundIn.ar(2) in4 = SoundIn.ar(3);*/
 
 	chaina = FFT(LocalBuf(frames), in1);
-	//chainb = FFT(LocalBuf(frames), in2);
+	chainb = FFT(LocalBuf(frames), in2);
 	//chainc = FFT(LocalBuf(frames), in3);chaind = FFT(LocalBuf(frames), in4);
 
 	lfo=0.1;
-	mod_angle=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
-	mod_angle1=LFNoise1.ar(lfo).range(90.neg.degrad,90.degrad);
+	mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
+	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 
 	180.do{
 
@@ -203,7 +195,7 @@ magg=(Cartesian(mag_x,mag_y,mag_z).rho/2.sqrt)+(Cartesian(mag_qx,mag_qy,mag_z).r
 ph=Complex(sph.theta.linlin(pi.neg,pi,1.neg,1),sph.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 
 chainaa = chaina.pvcollect(frames, {|mag, phase, index| [mag*magg/10, phase+ph]; }, frombin: b, tobin: b, zeroothers: 1);
-//chainbb = chainb.pvcollect(frames, {|mag, phase, index| [mag*magg/10, phase+ph]; }, frombin: b, tobin: b, zeroothers: 1);
+chainbb = chainb.pvcollect(frames, {|mag, phase, index| [mag*magg/10, phase+ph]; }, frombin: b, tobin: b, zeroothers: 1);
 //chaincc = chainc.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 //chaindd = chaind.pvcollect(frames, {|mag, phase, index| [mag, phase]; }, frombin: b, tobin: b, zeroothers: 1);
 b=b+1;
@@ -233,20 +225,20 @@ chainff = chainf.pvcollect(frames,
 {|mag, phase, index| [mag*amp1, exp(Complex(0,1)*(phase+phase1)).theta]; },
 frombin: b, tobin: b, zeroothers: 1);*/
 
-//decay=magg*10;
-//delay=0.1;
+delay=magg/1000;
+decay=2;
 
-//sig1=CombC.ar(IFFT(chainaa),maxdelaytime:delay,delaytime:delay,decaytime:decay);///echo
-//sig2=CombC.ar(IFFT(chainbb),maxdelaytime:delay,delaytime:delay,decaytime:decay);
+sig1=CombC.ar(IFFT(chainaa),maxdelaytime:1,delaytime:delay,decaytime:decay);///echo
+sig2=CombC.ar(IFFT(chainbb),maxdelaytime:1,delaytime:delay,decaytime:decay);
 //sig1=Greyhole.ar(IFFT(chainaa),delayTime:delay,damp:0.1);
 //sig2=Greyhole.ar(IFFT(chainbb),delayTime:delay,damp:0.1);
 //sig3=CombC.ar(IFFT(chaincc),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 //sig4=CombC.ar(IFFT(chaindd),maxdelaytime:delay,delaytime:delay,decaytime:decay);
 
-//Out.ar(0,LeakDC.ar(sig1));Out.ar(1,LeakDC.ar(sig2));
+Out.ar(0,LeakDC.ar(sig1));Out.ar(1,LeakDC.ar(sig2));
 //Out.ar(2,LeakDC.ar(sig3));Out.ar(3,LeakDC.ar(sig4));
 
-Out.ar(0,VBAP.ar(4,LeakDC.ar(IFFT(chainaa)),~b.bufnum,sph.theta.raddeg,sph.phi.raddeg));			//Out.ar(0,VBAP.ar(4,LeakDC.ar(IFFT(chainbb)),~b.bufnum,sph.theta.raddeg,sph.phi.raddeg));
+//Out.ar(0,VBAP.ar(4,LeakDC.ar(IFFT(chainaa)),~b.bufnum,sph.theta.raddeg,sph.phi.raddeg));			//Out.ar(0,VBAP.ar(4,LeakDC.ar(IFFT(chainbb)),~b.bufnum,sph.theta.raddeg,sph.phi.raddeg));
 
 
 pl1=pl1+1;};
