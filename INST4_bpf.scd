@@ -1,4 +1,4 @@
-{SinOsc.ar(MouseX.kr(55,55*256))!2}.play(
+(
 Server.default = s = Server.local;
 ////server setup
 (
@@ -6,15 +6,18 @@ s.options.numWireBufs = 1024*4;
 s.options.numOutputBusChannels=4;
 s.options.numInputBusChannels=0;
 TempoClock.default.tempo_(1);
-s.options.memSize = 8192*128*2;
-s.options.blockSize = 64*4;
-s.options.maxNodes = 1024 * 16;
+s.options.memSize = 8192*16*2;
+s.options.blockSize = 64*2;
+s.options.maxNodes = 1024 * 8;
 s.options.sampleRate= 44100;
 );
 
+
 s.waitForBoot{
 Buffer.freeAll;
-		~c1 = Buffer.readChannel(s,,channels:0 );
+	//	~c1 = Buffer.readChannel(s,"/home/pett/Desktop/0.wav",channels:0 );
+	~c1 = Buffer.readChannel(s,	"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/bpf/0_tapsi diskos.wav",channels:0 );
+
 ////////////////////////////////////speaker setup///other
 /*(
 // 3D///cube
@@ -202,7 +205,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		(
 SynthDef.new(\ospace, {
 	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo;
-	var amp1,amp2,amp3,octave1=1/8,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
+	var amp1,amp2,amp3,octave1=2,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5,sph6,sph7;
@@ -211,7 +214,7 @@ SynthDef.new(\ospace, {
 	var ratio1,ratio2,ratio3,m=3,mq=2,phase,osc1,osc2,osc3,sphere;
 	var scale,nn=29.neg,nnn=9.neg,scale_coo;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
-	var ellipsis=[1,1,1],mag,magxx,sig,rq;
+	var ellipsis=[1,1,1],mag,magxx,sig,rq,rqq;
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t,scalar;
 
 	t=SinOsc.kr(ripple).range(1, 100);
@@ -227,7 +230,7 @@ SynthDef.new(\ospace, {
 			mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 
-			env=EnvGen.ar(Env.perc(0.5,decay,amp),doneAction:2,levelScale:1);
+			env=EnvGen.ar(Env.perc(0.1,decay,amp),doneAction:2,levelScale:1/4);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
@@ -301,30 +304,30 @@ phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).ne
 		mag=(Cartesian(mag_x,mag_y,mag_z).rho/(2.sqrt))+(Cartesian(mag_qx,mag_qy,mag_z).rho/(2.sqrt));
 		sig=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1), loop: 1,doneAction:2);
 				rq=0.00001;
+			rqq=0.1;
 
 osc1=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp1*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 osc2=VBAP.ar(4,BPF.ar(sig,pitch2,mul:amp2*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 osc3=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp3*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
-//osc4=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp4*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
-//osc5=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp5*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
-//osc6=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp6*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+//osc4=VBAP.ar(4,BPF.ar(sig,pitch4,mul:amp4*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+//osc5=VBAP.ar(4,BPF.ar(sig,pitch5,mul:amp5*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+//osc6=VBAP.ar(4,BPF.ar(sig,pitch6,mul:amp6*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 //osc7=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp7*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 //osc8=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp8*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 //osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
-Out.ar(0,LeakDC.ar(LPF.ar(osc3,2600,mul:env*(rq.sqrt.reciprocal)))*In.kr(0));
-Out.ar(0,LeakDC.ar(LPF.ar(osc2,2600,mul:env*(rq.sqrt.reciprocal)))*In.kr(0));
-Out.ar(0,LeakDC.ar(LPF.ar(osc1,2600,mul:env*(rq.sqrt.reciprocal)))*In.kr(0));
+Out.ar(0,LeakDC.ar(BPF.ar(osc3,900,rq:rqq),mul:env*(rq.sqrt.reciprocal)*(rqq.sqrt.reciprocal))*In.kr(0));
+Out.ar(0,LeakDC.ar(BPF.ar(osc2,900,rq:rqq),mul:env*(rq.sqrt.reciprocal)*(rqq.sqrt.reciprocal))*In.kr(0));
+Out.ar(0,LeakDC.ar(BPF.ar(osc1,900,rq:rqq),mul:env*(rq.sqrt.reciprocal)*(rqq.sqrt.reciprocal))*In.kr(0));
 //Out.ar(0,LeakDC.ar(osc9,mul:env)*In.kr(0));
 //Out.ar(0,LeakDC.ar(osc8,mul:env)*In.kr(0));
 //Out.ar(0,LeakDC.ar(osc7,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc6,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc5,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
+//Out.ar(0,LeakDC.ar(osc6,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
+//Out.ar(0,LeakDC.ar(osc5,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
+//Out.ar(0,LeakDC.ar(osc4,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
 
 }).add;
 );
-
 
 
 ////////////list
@@ -338,8 +341,8 @@ Out.ar(0,LeakDC.ar(LPF.ar(osc1,2600,mul:env*(rq.sqrt.reciprocal)))*In.kr(0));
 
 	({
 		var n=0; ~list=[];
-		(360*12*10).do{ n=n+0.1;
-			~list=~list++~list1.[n].round(1);
+		(360*12*3).do{ n=n+(3.reciprocal);
+			~list=~list++~list1.[n];
 	}}.value);
 //~list=~list1.scramble;
 //////////pattern for mobius strib of sequential or parallel play of directions
@@ -356,22 +359,34 @@ Out.ar(0,LeakDC.ar(LPF.ar(osc1,2600,mul:env*(rq.sqrt.reciprocal)))*In.kr(0));
 		\ripple,0.05,
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
-		\varamp,Pbrown(0.1,2,0.1,inf), /////ripple amp
-		\decay,Pbrown(6,8,1,inf),
+		\varamp,Pbrown(0.1,3,0.1,inf), /////ripple amp
+		\decay,Pbrown(4,6,1,inf),
 		//\varamp,1,
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(2);
+	TempoClock.default.tempo_(1.5);
 
 
-s.meter;s.freqscope;s.scope;
+
+	~m=Buffer.alloc(s,2048);
+			{
+var signal,wt,env;
+
+		env=Env([0,0.5,1,1,0.5,0,0],[10,10,100,10,10,100],[8,-8,0,8,-8,0]);
+		signal=env.asSignal(1024);
+wt=signal.asWavetable;
+		//signal.plot;
+~m.loadCollection(wt);
+		}.value;
+
+		(
+~aa.play;
+{Out.kr(0,Osc.ar(~m.bufnum,0.001,mul:1))}.play;
+);
+
+s.meter;s.makeGui;
+
 }
 )
 
-(
-~aa.play;
-{Out.kr(0,SinOsc.kr(0.001,mul:1))}.play;
-);
-
-s.record(numChannels:4);
