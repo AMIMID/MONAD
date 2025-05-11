@@ -336,8 +336,8 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 
 	({
 		var n=0; ~list=[];
-		(360*12*10).do{ n=n+0.1;
-			~list=~list++~list1.[n].round(1);
+		(360*12*10).do{ n=n+(10.reciprocal);
+			~list=~list++~list1.[n];
 	}}.value);
 //~list=~list1.scramble;
 //////////pattern for mobius strib of sequential or parallel play of directions

@@ -14,7 +14,7 @@ s.options.sampleRate= 44100;
 
 s.waitForBoot{
 Buffer.freeAll;
-	~c1 = Buffer.readChannel(s,,channels:0 );
+	~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/0.wav",channels:0 );
 ////////////////////////////////////speaker setup///other
 /*(
 // 3D///cube
@@ -208,7 +208,7 @@ SynthDef.new(\ospace, {
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5,sph6,sph7;
-	var freq1,freq2,freq3,pitch1,pitch2,pitch3,env,sig,n1,n2,n3;
+	var freq1,freq2,freq3,pitch1,pitch2,pitch3,env,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 	var ratio1,ratio2,ratio3,m=3,mq=2,phase,osc1,osc2,osc3,sphere;
 	var scale,nn=29.neg,nnn=15.neg,scale_coo;
@@ -229,8 +229,8 @@ SynthDef.new(\ospace, {
 	mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 
-			env=EnvGen.ar(Env.perc(0.1,decay,amp),doneAction:2,levelScale:0.1/16);
-			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
+			env=EnvGen.ar(Env.perc(0.1,decay,amp),doneAction:2,levelScale:1);
+			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:1);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=29.collect{nnn=nnn+1;Scale.minor.performDegreeToKey(nnn,12)};
@@ -316,14 +316,14 @@ osc8=VBAP.ar(4,BPF.ar(sig,pitch2,mul:amp8*mag,rq:rq),~b.bufnum,sphere.theta.radd
 osc9=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp9*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
 
 Out.ar(0,LeakDC.ar(osc3,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
-Out.ar(0,LeakDC.ar(osc2,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc9,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc8,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc7,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc6,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc5,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc4,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc2,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
+Out.ar(0,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
+Out.ar(0,LeakDC.ar(osc9,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
+Out.ar(0,LeakDC.ar(osc8,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
+Out.ar(0,LeakDC.ar(osc7,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
+Out.ar(0,LeakDC.ar(osc6,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
+Out.ar(0,LeakDC.ar(osc5,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
+Out.ar(0,LeakDC.ar(osc4,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
 
 }).add;
 );
@@ -339,10 +339,10 @@ Out.ar(0,LeakDC.ar(osc4,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
 
 	({
 		var n=0; ~list=[];
-		(360*12*10).do{ n=n+0.1;
-			~list=~list++~list1.[n].round(1);
+		(360*12*10).do{ n=n+(10.reciprocal);
+			~list=~list++~list1.[n];
 	}}.value);
-//~list=~list1.scramble;
+~list=~list1.scramble;
 //////////pattern for mobius strib of sequential or parallel play of directions
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
@@ -359,12 +359,12 @@ Out.ar(0,LeakDC.ar(osc4,mul:env*(rq.sqrt.reciprocal)*In.kr(0));
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
 		\varamp,Pbrown(0.1,2,0.1,inf), /////ripple amp
-		\decay,Pbrown(6,8,1,inf),
+		\decay,Pbrown(2,4,1,inf),
 		//\varamp,1,
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(1);
+	TempoClock.default.tempo_(4);
 
 
 s.meter;s.freqscope;s.scope;
