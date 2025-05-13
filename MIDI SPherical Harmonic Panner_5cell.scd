@@ -15,6 +15,7 @@ s.options.sampleRate= 44100;
 s.waitForBoot{
 
 Buffer.freeAll;
+	~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Music/SuperCollider Recordings/SC_250513_203417.wav",channels:0 );//flu
 
 ////////////////////////////////////speaker setup///other
 
@@ -73,7 +74,7 @@ elevation=(12).collect{
 		(
 SynthDef.new(\ospace, {
 	arg gain=1, lfo_amp=1, azimuth, elevation, ripple=1,cell=1;
-	var sph,osc1,spread=1;
+	var sph,osc1,spread=1,sig;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
 	var ellipsis=[1,1,1],mag,magxx;
@@ -127,7 +128,10 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 
 		mag=(Cartesian(mag_x,mag_y,mag_z).rho/(2.sqrt))+(Cartesian(mag_qx,mag_qy,mag_z).rho/(2.sqrt));
 
-				osc1=VBAP.ar(4,SoundIn.ar(0,mag),~b.bufnum,sph.theta.raddeg,
+			sig=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1), loop:1,doneAction:2);
+			//sig=SoundIn.ar(0)
+
+				osc1=VBAP.ar(4,sig*mag,~b.bufnum,sph.theta.raddeg,
 				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
 
 					Out.ar(0,LeakDC.ar(osc1,mul:gain));
@@ -164,7 +168,7 @@ MIDIdef.cc(\midi2,{ |val, num, chan, src|
 MIDIdef.cc(\midi3,{ |val, num, chan, src|
 		var spread;
 	//[val, num, chan, src].postln;
-	spread=val.linlin(0,127,0.01,1);
+	spread=val.linlin(0,127,0.01,10);
 		spread.postln;
 		if(~synth.isPlaying,{~synth.set(\cell,cell)});
 },22);
