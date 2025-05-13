@@ -17,3 +17,6 @@
 	wrappedOut2.value(out1,LeakDC.ar( osc2,mul:env));
 
 		wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env));
+
+
+////written by jamshark in scsynth forum
