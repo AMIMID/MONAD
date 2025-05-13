@@ -14,7 +14,7 @@ s.options.sampleRate= 44100;
 
 s.waitForBoot{
 Buffer.freeAll;
-	~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/birds.wav",channels:0 );
+	~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/comp3 25koma5.wav",channels:0 );
 ////////////////////////////////////speaker setup///other
 /*(
 // 3D///cube
@@ -306,23 +306,23 @@ phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).ne
 			rq=0.00001;
 
 osc1=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp1*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc2=VBAP.ar(4,BPF.ar(sig,pitch2,mul:amp2*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
-					SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+					SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc3=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp3*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
-						SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+						SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc4=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp4*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
-							SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+							SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc5=VBAP.ar(4,BPF.ar(sig,pitch2,mul:amp5*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
-								SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+								SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc6=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp6*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
-									SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+									SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc7=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp7*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
-										SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+										SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc8=VBAP.ar(4,BPF.ar(sig,pitch2,mul:amp8*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
-											SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+											SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc9=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp9*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
-												SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+												SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 
 
 Out.ar(0,LeakDC.ar(osc3,mul:env*(rq.sqrt.reciprocal))*In.kr(0));

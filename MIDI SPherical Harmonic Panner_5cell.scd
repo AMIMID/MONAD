@@ -132,7 +132,7 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 			//sig=SoundIn.ar(0)
 
 				osc1=VBAP.ar(4,sig*mag,~b.bufnum,sph.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 
 					Out.ar(0,LeakDC.ar(osc1,mul:gain));
 

@@ -303,23 +303,23 @@ phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).ne
 			//mag=Cartesian(mag_x,mag_y,mag_z).rho;
 
 osc1=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp1*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc2=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp2*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc3=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp3*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc4=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp4*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc5=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp5*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc6=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp6*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc7=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp7*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc8=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp8*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,sphere.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 
 Out.ar(0,LeakDC.ar(osc3,mul:env)*In.kr(0));
 Out.ar(0,LeakDC.ar(osc2,mul:env)*In.kr(0));
