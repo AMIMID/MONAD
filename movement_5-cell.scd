@@ -357,7 +357,7 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
-		\cell,Pbrown(0.1,1,0.1,inf), ///////speed of 4dimensional oscillation
+		\cell,Pbrown(0.1,10,0.1,inf), ///////speed of 4dimensional oscillation
 		//\lfo,1/2,
 		\spread,Pbrown(0.1,4,1,inf),  //////spherical harmonic width
 		//\spread,2,
