@@ -32,10 +32,10 @@ SynthDef.new(\player,{
 
 	Out.kr(~controlBus_m.index, sig);
 	//Out.kr(~controlBus_m.index, sig);
-Out.kr(~controlBus_angle.index, SinOsc.kr(1,90.degrad,mul:1).range(360.neg.degrad,360.degrad));
+//Out.kr(~controlBus_angle.index, SinOsc.kr(1,90.degrad,mul:1).range(360.neg.degrad,360.degrad));
 	Out.kr(~controlBus_a.index, SinOsc.kr(0.05,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
 	Out.kr(~controlBus_a1.index, SinOsc.kr(0.05,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_t.index, SinOsc.kr(0.01).range(0, 100));
+	Out.kr(~controlBus_t.index, SinOsc.kr(0.02).range(0, 100));
 
 //Out.ar(0,sig*1);
 //Out.ar(1,sig*1);
@@ -56,7 +56,7 @@ var az=0,el=0;
 var sph,pl=0,magg,r;
 var run = true;
 var ot=0.degrad,dota,pla=0;
-var sph1,sph2,sph3,sph4,sph5,m_x=1.5,m_y=2,m_z=1.5;
+var sph1,sph2,sph3,sph4,sph5;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
 var az4=0,el4=0,az5=0,el5=0,pl1=0,pl2=0,pl3=0,pl4=0,pl5=0;
 var angle=0,ang=0,anglex,angley;
@@ -80,11 +80,11 @@ a.background = Color.black;
   r= Routine({loop{
 	data=[];
 		//m=~controlBus_m.getSynchronous;
-	m=0;
+	m=2;
 	t = ~controlBus_t.getSynchronous;
 	mod_angle=~controlBus_a.getSynchronous;
 	mod_angle1=~controlBus_a1.getSynchronous;
-	angle=~controlBus_angle.getSynchronous;
+	//angle=~controlBus_angle.getSynchronous;
 
 	//jn = (sin(k*rr)/(k*rr).pow(2)) - (cos(k*rr)/(k*rr));
 	//	a.symbolColor = Color.new(amplitude,1,amplitude);
@@ -183,14 +183,15 @@ magnitudez=(12).collect{
 
 						~magxx = ~magx.collect { |val, i|
 	var waveSpeed = 1;
-	var waveFreq = 4;
+	var waveFreq = 6;
 	var amp=0.4;
 	var theta = ~az[i].degrad;
     var phi = ~el[i].degrad;
    // var wave = sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
 	var wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
-    val * wave;
+    val * wave.postln;
 };
+
 
  );
 );
@@ -214,6 +215,7 @@ magnitudez=(12).collect{
 	data =data++dota;
 	//data.postln;
  	a.data = data;            // Update ScatterView3d
+
 0.065.wait
 }});
 r.play;

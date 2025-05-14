@@ -54,8 +54,8 @@ SynthDef.new(\player,{
 
 	Out.kr(~controlBus_m.index, sig);
 	//Out.kr(~controlBus_m.index, sig);
-	Out.kr(~controlBus_a.index, SinOsc.kr(0.1,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_a1.index, SinOsc.kr(0.1,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_a.index, SinOsc.kr(0.01,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_a1.index, SinOsc.kr(0.01,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
 
 //Out.ar(0,sig*1);
 //Out.ar(1,sig*1);

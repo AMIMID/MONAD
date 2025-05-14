@@ -1,4 +1,5 @@
 
+////////to apply quaternion rotation on movement.scd at the end after dimensional rotation oscillator of elevation apply quaternion on azimuth and elevation with rotation axis x, y or both and then put new az, el values in degrees to VBAP
 
 sphere= Spherical(1,azimuth,elevation); ////point coordinate vector
 
@@ -13,3 +14,7 @@ v=Quaternion(0,sphere.x,sphere.y,sphere.z);/// vector as quaternion
 
 rot=(cos(angle.degrad)+(sin(angle.degrad)*(i+j+k))); ////rotation vector with angle of rotatio and ijk xyz normalized components
 v1=rot*v*rot.conjugate;
+
+//////////////////////with angle as argument, (along with Quaternion file
+	axis=i+j+k;
+q1=((axis*exp(Complex(0,1)*angle).imag)+exp(Complex(0,1)*angle).real); v1=q1*v1*q1.conjugate;
