@@ -18,3 +18,6 @@ v1=rot*v*rot.conjugate;
 //////////////////////with angle as argument, (along with Quaternion file
 	axis=i+j+k;
 q1=((axis*exp(Complex(0,1)*angle).imag)+exp(Complex(0,1)*angle).real); v1=q1*v1*q1.conjugate;
+
+
+///////////use distance .distance between quaternions pl1 points as some kind of modulation
