@@ -324,12 +324,12 @@ osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,sphere.theta
 Out.ar(0,LeakDC.ar(osc3,mul:env)*In.kr(0));
 Out.ar(0,LeakDC.ar(osc2,mul:env)*In.kr(0));
 Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc9,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc8,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc7,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc6,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc5,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc9,mul:env)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc8,mul:env)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc7,mul:env)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc6,mul:env)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc5,mul:env)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 
 }).add;
 );
@@ -348,7 +348,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 		(360*12*10).do{ n=n+(10.reciprocal);
 			~list=~list++~list1.[n];
 	}}.value);
-//~list=~list1.scramble;
+//~list=~list.scramble;
 //////////pattern for mobius strib of sequential or parallel play of directions
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
