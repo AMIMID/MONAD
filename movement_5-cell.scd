@@ -203,7 +203,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		(
 SynthDef.new(\ospace, {
 	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1;
-	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
+	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=900;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5,sph6,sph7;
@@ -228,7 +228,7 @@ SynthDef.new(\ospace, {
 	mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 
-			env=EnvGen.ar(Env.perc(0.1,decay,amp),doneAction:2,levelScale:0.1/16);
+			env=EnvGen.ar(Env.perc(1,decay,amp),doneAction:2,levelScale:0.1/16);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
@@ -324,12 +324,12 @@ osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,sphere.theta
 Out.ar(0,LeakDC.ar(osc3,mul:env)*In.kr(0));
 Out.ar(0,LeakDC.ar(osc2,mul:env)*In.kr(0));
 Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc9,mul:env)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc8,mul:env)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc7,mul:env)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc6,mul:env)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc5,mul:env)*In.kr(0));
-Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
+//Out.ar(0,LeakDC.ar(osc9,mul:env)*In.kr(0));
+//Out.ar(0,LeakDC.ar(osc8,mul:env)*In.kr(0));
+//Out.ar(0,LeakDC.ar(osc7,mul:env)*In.kr(0));
+//Out.ar(0,LeakDC.ar(osc6,mul:env)*In.kr(0));
+//Out.ar(0,LeakDC.ar(osc5,mul:env)*In.kr(0));
+//Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 
 }).add;
 );
@@ -357,7 +357,7 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
-		\cell,Pbrown(0.1,10,0.1,inf), ///////speed of 4dimensional oscillation
+		\cell,Pbrown(0.1,5,0.1,inf), ///////speed of 4dimensional oscillation
 		//\lfo,1/2,
 		\spread,Pbrown(0.1,4,1,inf),  //////spherical harmonic width
 		//\spread,2,
@@ -366,12 +366,12 @@ Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
 		\varamp,Pbrown(0.1,2,0.1,inf), /////ripple amp
-		\decay,Pbrown(6,8,1,inf),
+		\decay,Pbrown(8,16,1,inf),
 		//\varamp,1,
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(1);
+	TempoClock.default.tempo_(4);
 
 
 s.meter;s.freqscope;s.scope;
