@@ -21,3 +21,8 @@ q1=((axis*exp(Complex(0,1)*angle).imag)+exp(Complex(0,1)*angle).real); v1=q1*v1*
 
 
 ///////////use distance .distance between quaternions pl1 points as some kind of modulation
+(
+var q1,q2,dist;
+q1=Quaternion(0,1,1,1); q2=Quaternion(0,0,0,0);
+dist=q1.distance(q2);
+dist.postln;)
