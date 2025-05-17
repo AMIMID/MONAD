@@ -207,7 +207,7 @@ SynthDef.new(\ospace, {
 	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1;
 	var amp1,amp2,amp3,octave1=2,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
-	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9;
+	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9,attack,dist,q1,q2;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5,sph6,sph7;
 	var freq1,freq2,freq3,pitch1,pitch2,pitch3,env,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
@@ -219,18 +219,19 @@ SynthDef.new(\ospace, {
 
 	t=SinOsc.kr(ripple).range(1, 100);
 			waveFreq=amount;
-		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph6=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
+		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
+		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph6=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
+		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(pl1+1,~az),Select.kr(pl1+1,~el));
 
 			//mod_angle=SinOsc.ar(lfo,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			//mod_angle1=SinOsc.ar(lfo,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
-	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
+	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad)
 
-			env=EnvGen.ar(Env.perc(0.1,decay,amp),doneAction:2,levelScale:1/4);
+			q1=Quaternion(0,sph3.x,sph3.y,sph3.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
+dist=q1.distance(q2);
+
+			env=EnvGen.ar(Env.perc(dist,decay,amp),doneAction:2,levelScale:1/4);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
@@ -297,12 +298,12 @@ phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).ne
 				rq=0.00001;
 			rqq=0.1;
 
-osc1=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp1*mag,rq:rq),~b.bufnum,sphere.theta.raddeg
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
-osc2=VBAP.ar(4,BPF.ar(sig,pitch2,mul:amp2*mag,rq:rq),~b.bufnum,sphere.theta.raddeg
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
-osc3=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp3*mag,rq:rq),~b.bufnum,sphere.theta.raddeg
-				SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+osc1=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp1*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
+osc2=VBAP.ar(4,BPF.ar(sig,pitch2,mul:amp2*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
+osc3=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp3*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
+				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 
 
 Out.ar(0,LeakDC.ar(BPF.ar(osc3,900,rq:rqq),mul:env*(rq.sqrt.reciprocal)*(rqq.sqrt.reciprocal))*In.kr(0));
@@ -317,7 +318,7 @@ Out.ar(0,LeakDC.ar(BPF.ar(osc1,900,rq:rqq),mul:env*(rq.sqrt.reciprocal)*(rqq.sqr
 ////////////list
 	({
 		var n=1.neg;
-		~list1=(360*12).collect{
+		~list1=(360*12+1).collect{
 		n=n+1;
 		}
 		}.value
@@ -337,7 +338,7 @@ Out.ar(0,LeakDC.ar(BPF.ar(osc1,900,rq:rqq),mul:env*(rq.sqrt.reciprocal)*(rqq.sqr
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
-		\cell,Pbrown(0.01,3,0.1,inf), ///////speed of 4dimensional oscillation
+		\cell,Pbrown(0.001,3,0.01,inf), ///////speed of 4dimensional oscillation
 		\spread,Pbrown(1,2,0.1,inf),  //////spherical harmonic width
 		//\spread,2,
 		//\ripple,Pbrown(0.0001,0.001,0.001,inf),  /////sphere ripple wave oscillation speed
