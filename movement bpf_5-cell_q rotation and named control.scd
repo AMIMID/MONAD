@@ -358,9 +358,9 @@ Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
-		\cell,Pbrown(0.1,5,0.1,inf), ///////speed of 4dimensional oscillation
+		\cell,Pbrown(0.1,1,0.1,inf), ///////speed of 4dimensional oscillation
 		//\lfo,1/2,
-		\spread,Pbrown(0.1,4,1,inf),  //////spherical harmonic width
+		\spread,Pbrown(0.1,1,1,inf),  //////spherical harmonic width
 		//\spread,2,
 		//\ripple,Pbrown(0.0001,0.001,0.001,inf),  /////sphere ripple wave oscillation speed
 		\ripple,0.05,
@@ -372,7 +372,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(2);
+	TempoClock.default.tempo_(1);
 
 
 s.meter;s.freqscope;s.scope;
