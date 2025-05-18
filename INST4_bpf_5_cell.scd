@@ -12,11 +12,14 @@ s.options.maxNodes = 1024 * 8;
 s.options.sampleRate= 44100;
 );
 
-
 s.waitForBoot{
 Buffer.freeAll;
-	//	~c1 = Buffer.readChannel(s,"/home/pett/Desktop/0.wav",channels:0 );
-	~c1 = Buffer.readChannel(s,	"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/bpf/0_tapsi diskos.wav",channels:0 );
+		~c1 = Buffer.readChannel(s,"/home/pett/Desktop/0.wav",channels:0 );
+	~c2 = Buffer.readChannel(s,"/home/pett/Desktop/1.wav",channels:0 );
+	~c3 = Buffer.readChannel(s,"/home/pett/Desktop/2.wav",channels:0 );
+	~c4 = Buffer.readChannel(s,"/home/pett/Desktop/3.wav",channels:0 );
+	~c5 = Buffer.readChannel(s,"/home/pett/Desktop/4.wav",channels:0 );
+	///~c1 = Buffer.readChannel(s,	"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/bpf/0_tapsi diskos.wav",channels:0 );
 
 ////////////////////////////////////speaker setup///other
 /*(
@@ -220,7 +223,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 
 		(
 SynthDef.new(\ospace, {
-	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0;
+	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0,buf=0;
 	var amp1,amp2,amp3,octave1=2,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9,attack,dist,q1,q2;
@@ -242,7 +245,7 @@ SynthDef.new(\ospace, {
 			//mod_angle=SinOsc.ar(lfo,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			//mod_angle1=SinOsc.ar(lfo,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
-	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad)
+	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 
 			q1=Quaternion(0,sph3.x,sph3.y,sph3.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
@@ -310,9 +313,9 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
 phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 
 			mag=(Cartesian(mag_x,mag_y,mag_z).rho/(2.sqrt))+(Cartesian(mag_qx,mag_qy,mag_z).rho/(2.sqrt));
-		sig=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1), loop: 1,doneAction:2);
+		sig=PlayBuf.ar(1, buf, BufRateScale.kr(buf), loop: 1,doneAction:2);
 				rq=0.00001;
-			rqq=0.1;
+			rqq=0.05;
 
 osc1=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp1*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
 				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
@@ -335,12 +338,13 @@ Out.ar(0,LeakDC.ar(BPF.ar(osc1,900,rq:rqq),mul:env*(rq.sqrt.reciprocal)*(rqq.sqr
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq(~dur.abs/14,inf),
+		\buf,Prand([0,1,2,3,4],inf),
 		\coo,Pseq(~dur,inf),
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
 		\pl2,Pseq(~list1,inf),
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
-		\cell,Pbrown(0.001,3,0.01,inf), ///////speed of 4dimensional oscillation
+		\cell,Pbrown(0.001,1,0.01,inf), ///////speed of 4dimensional oscillation
 		\spread,Pbrown(1,2,0.1,inf),  //////spherical harmonic width
 		//\spread,2,
 		//\ripple,Pbrown(0.0001,0.001,0.001,inf),  /////sphere ripple wave oscillation speed
@@ -353,7 +357,7 @@ Out.ar(0,LeakDC.ar(BPF.ar(osc1,900,rq:rqq),mul:env*(rq.sqrt.reciprocal)*(rqq.sqr
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(1.5);
+	TempoClock.default.tempo_(1);
 
 
 
