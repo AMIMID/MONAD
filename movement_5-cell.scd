@@ -198,11 +198,27 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
  );
 );
 
+	////////////list
+	({
+		var n=1.neg;
+		~list1=(360*12+1).collect{
+		n=n+1;
+		}
+		}.value
+	);
+
+	({
+		var n=0; ~list=[];
+		(360*12*10+1).do{ n=n+(10.reciprocal);
+			~list=~list++~list1.[n];
+	}}.value);
+~list=~list.scramble;
+
 /////synths////
 
 		(
 SynthDef.new(\ospace, {
-	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1;
+	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0;
 	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=900;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9,dist;
@@ -219,7 +235,7 @@ SynthDef.new(\ospace, {
 			waveFreq=amount;
 		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph6=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(pl1+1,~az),Select.kr(pl1+1,~el));
+		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list1),~az),Select.kr(Select.kr(pl2+1,~list1),~el));
 
 			//mod_angle=SinOsc.ar(lfo,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			//mod_angle1=SinOsc.ar(lfo,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
@@ -335,28 +351,15 @@ Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 }).add;
 );
 
-////////////list
-	({
-		var n=1.neg;
-		~list1=(360*12+1).collect{
-		n=n+1;
-		}
-		}.value
-	);
 
-	({
-		var n=0; ~list=[];
-		(360*12*5+1).do{ n=n+(4.reciprocal);
-			~list=~list++~list1.[n];
-	}}.value);
-//~list=~list.scramble;
-//////////pattern 
+//////////pattern
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq(~dur.abs/14,inf),
 		\coo,Pseq(~dur,inf),
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
+			\pl2,Pseq(~list1,inf),
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
 		\cell,Pbrown(0.1,5,0.1,inf), ///////speed of 4dimensional oscillation
 		//\lfo,1/2,

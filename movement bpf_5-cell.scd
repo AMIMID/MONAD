@@ -199,15 +199,30 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
  );
 );
 
+	////////////list
+	({
+		var n=1.neg;
+		~list1=(360*12+1).collect{
+		n=n+1;
+		}
+		}.value
+	);
+
+	({
+		var n=0; ~list=[];
+		(360*12*10+1).do{ n=n+(10.reciprocal);
+			~list=~list++~list1.[n];
+	}}.value);
+~list=~list.scramble;
 /////synths////
 
 		(
 SynthDef.new(\ospace, {
-	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1;
+	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0;
 	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
-	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9;
-	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5,sph6,sph7;
+	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9k,dist,q1,q2;
+	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5,sph6,sph7,sph8;
 	var freq1,freq2,freq3,pitch1,pitch2,pitch3,env,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 	var ratio1,ratio2,ratio3,m=3,mq=2,phase,osc1,osc2,osc3,sphere;
@@ -218,18 +233,18 @@ SynthDef.new(\ospace, {
 
 	t=SinOsc.kr(ripple).range(1, 100);
 			waveFreq=amount;
-		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph6=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
+		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
+		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph6=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
+		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list1),~az),Select.kr(Select.kr(pl2+1,~list1),~el));
 
 			//mod_angle=SinOsc.ar(lfo,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			//mod_angle1=SinOsc.ar(lfo,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 	mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 
-			env=EnvGen.ar(Env.perc(0.1,decay,amp),doneAction:2,levelScale:1);
+			q1=Quaternion(0,sph3.x,sph3.y,sph3.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
+dist=q1.distance(q2);
+			env=EnvGen.ar(Env.perc(dist,decay,amp),doneAction:2,levelScale:1);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:1);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
@@ -338,28 +353,14 @@ Out.ar(0,LeakDC.ar(osc4,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
 }).add;
 );
 
-////////////list
-	({
-		var n=1.neg;
-		~list1=(360*12).collect{
-		n=n+1;
-		}
-		}.value
-	);
-
-	({
-		var n=0; ~list=[];
-		(360*12*10).do{ n=n+(10.reciprocal);
-			~list=~list++~list1.[n];
-	}}.value);
-//~list=~list1.scramble;
-//////////pattern for mobius strib of sequential or parallel play of directions
+//////////pattern
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq(~dur.abs/14,inf),
 		\coo,Pseq(~dur,inf),
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
+			\pl2,Pseq(~list1,inf),
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
 		\cell,Pbrown(0.1,1,0.1,inf), ///////speed of 4dimensional oscillation
 		//\lfo,1/2,
