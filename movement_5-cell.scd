@@ -350,7 +350,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 			~list=~list++~list1.[n];
 	}}.value);
 //~list=~list1.scramble;
-//////////pattern for mobius strib of sequential or parallel play of directions
+//////////pattern 
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq(~dur.abs/14,inf),
