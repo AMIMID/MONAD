@@ -244,7 +244,7 @@ SynthDef.new(\ospace, {
 
 			q1=Quaternion(0,sph3.x,sph3.y,sph3.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
-			env=EnvGen.ar(Env.perc(dist,decay,amp),doneAction:2,levelScale:1);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1),decay*dist.lag(0.1),amp),doneAction:2,levelScale:1);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:1);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};

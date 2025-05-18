@@ -245,7 +245,7 @@ SynthDef.new(\ospace, {
 q1=Quaternion(0,sph3.x,sph3.y,sph3.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.poll,decay,amp),doneAction:2,levelScale:0.01);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1).poll,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
@@ -344,9 +344,9 @@ Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 //Out.ar(0,LeakDC.ar(osc9,mul:env)*In.kr(0));
 //Out.ar(0,LeakDC.ar(osc8,mul:env)*In.kr(0));
 //Out.ar(0,LeakDC.ar(osc7,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc6,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc5,mul:env)*In.kr(0));
-//Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc6,mul:env)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc5,mul:env)*In.kr(0));
+Out.ar(0,LeakDC.ar(osc4,mul:env)*In.kr(0));
 
 }).add;
 );
@@ -361,7 +361,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
 			\pl2,Pseq(~list1,inf),
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
-		\cell,Pbrown(0.1,5,0.1,inf), ///////speed of 4dimensional oscillation
+		\cell,Pbrown(0.01,1/2,0.1,inf), ///////speed of 4dimensional oscillation
 		//\lfo,1/2,
 		\spread,Pbrown(0.1,4,1,inf),  //////spherical harmonic width
 		//\spread,2,
@@ -375,7 +375,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(2);
+	TempoClock.default.tempo_(1);
 
 
 s.meter;s.freqscope;s.scope;
