@@ -247,7 +247,7 @@ SynthDef.new(\ospace, {
 			q1=Quaternion(0,sph3.x,sph3.y,sph3.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist,decay,amp),doneAction:2,levelScale:1/4);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1),decay*dist.lag(0.1),amp),doneAction:2,levelScale:1/4);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
@@ -297,9 +297,9 @@ n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
 n3=(sphere.z).round(0.00000005);
 ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-ton1 = 2.pow(Select.kr(ratio1.linlin(24.neg, 24, 0, 56), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(24.neg, 24, 0, 56), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(24.neg, 24, 0, 56), scale) / 12);
+ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
 
 	amp1=(ton1.reciprocal*octave1.reciprocal*scalar.reciprocal).round(0.00000001);
 	amp2=(ton2.reciprocal*octave1.reciprocal*scalar.reciprocal).round(0.00000001);
