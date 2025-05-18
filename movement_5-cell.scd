@@ -349,7 +349,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env)*In.kr(0));
 		(360*12*5+1).do{ n=n+(4.reciprocal);
 			~list=~list++~list1.[n];
 	}}.value);
-//~list=~list1.scramble;
+//~list=~list.scramble;
 //////////pattern 
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
