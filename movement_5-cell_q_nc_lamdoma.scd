@@ -216,9 +216,10 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 
 /////synths////
 
+
 		(
 SynthDef.new(\ospace, {
-	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0,rot_angle=0;
+	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0,rot_angle=0,a=0,b=0;
 	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9,dist;
@@ -260,7 +261,7 @@ scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 //scale_coo=29.collect{nnn=nnn+1;Scale.minor.performDegreeToKey(nnn,12)};
 
 //scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
-			scalar=coo;
+			scalar=(coo+a)/(coo+b);
 //fundamental=(6*multiplier)*scalar;
 fundamental=(center)*scalar;
 freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
@@ -381,12 +382,15 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		}.value;
 	);
 
-//////////pattern
+
+	((10+1)/10)/((10+2)/10)//////////pattern
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq(~dur.abs/14,inf),
 		//\coo,Pseq(~dur,inf),
-		\coo,Prand([1,1/2,2/3,3/4,4/5,5/6,6/7,2/1,3/2,4/3,5/4,6/5,7/6],inf),
+		\coo,Prand([1,2,3,4,5,6,7,8,9,10],inf),
+		\a,Prand([0,1,2,3,4],inf),
+		\b,Prand([0,1,2,3,4],inf),
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
 			\pl2,Pseq(~list1,inf),
@@ -401,7 +405,7 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
 		\varamp,Pbrown(0.1,2,0.1,inf), /////ripple amp
-		\decay,Pbrown(8,16,1,inf),
+		\decay,Pbrown(4,8,1,inf),
 		//\varamp,1,
 				\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 		\out2,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
@@ -409,7 +413,7 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(1);
+	TempoClock.default.tempo_(2);
 
 
 s.meter;s.freqscope;s.scope;
