@@ -219,9 +219,9 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 
 		(
 SynthDef.new(\ospace, {
-	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0,rot_angle=0,a=0,b=0;
+	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0,rot_angle=0,a=0,b=0,mm=1;
 	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
-	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9;
+	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9,lamdoma;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9,dist;
 	var ton1,ton2,ton3,fundamental,sph3,sph4,sph5,sph6,sph7,sph8;
 	var freq1,freq2,freq3,pitch1,pitch2,pitch3,env,sig,n1,n2,n3;
@@ -258,13 +258,13 @@ dist=q1.distance(q2);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-//scale_coo=29.collect{nnn=nnn+1;Scale.minor.performDegreeToKey(nnn,12)};
+scale_coo=29.collect{nnn=nnn+1;Scale.minor.performDegreeToKey(nnn,12)};
 
-//scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
-			//scalar=(coo+a)/(coo+b);
-			scalar=coo;
+scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
+			//lamdoma=(mm+a)/(mm+b);
+			lamdoma=mm;
 //fundamental=(6*multiplier)*scalar;
-fundamental=(center)*scalar;
+fundamental=(center)*scalar*lamdoma;
 freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
 
 					(
@@ -312,15 +312,15 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
 //ton1 = 2.pow(n1 / 12);
 //ton2 = 2.pow(n2 / 12);
 //ton3 = 2.pow(n3 / 12);
-	amp1=(ton1.reciprocal*octave1.reciprocal*scalar.reciprocal).round(0.00000001);
-	amp2=(ton2.reciprocal*octave1.reciprocal*scalar.reciprocal).round(0.00000001);
-	amp3=(ton3.reciprocal*octave1.reciprocal*scalar.reciprocal).round(0.00000001);
-	amp4=(ton1.reciprocal*octave2.reciprocal*scalar.reciprocal).round(0.00000001);
-	amp5=(ton2.reciprocal*octave2.reciprocal*scalar.reciprocal).round(0.00000001);
-	amp6=(ton3.reciprocal*octave2.reciprocal*scalar.reciprocal).round(0.00000001);
-	amp7=(ton1.reciprocal*octave3.reciprocal*scalar.reciprocal).round(0.00000001);
-	amp8=(ton2.reciprocal*octave3.reciprocal*scalar.reciprocal).round(0.00000001);
-	amp9=(ton3.reciprocal*octave3.reciprocal*scalar.reciprocal).round(0.00000001);
+	amp1=(ton1.reciprocal*octave1.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
+	amp2=(ton2.reciprocal*octave1.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
+	amp3=(ton3.reciprocal*octave1.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
+	amp4=(ton1.reciprocal*octave2.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
+	amp5=(ton2.reciprocal*octave2.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
+	amp6=(ton3.reciprocal*octave2.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
+	amp7=(ton1.reciprocal*octave3.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
+	amp8=(ton2.reciprocal*octave3.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
+	amp9=(ton3.reciprocal*octave3.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
 
 	pitch1=(freq1*ton1).round(0.0000001);pitch2=(freq1*ton2).round(0.0000001);pitch3=(freq1*ton3).round(0.0000001);
 	pitch4=(freq2*ton1).round(0.0000001);pitch5=(freq2*ton2).round(0.0000001);pitch6=(freq2*ton3).round(0.0000001);
@@ -387,9 +387,9 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq(~dur.abs/14,inf),
-		//\coo,Pseq(~dur,inf),
-		//\coo,Prand([1,2,3,4,5,6,7,8,9,10],inf),
-		\coo,Prand([1,2/1,3/2,4/3,1/2,2/3,3/4],inf),
+		\coo,Pseq(~dur,inf),
+		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
+		\mm,Prand([1,2/1,3/2,4/3,1/2,2/3,3/4],inf),
 		//\a,Prand([0,1,2,3,4],inf),
 		//\b,Prand([0,1,2,3,4],inf),
 			//\dur,1,
