@@ -89,7 +89,7 @@ var num=1.neg;
 var ellipsis=[1,1,1],spread=1;
 			~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
 
-		360.do{
+		361.do{
 durx=(12).collect{
 			azx = (angle+(360*2.pow(plx/12))).wrap(180.neg,180);  // Increment azimuth
 				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
@@ -207,6 +207,14 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		}.value
 	);
 
+		({
+		var n=1.neg;
+		~list2=(360*12*10).collect{
+		n=n+1;
+		}
+		}.value
+	);
+
 	({
 		var n=0; ~list=[];
 		(360*12*10+1).do{ n=n+(10.reciprocal);
@@ -244,7 +252,7 @@ SynthDef.new(\ospace, {
 			waveFreq=amount;
 		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph6=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list1),~az),Select.kr(Select.kr(pl2+1,~list1),~el));
+		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list),~az),Select.kr(Select.kr(pl2+1,~list),~el));
 
 			//mod_angle=SinOsc.ar(lfo,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			//mod_angle1=SinOsc.ar(lfo,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
@@ -254,7 +262,7 @@ SynthDef.new(\ospace, {
 q1=Quaternion(0,sph3.x,sph3.y,sph3.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1).poll,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1).poll/100,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
@@ -394,7 +402,7 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		//\b,Prand([0,1,2,3,4],inf),
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
-			\pl2,Pseq(~list1,inf),
+			\pl2,Pseq(~list2,inf),
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
 		\cell,Pbrown(0.01,1/2,0.1,inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
@@ -414,7 +422,7 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(2);
+	TempoClock.default.tempo_(1/8);
 
 
 s.meter;s.freqscope;s.scope;

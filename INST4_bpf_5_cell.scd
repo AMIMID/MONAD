@@ -96,7 +96,7 @@ var num=1.neg;
 var ellipsis=[1,1,1],spread=1;
 			~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
 
-		360.do{
+		361.do{
 durx=(12).collect{
 			azx = (angle+(360*2.pow(plx/12))).wrap(180.neg,180);  // Increment azimuth
 				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
@@ -212,6 +212,14 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		}.value
 	);
 
+		({
+		var n=1.neg;
+		~list2=(360*12*3).collect{
+		n=n+1;
+		}
+		}.value
+	);
+
 	({
 		var n=0; ~list=[];
 		(360*12*3+1).do{ n=n+(3.reciprocal);
@@ -240,7 +248,7 @@ SynthDef.new(\ospace, {
 			waveFreq=amount;
 		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph6=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-	sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list1),~az),Select.kr(Select.kr(pl2+1,~list1),~el));
+	sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list),~az),Select.kr(Select.kr(pl2+1,~list),~el));
 
 			//mod_angle=SinOsc.ar(lfo,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			//mod_angle1=SinOsc.ar(lfo,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
@@ -313,9 +321,9 @@ ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
 phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
 
 			mag=(Cartesian(mag_x,mag_y,mag_z).rho/(2.sqrt))+(Cartesian(mag_qx,mag_qy,mag_z).rho/(2.sqrt));
-		sig=PlayBuf.ar(1, buf, BufRateScale.kr(buf), loop: 1,doneAction:2);
-				rq=0.00001;
-			rqq=0.05;
+		sig=PlayBuf.ar(1, buf, BufRateScale.kr(buf), loop: 1,doneAction:2)*0.1;
+				rq=0.000001;
+			rqq=0.1;
 
 osc1=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp1*mag,rq:rq),~b.bufnum,sphere.theta.raddeg,
 				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
@@ -342,7 +350,7 @@ Out.ar(0,LeakDC.ar(BPF.ar(osc1,900,rq:rqq),mul:env*(rq.sqrt.reciprocal)*(rqq.sqr
 		\coo,Pseq(~dur,inf),
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
-		\pl2,Pseq(~list1,inf),
+		\pl2,Pseq(~list2,inf),
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
 		\cell,Pbrown(0.001,1,0.01,inf), ///////speed of 4dimensional oscillation
 		\spread,Pbrown(1,2,0.1,inf),  //////spherical harmonic width
@@ -374,7 +382,7 @@ wt=signal.asWavetable;
 
 		(
 ~aa.play;
-{Out.kr(0,Osc.ar(~m.bufnum,0.001,mul:1))}.play;
+{Out.kr(0,Osc.ar(~m.bufnum,0.001,mul:6))}.play;
 );
 
 s.meter;s.makeGui;
