@@ -261,7 +261,8 @@ scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 //scale_coo=29.collect{nnn=nnn+1;Scale.minor.performDegreeToKey(nnn,12)};
 
 //scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
-			scalar=(coo+a)/(coo+b);
+			//scalar=(coo+a)/(coo+b);
+			scalar=coo;
 //fundamental=(6*multiplier)*scalar;
 fundamental=(center)*scalar;
 freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
@@ -382,15 +383,15 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		}.value;
 	);
 
-
-	((10+1)/10)/((10+2)/10)//////////pattern
+//////////pattern
 
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq(~dur.abs/14,inf),
 		//\coo,Pseq(~dur,inf),
-		\coo,Prand([1,2,3,4,5,6,7,8,9,10],inf),
-		\a,Prand([0,1,2,3,4],inf),
-		\b,Prand([0,1,2,3,4],inf),
+		//\coo,Prand([1,2,3,4,5,6,7,8,9,10],inf),
+		\coo,Prand([1,2/1,3/2,4/3,1/2,2/3,3/4],inf),
+		//\a,Prand([0,1,2,3,4],inf),
+		//\b,Prand([0,1,2,3,4],inf),
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
 			\pl2,Pseq(~list1,inf),
