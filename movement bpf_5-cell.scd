@@ -90,7 +90,7 @@ var num=1.neg;
 var ellipsis=[1,1,1],spread=1;
 			~az=[];~el=[];~magx=[];~magy=[];~magz=[];~dur=[];
 
-		360.do{
+		361.do{
 durx=(12).collect{
 			azx = (angle+(360*2.pow(plx/12))).wrap(180.neg,180);  // Increment azimuth
 				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
@@ -208,6 +208,14 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 		}.value
 	);
 
+		({
+		var n=1.neg;
+		~list2=(360*12*10).collect{
+		n=n+1;
+		}
+		}.value
+	);
+
 	({
 		var n=0; ~list=[];
 		(360*12*10+1).do{ n=n+(10.reciprocal);
@@ -235,7 +243,7 @@ SynthDef.new(\ospace, {
 			waveFreq=amount;
 		sph3=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph4=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
 		sph5=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph6=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list1),~az),Select.kr(Select.kr(pl2+1,~list1),~el));
+		sph7=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list),~az),Select.kr(Select.kr(pl2+1,~list1),~el));
 
 			//mod_angle=SinOsc.ar(lfo,0.degrad,mul:1).range(90.neg.degrad,90.degrad);
 			//mod_angle1=SinOsc.ar(lfo,90.degrad,mul:1).range(90.neg.degrad,90.degrad);
@@ -360,7 +368,7 @@ Out.ar(0,LeakDC.ar(osc4,mul:env*(rq.sqrt.reciprocal))*In.kr(0));
 		\coo,Pseq(~dur,inf),
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
-			\pl2,Pseq(~list1,inf),
+			\pl2,Pseq(~list2,inf),
 		\lfo,Pbrown(0.01,0.5,0.1,inf), /////spherical harmonic oscillation
 		\cell,Pbrown(0.1,1,0.1,inf), ///////speed of 4dimensional oscillation
 		//\lfo,1/2,
