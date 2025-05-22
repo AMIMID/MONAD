@@ -95,7 +95,7 @@ durx=(12).collect{
 				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
 		plx=(plx+1).mod(12);
 
-		sphx=(Spherical(14,(azx.degrad),(elx.degrad))).x.round(0.000000001);
+		sphx=(Spherical(14,(azx.degrad),(elx.degrad))).x.round(1/32);
 
 	};
 
@@ -104,7 +104,7 @@ dury=(12).collect{
 			ely = (angle+(180*2.pow(ply/12))).wrap(90.neg,90);
 		ply=(ply+1).mod(12);
 
-		sphy=(Spherical(14,(azy.degrad),(ely.degrad))).y.round(0.000000001);
+		sphy=(Spherical(14,(azy.degrad),(ely.degrad))).y.round(1/32);
 
 	};
 durz=(12).collect{
@@ -112,7 +112,7 @@ durz=(12).collect{
 				elz = (angle+(180*2.pow(plz/12))).wrap(90.neg,90);
 		plz=(plz+1).mod(12);
 
-		sphz=(Spherical(14,(azz.degrad),(elz.degrad))).z.round(0.000000001);
+		sphz=(Spherical(14,(azz.degrad),(elz.degrad))).z.round(1/32);
 
 	};
 
