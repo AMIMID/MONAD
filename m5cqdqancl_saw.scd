@@ -227,7 +227,7 @@ mag_z=(Complex(sin((sph5.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 
 		(
 SynthDef.new(\ospace, {
-	arg amp=1,pl1=0,lfo,spread=1,decay=8,varamp=5,coo,cell=1,pl2=0,rot_angle=0,a=0,b=0,mm=1;
+	arg amp=1,pl1=0,lfo,spread=1,decay=8,coo,cell=1,pl2=0,rot_angle=0,a=0,b=0,mm=1;
 	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9,lamdoma;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9,dist;
@@ -250,7 +250,7 @@ SynthDef.new(\ospace, {
 	mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 
-q1=Quaternion(0,sph3.x,sph3.y,sph3.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
+q1=Quaternion(0,sph7.x,sph7.y,sph7.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
 			env=EnvGen.ar(Env.perc(dist.lag(0.1).poll/10,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
@@ -262,7 +262,7 @@ scale_coo=29.collect{nnn=nnn+1;Scale.minor.performDegreeToKey(nnn,12)};
 scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
 
 			lamdoma=mm;
-16.do{
+8.do{
 				m=m+1;
 fundamental=(center)*scalar*lamdoma*m;
 freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
@@ -294,7 +294,7 @@ phase=Complex(sphere.theta.linlin(pi.neg,pi,1.neg,1),sphere.phi.linlin((pi/2).ne
 		mag=mag_z;
 			//mag=Cartesian(mag_x,mag_y,mag_z).rho;
 
-	v=Quaternion(0,sph3.x,sph3.y,sph3.z);/// vector as quaternion
+	v=Quaternion(0,sph7.x,sph7.y,sph7.z);/// vector as quaternion
 
 	coordinatesx=[1,0,0].normalizeSum.sqrt;
 	coordinatesy=[0,1,0].normalizeSum.sqrt;
@@ -356,18 +356,14 @@ wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env)*In.kr(0));
 		//\lfo,1/2,
 		\spread,Pbrown(0.1,4,1,inf),  //////spherical harmonic width
 		//\spread,2,
-		//\ripple,Pbrown(0.0001,0.001,0.001,inf),  /////sphere ripple wave oscillation speed
-		\ripple,0.1,
-		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
-		\varamp,Pbrown(0.1,2,0.1,inf), /////ripple amp
 		\decay,Pbrown(4,8,1,inf),
-		//\varamp,1,
+
 				\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(2);
+	TempoClock.default.tempo_(1);
 
 
 s.meter;s.freqscope;s.scope;
