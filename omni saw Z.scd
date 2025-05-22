@@ -248,5 +248,5 @@ osc3=VBAP.ar(4,SinOsc.ar(pitch3*m,mul:amp3*interval),~b.bufnum,sphere.theta.radd
 
 }
 )
-Synth(\ospace_saw,[\pl1,180,\gain,0.01]);
+Synth(\ospace_saw,[\pl1,100,\gain,0.01]);
 s.record(numChannels:4);
