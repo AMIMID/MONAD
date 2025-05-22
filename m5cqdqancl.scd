@@ -263,7 +263,7 @@ SynthDef.new(\ospace, {
 q1=Quaternion(0,sph3.x,sph3.y,sph3.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1).poll/100,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1).poll/10,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
 			//env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.1/4);
 
 scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
@@ -431,7 +431,7 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 			\amp,Pseq(~r,inf);///l system
 			//\amp,1;
 ));
-	TempoClock.default.tempo_(1/8);
+	TempoClock.default.tempo_(2);
 
 
 s.meter;s.freqscope;s.scope;

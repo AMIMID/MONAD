@@ -54,8 +54,8 @@ SynthDef.new(\player,{
 
 	Out.kr(~controlBus_m.index, sig);
 	//Out.kr(~controlBus_m.index, sig);
-	Out.kr(~controlBus_a.index, SinOsc.kr(0.01,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_a1.index, SinOsc.kr(0.01,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_a.index, SinOsc.kr(0.1,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_a1.index, SinOsc.kr(0.1,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
 
 //Out.ar(0,sig*1);
 //Out.ar(1,sig*1);
@@ -175,7 +175,7 @@ magnitudez=(12).collect{
 			 					pl5=(pl5+1).mod(12);
 
 			 					sph5=Spherical(1,(az5.degrad),(el5.degrad));
-					mag_z=Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
+					mag_z=Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),cos(((sph5.phi).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho*sph5.rho
 
 
 
@@ -189,12 +189,12 @@ magnitudez=(12).collect{
 ~magz=~magz/(2.sqrt);
  );
 );
-	dota=(360*6).collect{
+	dota=(360).collect{
 
 	az=~az.[pla];
 	el=~el.[pla];
 
-	magg=Cartesian(~magx.[pla],~magy.[pla],~magz.[pla]).rho/(2.sqrt);
+	magg=Cartesian(0,0,~magz.[pla]).rho/(2.sqrt);
 	pla=pla+1;
 
 		sph=Spherical((magg)*600,az,el).asCartesian.asArray;
@@ -219,7 +219,7 @@ Pen.translate(400,400);
 		a.rot(ot,ot,ot);
     ~v.refresh;
 
-		ot=ot+0.5.degrad;
+		ot=ot+0.1.degrad;
 
 };
 { while { run } {~v.background_(Color.black); ~v.refresh; (0.001).wait } }.fork(AppClock);
