@@ -210,7 +210,7 @@ Pclutch(Pseq([1, 2, 3, 4, 5], 3), Pseq([0, 0, 1, 0, 0, 0, 1, 1])).asStream.nextN
 ///susch a selection process requires an initial array of spherical coordinates where the linear location of the values on the array can be conceptualized as locations on the sphere so that the weights can be added also linearly on known chord areas and progressions, otherwise conditional logic is required.
 //for example the elevation array progresses from bottom to top linearly and the azimuth array progresses with certain amount of points for each elevation progression, which in turn can be acceses linearly from eg. 180 to -180 degrees.
 
-///such an array would look like so (no golden angle)
+///such an array would look like so (no golden angle)/// golden angle information can be added later as phases to the oscillators
 (
 var data;
 var az=0,el=0,az_rot;
@@ -218,7 +218,7 @@ var m=600,sph,az1,el1,pl=0,daz,del,harm,mag,r=1.neg;
 var r1,harm1,r2,harm2,rad,call;
 
 
-data=(36*19).collect{
+data=(5*8).collect{
 
 	az=~az.[pl];
 	el=~el.[pl];
@@ -239,7 +239,7 @@ data.postln;
 w = Window.new("3D Scatterplot", Rect(40,40, 1000, 800)).front;
 a = ScatterView3d(w, Rect(0,0, 800,800), data, [-1000, 1000].asSpec,[-1000, 1000].asSpec,[-1000, 1000].asSpec);
 a.drawMethod = \fillRect;
-a.symbolSize = 1;
+a.symbolSize = 10;
 a.symbolColor = Color.white;
 a.background = Color.black;
 
@@ -276,27 +276,27 @@ var spread=1,h=90.neg;
 
 	~az=[];~el=[];~magx=[];~magy=[];~magz=[];~qx=[];~qy=[];
 
-19.do{
-azimuth=(36).collect{
+5.do{
+azimuth=(8).collect{
 
-		az1 = (az1+10).wrap(180.neg,180);  // Increment azimuth
+		az1 = (az1+45).wrap(180.neg,180);  // Increment azimuth
 				el1 = (h).wrap(90.neg,90);
 
 		sph1=(Spherical(1,(az1.degrad),(el1.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).theta.round(0.00001);
 	};
 
-elevation=(36).collect{
+elevation=(8).collect{
 
-				az2 = (az2+10).wrap(180.neg,180);  // Increment elevation
+				az2 = (az2+45).wrap(180.neg,180);  // Increment elevation
 			el2 = (h).wrap(90.neg,90);
 
 		sph2=(Spherical(1,(az2.degrad),(el2.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).phi.round(0.00001);
 
 	};
 
-magnitudex=(36).collect{
+magnitudex=(8).collect{
 
-			az3 = (az3+10).wrap(180.neg,180);
+			az3 = (az3+45).wrap(180.neg,180);
 			el3 = (h).wrap(90.neg,90);
 
 	sph3=(Spherical(1,(az3.degrad),(el3.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
@@ -306,9 +306,9 @@ magnitudex=(36).collect{
 
 };
 
-magnitudey=(36).collect{
+magnitudey=(8).collect{
 
-			az4 = (az4+10).wrap(180.neg,180);
+			az4 = (az4+45).wrap(180.neg,180);
 			el4 = (h).wrap(90.neg,90);
 
 	sph4=(Spherical(1,(az4.degrad),(el4.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
@@ -318,9 +318,9 @@ magnitudey=(36).collect{
 
 };
 
-	qx=(36).collect{
+	qx=(8).collect{
 
-			az5 = (az5+10).wrap(180.neg,180);
+			az5 = (az5+45).wrap(180.neg,180);
 			el5 = (h).wrap(90.neg,90);
 
 	sph5=(Spherical(1,(az5.degrad),(el5.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
@@ -334,9 +334,9 @@ sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
 cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 	};
 
-	qy=(36).collect{
+	qy=(8).collect{
 
-			az6 = (az6+10).wrap(180.neg,180);
+			az6 = (az6+45).wrap(180.neg,180);
 			el6 = (h).wrap(90.neg,90);
 
 	sph6=(Spherical(1,(az6.degrad),(el6.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
@@ -349,9 +349,9 @@ sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
 cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 };
 
-magnitudez=(36).collect{
+magnitudez=(8).collect{
 
-			az7 = (az7+10).wrap(180.neg,180);
+			az7 = (az7+45).wrap(180.neg,180);
 			el7 = (h).wrap(90.neg,90);
 
 sph7=(Spherical(1,(az7.degrad),(el7.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
@@ -362,7 +362,7 @@ mag_z=(Complex(cos((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos((s
 mag_z=(Complex(sin((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)
 	);
 ////z axis   ambi..  sin for odd numbers, cos for even
-		};h=h+10;~az=~az++azimuth;~el=~el++elevation;~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;~qx=~qx++qx;~qy=~qy++qx;
+		};h=h+45;~az=~az++azimuth;~el=~el++elevation;~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;~qx=~qx++qx;~qy=~qy++qx;
 };
 
 }.value;
