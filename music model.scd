@@ -218,11 +218,11 @@ var m=600,sph,az1,el1,pl=0,daz,del,harm,mag,r=1.neg;
 var r1,harm1,r2,harm2,rad,call;
 
 
-data=(360*8).collect{
+data=(36*19).collect{
 
 	az=~az.[pl];
 	el=~el.[pl];
-	mag=~magz.[pl];
+	mag=1;
 //	mag=
 //(Cartesian(~magx.[pl],~magy.[pl],~magz.[pl]).rho/(2.sqrt))+
 //	(Cartesian(~qx.[pl],~qy.[pl],~magz.[pl]).rho/(2.sqrt));
@@ -272,31 +272,32 @@ var durx,dury,durz;
 var sphx,sphy,sphz,azx=0,elx=0,azy=0,ely=0,azz=0,elz=0;
 var num=1.neg;
 var ellipsis=[1,1,1];
-var spread=1,h=0;
+var spread=1,h=90.neg;
 
-90.do{
-~az=(360).collect{
+	~az=[];~el=[];~magx=[];~magy=[];~magz=[];~qx=[];~qy=[];
 
-		az1 = (az1+1).wrap(180.neg,180);  // Increment azimuth
-				el1 = (el1+h).wrap(90.neg,90);
+19.do{
+azimuth=(36).collect{
+
+		az1 = (az1+10).wrap(180.neg,180);  // Increment azimuth
+				el1 = (h).wrap(90.neg,90);
 
 		sph1=(Spherical(1,(az1.degrad),(el1.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).theta.round(0.00001);
-
 	};
 
-~el=(360).collect{
+elevation=(36).collect{
 
-				az2 = (az2+1).wrap(180.neg,180);  // Increment azimuth
-			el2 = (el2+h).wrap(90.neg,90);
+				az2 = (az2+10).wrap(180.neg,180);  // Increment elevation
+			el2 = (h).wrap(90.neg,90);
 
 		sph2=(Spherical(1,(az2.degrad),(el2.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).phi.round(0.00001);
 
 	};
 
-~magx=(360).collect{
+magnitudex=(36).collect{
 
-			az3 = (az3+1).wrap(180.neg,180);  // Increment azimuth
-			el3 = (el3+ h).wrap(90.neg,90);
+			az3 = (az3+10).wrap(180.neg,180);
+			el3 = (h).wrap(90.neg,90);
 
 	sph3=(Spherical(1,(az3.degrad),(el3.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
@@ -305,10 +306,10 @@ var spread=1,h=0;
 
 };
 
-~magy=(360).collect{
+magnitudey=(36).collect{
 
-			az4 = (az4+1).wrap(180.neg,180);  // Increment azimuth
-			el4 = (el4+h).wrap(90.neg,90);
+			az4 = (az4+10).wrap(180.neg,180);
+			el4 = (h).wrap(90.neg,90);
 
 	sph4=(Spherical(1,(az4.degrad),(el4.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
@@ -317,10 +318,10 @@ var spread=1,h=0;
 
 };
 
-	~qx=(360).collect{
+	qx=(36).collect{
 
-			az5 = (az5+1).wrap(180.neg,180);  // Increment azimuth
-			el5 = (el5+h).wrap(90.neg,90);
+			az5 = (az5+10).wrap(180.neg,180);
+			el5 = (h).wrap(90.neg,90);
 
 	sph5=(Spherical(1,(az5.degrad),(el5.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
@@ -333,10 +334,10 @@ sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
 cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 	};
 
-	~qy=(360).collect{
+	qy=(36).collect{
 
-			az6 = (az6+1).wrap(180.neg,180);  // Increment azimuth
-			el6 = (el6+h).wrap(90.neg,90);
+			az6 = (az6+10).wrap(180.neg,180);
+			el6 = (h).wrap(90.neg,90);
 
 	sph6=(Spherical(1,(az6.degrad),(el6.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
@@ -348,10 +349,10 @@ sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
 cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 };
 
-~magz=(360).collect{
+magnitudez=(36).collect{
 
-			az7 = (az7+1).wrap(180.neg,180);  // Increment azimuth
-			el7 = (el7+h).wrap(90.neg,90);
+			az7 = (az7+10).wrap(180.neg,180);
+			el7 = (h).wrap(90.neg,90);
 
 sph7=(Spherical(1,(az7.degrad),(el7.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2]));
 
@@ -361,7 +362,7 @@ mag_z=(Complex(cos((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos((s
 mag_z=(Complex(sin((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)
 	);
 ////z axis   ambi..  sin for odd numbers, cos for even
-		};h=h+1;
+		};h=h+10;~az=~az++azimuth;~el=~el++elevation;~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;~qx=~qx++qx;~qy=~qy++qx;
 };
 
 }.value;
