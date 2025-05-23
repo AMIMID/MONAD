@@ -10,6 +10,10 @@
 
 ///the pl1 tone selection has to have as input the coordinate (spherical) and as ouput the chord
 
+///generative swelection pattern can be formed through a randomness seed that will define the generative pattern evolution (seed the golden ratio spheric model?)
+
+///phase of oscillators, phases of coordinates or golen angle sequence.
+
 
 
 
