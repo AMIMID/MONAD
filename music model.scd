@@ -1,147 +1,3 @@
-//////////////////////////////////spherical model arrays and selection
-(var chord,sph,pl1=1;
-///sph=Spherical(28,~az.[pl1],~el.[pl1]);
-sph=Spherical(28,0.degrad,45.degrad);
-chord=[sph.x.round(1),sph.y.round(1),sph.z.round(1)];
-chord.postln;
-)
-
-
-(
-{
-var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
-var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
-var az4=0,el4=0,az5=0,el5=0,pl1=0,pl2=0,pl3=0,pl4=0,pl5=0;
-var angle=0,ang=0;
-var azimuth,elevation,magnitudex,magnitudey,magnitudez;
-var durx,dury,durz;
-var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
-var num=1.neg;
-var ellipsis=[1,1,1],spread=1;
-			~az=[];~el=[];~dur=[];
-
-		361.do{
-durx=(12).collect{
-			azx = (angle+(360*2.pow(plx/12))).wrap(180.neg,180);  // Increment azimuth
-				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
-		plx=(plx+1).mod(12);
-
-		sphx=(Spherical(14,(azx.degrad),(elx.degrad))).x.round(1/32);
-
-	};
-
-dury=(12).collect{
-		azy = (angle+(360*2.pow(ply/12))).wrap(180.neg,180);  // Increment azimuth
-			ely = (angle+(180*2.pow(ply/12))).wrap(90.neg,90);
-		ply=(ply+1).mod(12);
-
-		sphy=(Spherical(14,(azy.degrad),(ely.degrad))).y.round(1/32);
-
-	};
-durz=(12).collect{
-			azz = (angle+(360*2.pow(plz/12))).wrap(180.neg,180);  // Increment azimuth
-				elz = (angle+(180*2.pow(plz/12))).wrap(90.neg,90);
-		plz=(plz+1).mod(12);
-
-		sphz=(Spherical(14,(azz.degrad),(elz.degrad))).z.round(1/32);
-
-	};
-
-azimuth=(12).collect{
-
-			az1 = (angle+(360*2.pow(pl1/12))).wrap(180.neg,180);  // Increment azimuth
-				el1 = (angle+(180*2.pow(pl1/12))).wrap(90.neg,90);
-		pl1=(pl1+1).mod(12);
-
-		sph1=(Spherical(1,(az1.degrad),(el1.degrad))).theta.round(0.00001);
-
-	};
-
-elevation=(12).collect{
-
-				az2 = (angle+(360*2.pow(pl2/12))).wrap(180.neg,180);  // Increment azimuth
-			el2 = (angle+(180*2.pow(pl2/12))).wrap(90.neg,90);
-		pl2=(pl2+1).mod(12);
-
-		sph2=(Spherical(1,(az2.degrad),(el2.degrad))).phi.round(0.00001);
-
-	};
-
-angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;
-
-				12.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];};num=1.neg;};
-}.value;
-
-)
-
-
-(
-{
-var  sph1,sph2,sph3,sph4,sph5,sph6,sph7,m_x=3,m_y=3,m_z=3,qx,qy,mq=2;
-var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z,mag_qx,mag_qy;
-var az4=0,el4=0,az5=0,el5=0,az6=0,el6=0,az7=0,el7=0;
-var angle=0,ang=0;
-var azimuth,elevation,magnitudex,magnitudey,magnitudez;
-var durx,dury,durz;
-var sphx,sphy,sphz,azx=0,elx=0,azy=0,ely=0,azz=0,elz=0;
-var num=1.neg;
-var ellipsis=[1,1,1];
-var spread=1;
-	~dur=[];
-
-durx=(360*8).collect{
-			azx = (azx+1).wrap(180.neg,180);  // Increment azimuth
-				elx = (elx+(360-(360/1.6180339887499))).wrap(90.neg,90);
-
-		sphx=(Spherical(1,(azx.degrad),(elx.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).x.round(0.000000001).abs;
-
-	};
-
-dury=(360*8).collect{
-		azy = (azy+1).wrap(180.neg,180);  // Increment azimuth
-			ely = (ely+(360-(360/1.6180339887499))).wrap(90.neg,90);
-
-		sphy=(Spherical(1,(azy.degrad),(ely.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).y.round(0.000000001).abs;
-
-	};
-durz=(360*8).collect{
-			azz = (azz+1).wrap(180.neg,180);  // Increment azimuth
-				elz = (elz+(360-(360/1.6180339887499))).wrap(90.neg,90);
-
-		sphz=(Spherical(1,(azz.degrad),(elz.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).z.round(0.000000001).abs;
-
-	};
-
-~az=(360*8).collect{
-
-			az1 = (az1+1).wrap(180.neg,180);  // Increment azimuth
-				el1 = (el1+(360-(360/1.6180339887499))).wrap(90.neg,90);
-
-		sph1=(Spherical(1,(az1.degrad),(el1.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).theta.round(0.00001);
-
-	};
-
-~el=(360*8).collect{
-
-				az2 = (az2+1).wrap(180.neg,180);  // Increment azimuth
-			el2 = (el2+(360-(360/1.6180339887499))).wrap(90.neg,90);
-
-		sph2=(Spherical(1,(az2.degrad),(el2.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).phi.round(0.00001);
-
-	};
-
-
-				360.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];}
-}.value;
-)
-
-
-
-
-
-
-
-
 
 
 
@@ -211,7 +67,10 @@ Pclutch(Pseq([1, 2, 3, 4, 5], 3), Pseq([0, 0, 1, 0, 0, 0, 1, 1])).asStream.nextN
 //for example the elevation array progresses from bottom to top linearly and the azimuth array progresses with certain amount of points for each elevation progression, which in turn can be acceses linearly from eg. 180 to -180 degrees.
 
 ///such an array would look like so (no golden angle)/// golden angle information can be added later as phases to the oscillators
-///with simpler arrays like these it simpler to categorize the chord locations and access the coordinates linearly, otherwise a math formula must be devised to able to extract from the more complex (golden ratio angle) spherical location array, sets of its coordinates corespondent to concrete locations on the sphere
+///with simpler arrays like these it simpler to categorize the chord locations and access the coordinates linearly, otherwise a math formula must be devised to able to extract from the more complex (golden ratio angle) spherical location array, sets of its coordinates corespondent to concrete locations on the sphere, or a table of the categorized locations. Since this is bery time consuming for the time being the following solution is put forth. For rounded value tones to scales, a simple periodic spherical model will be used, and the golden angle as phase. If the tones are to be used unrounded in the 12-tone system with no scales, with the inherit harmony of the sphere then the golden angle spherical model will be used (look below, third and second spherical model example) and the selection process will depend solely on this array with no areas or other nestings, just a controlled generative random motion through this array, as all the tones are harmonic to each in theory and there is no need for inherit grouping and specific time sequencing, the sequencing can depend solely on the kind of motion trough the array. Therefore concluding for the tonal system there are two options: to use the inherit harmony of the sphere as sole argument or to round its values and through groupings, scaling, and generative processes to achieve a desired generative musical harmony.
+
+
+///////1#completely periodic sphere model
 (
 var data;
 var az=0,el=0,az_rot;
@@ -365,6 +224,192 @@ mag_z=(Complex(sin((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 ////z axis   ambi..  sin for odd numbers, cos for even
 		};h=h+45;~az=~az++azimuth;~el=~el++elevation;~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;~qx=~qx++qx;~qy=~qy++qx;
 };
+
+}.value;
+)
+
+
+
+//////////////////////////////////spherical model arrays and selection
+(var chord,sph,pl1=1;
+///sph=Spherical(28,~az.[pl1],~el.[pl1]);
+sph=Spherical(28,0.degrad,45.degrad);
+chord=[sph.x.round(1),sph.y.round(1),sph.z.round(1)];
+chord.postln;
+)
+
+////////2#golden angle spherical model with periodic azimuth
+(
+{
+var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
+var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
+var az4=0,el4=0,az5=0,el5=0,pl1=0,pl2=0,pl3=0,pl4=0,pl5=0;
+var angle=0,ang=0;
+var azimuth,elevation,magnitudex,magnitudey,magnitudez;
+var durx,dury,durz;
+var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
+var num=1.neg;
+var ellipsis=[1,1,1],spread=1;
+			~az=[];~el=[];~dur=[];
+
+		361.do{
+durx=(12).collect{
+			azx = (angle+(360*2.pow(plx/12))).wrap(180.neg,180);  // Increment azimuth
+				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
+		plx=(plx+1).mod(12);
+
+		sphx=(Spherical(14,(azx.degrad),(elx.degrad))).x.round(1/32);
+
+	};
+
+dury=(12).collect{
+		azy = (angle+(360*2.pow(ply/12))).wrap(180.neg,180);  // Increment azimuth
+			ely = (angle+(180*2.pow(ply/12))).wrap(90.neg,90);
+		ply=(ply+1).mod(12);
+
+		sphy=(Spherical(14,(azy.degrad),(ely.degrad))).y.round(1/32);
+
+	};
+durz=(12).collect{
+			azz = (angle+(360*2.pow(plz/12))).wrap(180.neg,180);  // Increment azimuth
+				elz = (angle+(180*2.pow(plz/12))).wrap(90.neg,90);
+		plz=(plz+1).mod(12);
+
+		sphz=(Spherical(14,(azz.degrad),(elz.degrad))).z.round(1/32);
+
+	};
+
+azimuth=(12).collect{
+
+			az1 = (angle+(360*2.pow(pl1/12))).wrap(180.neg,180);  // Increment azimuth
+				el1 = (angle+(180*2.pow(pl1/12))).wrap(90.neg,90);
+		pl1=(pl1+1).mod(12);
+
+		sph1=(Spherical(1,(az1.degrad),(el1.degrad))).theta.round(0.00001);
+
+	};
+
+elevation=(12).collect{
+
+				az2 = (angle+(360*2.pow(pl2/12))).wrap(180.neg,180);  // Increment azimuth
+			el2 = (angle+(180*2.pow(pl2/12))).wrap(90.neg,90);
+		pl2=(pl2+1).mod(12);
+
+		sph2=(Spherical(1,(az2.degrad),(el2.degrad))).phi.round(0.00001);
+
+	};
+
+angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;
+
+				12.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];};num=1.neg;};
+}.value;
+
+)
+
+
+(
+{
+var  sph1,sph2,sph3,sph4,sph5,sph6,sph7,m_x=3,m_y=3,m_z=3,qx,qy,mq=2;
+var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z,mag_qx,mag_qy;
+var az4=0,el4=0,az5=0,el5=0,az6=0,el6=0,az7=0,el7=0;
+var angle=0,ang=0;
+var azimuth,elevation,magnitudex,magnitudey,magnitudez;
+var durx,dury,durz;
+var sphx,sphy,sphz,azx=0,elx=0,azy=0,ely=0,azz=0,elz=0;
+var num=1.neg;
+var ellipsis=[1,1,1];
+var spread=1;
+	~dur=[];
+
+durx=(360*8).collect{
+			azx = (azx+1).wrap(180.neg,180);  // Increment azimuth
+				elx = (elx+(360-(360/1.6180339887499))).wrap(90.neg,90);
+
+		sphx=(Spherical(1,(azx.degrad),(elx.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).x.round(0.000000001).abs;
+
+	};
+
+dury=(360*8).collect{
+		azy = (azy+1).wrap(180.neg,180);  // Increment azimuth
+			ely = (ely+(360-(360/1.6180339887499))).wrap(90.neg,90);
+
+		sphy=(Spherical(1,(azy.degrad),(ely.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).y.round(0.000000001).abs;
+
+	};
+durz=(360*8).collect{
+			azz = (azz+1).wrap(180.neg,180);  // Increment azimuth
+				elz = (elz+(360-(360/1.6180339887499))).wrap(90.neg,90);
+
+		sphz=(Spherical(1,(azz.degrad),(elz.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).z.round(0.000000001).abs;
+
+	};
+
+~az=(360*8).collect{
+
+			az1 = (az1+1).wrap(180.neg,180);  // Increment azimuth
+				el1 = (el1+(360-(360/1.6180339887499))).wrap(90.neg,90);
+
+		sph1=(Spherical(1,(az1.degrad),(el1.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).theta.round(0.00001);
+
+	};
+
+~el=(360*8).collect{
+
+				az2 = (az2+1).wrap(180.neg,180);  // Increment azimuth
+			el2 = (el2+(360-(360/1.6180339887499))).wrap(90.neg,90);
+
+		sph2=(Spherical(1,(az2.degrad),(el2.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).phi.round(0.00001);
+
+	};
+
+
+				360.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];}
+}.value;
+)
+
+
+////////////golden angle sphere example with nested 12-tonal increments of azimuth and elevation
+
+(
+{
+var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
+var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
+var az4=0,el4=0,az5=0,el5=0,pl1=0,pl2=0,pl3=0,pl4=0,pl5=0;
+var angle=0,ang=0;
+var azimuth,elevation,magnitudex,magnitudey,magnitudez;
+var durx,dury,durz;
+var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
+var num=1.neg;
+var ellipsis=[1,1,1];
+var spread=1;
+			~az=[];~el=[];~magx=[];~magy=[];~magz=[];
+
+		360.do{
+
+
+azimuth=(12).collect{
+
+			az1 = (angle+(360*2.pow(pl1/12))).wrap(180.neg,180);  // Increment azimuth
+				el1 = (angle+(180*2.pow(pl1/12))).wrap(90.neg,90);
+		pl1=(pl1+1).mod(12);
+
+		sph1=(Spherical(1,(az1.degrad),(el1.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).theta.round(0.00001);
+
+	};
+
+elevation=(12).collect{
+
+				az2 = (angle+(360*2.pow(pl2/12))).wrap(180.neg,180);  // Increment azimuth
+			el2 = (angle+(180*2.pow(pl2/12))).wrap(90.neg,90);
+		pl2=(pl2+1).mod(12);
+
+		sph2=(Spherical(1,(az2.degrad),(el2.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).phi.round(0.00001);
+
+	};
+
+
+};angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;
+
 
 }.value;
 )
