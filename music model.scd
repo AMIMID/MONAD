@@ -211,6 +211,7 @@ Pclutch(Pseq([1, 2, 3, 4, 5], 3), Pseq([0, 0, 1, 0, 0, 0, 1, 1])).asStream.nextN
 //for example the elevation array progresses from bottom to top linearly and the azimuth array progresses with certain amount of points for each elevation progression, which in turn can be acceses linearly from eg. 180 to -180 degrees.
 
 ///such an array would look like so (no golden angle)/// golden angle information can be added later as phases to the oscillators
+///with simpler arrays like these it simpler to categorize the chord locations and access the coordinates linearly, otherwise a math formula must be devised to able to extract from the more complex (golden ratio angle) spherical location array, sets of its coordinates corespondent to concrete locations on the sphere
 (
 var data;
 var az=0,el=0,az_rot;
