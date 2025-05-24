@@ -11,3 +11,6 @@
 
 
 //a overall composition could be 24d for a rhombic cuboctahedron setup or 12d for one or two cuboctahdral speaker setup. That is two parallel sequencies, adversaries, forming the first 12d system and a second indipendent sequence of two prallel adversary sequencies forming another 12d system. Overall 4 parallel sequencies creating the whole of the composition timeline.
+
+
+//look emotional model timelie//in conclusion the adeversarial model describes wether two parallel sequencies of 28 and 28 possible events, the one being the inverse of the other or two parallel sequencies of 56 events each but 1540 reaons each every set of 'duplicate' reasons being the inverse (in direction of connection) from the other. So the first type of parallel sequence states more or less adversaries  in the same story, and the second type states to different adversarial stories. In any case the possible events remain 56, the emotions 8 and the overall story the same, so a different indipendent story would be a different story alltogether. The nouancies just tell the same emotional story in a different way and the reasons in a different order. Does a combination of different order and different manifestation equal to a different story?no because the 56 basic events with no nuancies remain the same.
