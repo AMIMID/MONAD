@@ -19,3 +19,4 @@
 
 
 ///Osc/// basic electric oscillators for three axis would be dreadbox artemis for anger/fear thimos, vermona perfourmer for pain/homeostasis body, and erica synths steampipe for joy/sadness nous .The combinations of these along the algorithm calibrations express the 8 basic complex emotions, and their nouances defined by the callibration of the oscilator instrument.
+///Further considering the instrumentation the acoustic oscillators will be a big sound space used by band pass filter oscillators, so there are no categories, just nouancies of the final produced acoustic spectrum used for the pbf oscs. In essence only the distribution pitch and will count, of the overall spectrum.
