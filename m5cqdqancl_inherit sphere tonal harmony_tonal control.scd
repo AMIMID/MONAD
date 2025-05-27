@@ -329,33 +329,6 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		}.value;
 	);
 
-		({
-		var n=1.neg;
-		~listaz=(360*12+1).collect{
-		n=n+1;
-		}
-		}.value
-
-			az1 = (angle+(360*2.pow(pl1/12))).wrap(180.neg,180);  // Increment azimuth
-				el1 = (angle+(180*2.pow(pl1/12))).wrap(90.neg,90);
-		pl1=(pl1+1).mod(12);
-	);
-
-		({
-		var n=1.neg;
-		~listel=(360*12*10).collect{
-		n=n+1;
-		}
-		}.value
-	);
-
-	({
-		var n=0; ~list=[];
-		(360*12*10+1).do{ n=n+(10.reciprocal);
-			~list=~list++~list1.[n];
-	}}.value);
-~list=~list.scramble;
-
 //////////pattern
 
 
