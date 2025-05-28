@@ -28,3 +28,47 @@ var n1,n2, tone1, tone2, sig, degree,m,scale,nn=8.neg,r;
 
 }.play
 )
+
+
+//////////pattern////analysis of the ssound-engine synth pattern, to convert some controls to values streams via the control synth
+
+/*(
+		~aa=Pdef(\1, Pbind(\instrument, \ospace,
+			\dur,Pseq(~dur.abs/14,inf),///////////////////////////////////////////////////duration stays as it triggers the audio synth through the pattern in time, dur will be longer intervals to acomododate stream values on other controls. as such dur here does not define a note but a collection of notes, it can possible seen as one ore more bars, measures.
+
+		\coo,Pseq(~dur,inf),  //sequence for major/minor fundamental multiplier////////
+
+		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
+		\mm,Prand([1,2/1,3/2,4/3],inf),    //lamdoma interval multiplier/////////////////
+
+		\mh,Prand([1],inf),     //spherical harmonic for tone bends//////////////////////
+
+			\pl1,Pseq(~list,inf),    ///coordinate selection/////////////////////////////
+
+			\pl2,Pseq(~list2,inf), ///+1coordinate for distance measurement//////////////
+
+		\lfo,Pbrown(0.01,1/2,0.1,inf), //mag spherical harmonic oscillation/////////////
+
+		\lfo2,Pbrown(0.0001,0.005,0.001,inf), //tone spherical harmonic oscillation/////
+
+		\cell,Pbrown(0.01,1/4,0.1,inf), //speed of 4dimensional oscillation
+
+		\rot_angle,Pseq(~angle,inf),//angle for filed rotation/////////////////////////
+
+		\spread,Pbrown(0.1,2,1,inf),  //spherical harmonic width//////////////////////
+
+		\ripple,Pbrown(0.001,0.1,0.01,inf),  //sphere ripple wave oscillation speed//
+
+		\amount,Prand([4,5,6,7,8],inf),   //sphere ripple waves amount//////////////
+
+		\varamp,Pbrown(0.1,2,0.1,inf), //ripple amp/////////////////////////////////
+
+		\decay,Pbrown(4,8,1,inf),////////////////////////////////////////////////////
+
+		\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),//outpu channel order randomizer///
+		\out2,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),/////////////////
+		\out3,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),////////////////
+
+			\amp,Pseq(~r,inf);   ///l system////////////////////////////////////////
+			//\amp,1;
+)))*/

@@ -155,7 +155,7 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 
 
 		(
-SynthDef.new(\ospace, {
+SynthDef.new(\ocontrol, {
 
 			}).add;
 );
@@ -228,3 +228,4 @@ wt=signal.asWavetable;
 );
 
 s.record(numChannels:4);
+
