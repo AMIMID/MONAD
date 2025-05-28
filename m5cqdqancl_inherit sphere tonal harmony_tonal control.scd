@@ -155,7 +155,7 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 
 
 		(
-SynthDef.new(\ospace, {
+SynthDef.new(\oengine, {
 	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0,rot_angle=0,a=0,b=0,mm=1,lfo2,mh=0;
 	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=1800/2;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9,lamdoma;
@@ -332,7 +332,7 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 //////////pattern
 
 
-		~aa=Pdef(\1, Pbind(\instrument, \ospace,
+		~aa=Pdef(\1, Pbind(\instrument, \oengine,
 			\dur,Pseq(~dur.abs/14,inf),
 		\coo,Pseq(~dur,inf),
 		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
