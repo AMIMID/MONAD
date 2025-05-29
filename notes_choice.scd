@@ -8,7 +8,7 @@ var n1,n2, tone1, tone2, sig, degree,m,scale,nn=8.neg,r;
 
 	scale=15.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 //scale.postln;
-	r=SinOsc.kr(0.1,phase:0.degrad).range(pi.neg,pi);
+	r=SinOsc.kr(0.1,phase:0.degrad,mul:2).range(pi.neg,pi);
 //n1=SinOsc.kr(0.1,phase:0.degrad).range(7.neg,7).round(1);
 	//n1=LFNoise0.kr(1).range(12.neg,12).round(1);
 	//n1=SinOsc.kr(0.1,phase:0.degrad).range(12.neg,12).round(1);
@@ -19,7 +19,7 @@ var n1,n2, tone1, tone2, sig, degree,m,scale,nn=8.neg,r;
 	tone1= 2.pow(Select.kr(n1.linlin(7.neg, 7, 0, 14), scale) / 12);
 	//tone1=2.pow(n1/12);
 	//tone2=2.pow(n2/12);
-	n1.poll;
+//	n1.poll;
 	//	m=~controlBus_m.getSynchronous;
 //	tone=Scale.major.performDegreeToKey(m,12).poll;
 	//Out.ar(0,SinOsc.ar(440*tone1+n1,phase:0.degrad,mul:tone1.reciprocal)*0.1);

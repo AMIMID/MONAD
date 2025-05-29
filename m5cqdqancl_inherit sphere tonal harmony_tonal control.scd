@@ -150,20 +150,22 @@ SynthDef.new(\oengine, {
 	 var out1 = NamedControl.kr(\out1, [0, 1, 2, 3]);  // multiple buses!
 
 varamp=amount.reciprocal*10;
-			pl1=~controlBus_coordinate.getSynchronous.lag(0.1);
-			ripple=~controlBus_ripple.getSynchronous.lag(0.1);
+				//pl1=~controlBus_coordinate.getSynchronous.lag(0.1);
+			//ripple=~controlBus_ripple.getSynchronous.lag(0.1);
+			pl1=In.kr(0);
+			ripple=In.kr(1);
 
 	t=SinOsc.kr(ripple).range(1, 100);
 			waveFreq=amount;
-//	sph=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
-		sph=Spherical(1,pl1,pl1/2);
+	sph=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));
+		//	sph=Spherical(1,pl1,pl1/2);
 	mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 	mod_anglez=SinOsc.ar(lfo,45.degrad).range(90.neg.degrad,90.degrad);
 
-			env=EnvGen.ar(Env.sine(decay,amp),doneAction:2,levelScale:0.01);
+			env=EnvGen.ar(Env.perc(0.02,decay,amp),doneAction:2,levelScale:0.01);
 
-//scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=29.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
 scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
 
@@ -196,10 +198,10 @@ sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
 (Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
 cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 
-//	theta = Select.kr(pl1,~az).degrad;
-		theta = pl1;
-     //phi = Select.kr(pl1,~el).degrad;
-		 phi = pl1/2;
+	theta = Select.kr(pl1,~az).degrad;
+		//		theta = pl1;
+     phi = Select.kr(pl1,~el).degrad;
+			//	   phi = pl1/2;
 	 wave = varamp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
   magxx=  magx * wave;
 
@@ -212,15 +214,15 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 
 harm=((Complex(cos(((sph.phi+mod_angle2).round(0.00001)*mh).wrap((pi/2).neg,(pi/2))),cos(((sph.phi).round(0.00001)*mh).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-//sphere=Spherical(28*harm,Select.kr(pl1,~az),Select.kr(pl1,~el));
-			sphere=Spherical(28*harm,pl1,pl1/2);
+sphere=Spherical(28*harm,Select.kr(pl1,~az),Select.kr(pl1,~el));
+//sphere=Spherical(28*harm,pl1,pl1/2);
 
 n1=(sphere.x).round(0.00000001);n2=(sphere.y).round(0.00000001);n3=(sphere.z).round(0.00000001);
-//ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-//ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
-//ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
-//ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
-ton1 = 2.pow(n1 / 12);ton2 = 2.pow(n2 / 12);ton3 = 2.pow(n3 / 12);
+ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
+ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
+//ton1 = 2.pow(n1 / 12);ton2 = 2.pow(n2 / 12);ton3 = 2.pow(n3 / 12);
 
 	amp1=(ton1.reciprocal*octave1.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);
 	amp2=(ton2.reciprocal*octave1.reciprocal*scalar.reciprocal*lamdoma.reciprocal).round(0.00000001);

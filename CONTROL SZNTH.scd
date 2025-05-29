@@ -124,14 +124,14 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~azz=~azz++azimuth;~ell=~e
 
 		(
 SynthDef.new(\ocontrol, {
-	arg lfo,spread=1,decay=8,cell=1,rot_angle=0,lfo2,mh=0,maxrange=1;
+				arg lfo,spread=1,decay=8,cell=1,rot_angle=0,lfo2,mh=0,maxrange=1,freq=1,pl1=1,pl2=1,amp=1;
 	var amp1,amp2,amp3,dist,harm;
 	var ton1,ton2,ton3,sph,sph8;
 	var pitch1,pitch2,pitch3,env,sig,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 	var m=3,mq=2,startloc,osc1,osc2,osc3,sphere;
 	var mod_angle,mod_angle1,mod_angle2;
-	var mag,q1,q2,pl1=0,pl2=0,ripple=0.01;
+	var mag,q1,q2,ripple=0.01;
 	var axis,i,j,k,coordinatesx,coordinatesy,coordinatesz,v,v1,qsphe;
 	var ii,iii,jj,jjj,kk,kkk,axis1,axis2,axis3,v2,v3,mod_anglez;
 
@@ -144,7 +144,7 @@ SynthDef.new(\ocontrol, {
 q1=Quaternion(0,sph.x,sph.y,sph.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1),decay*dist.lag(0.1),1),doneAction:2,levelScale:1);
+				env=EnvGen.ar(Env.new([1,1],[decay*dist]),doneAction:2,levelScale:amp);
 
 					(
 		magx=((Complex(cos(((sph.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),cos((((sph.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
@@ -184,7 +184,7 @@ sphere=Spherical(24*harm,Select.kr(pl1,~azz),Select.kr(pl1,~ell));
 
 n1=(sphere.x).round(0.00000001);n2=(sphere.y).round(0.00000001);n3=(sphere.z).round(0.00000001);
 ton1 = 2.pow(n1 / 12);ton2 = 2.pow(n2 / 12);ton3 = 2.pow(n3 / 12);
-amp1=(ton1.reciprocal).round(0.00000001);amp2=(ton2.reciprocal).round(0.00000001);amp3=(ton3.reciprocal).round(0.00000001);
+//amp1=(ton1.reciprocal).round(0.00000001);amp2=(ton2.reciprocal).round(0.00000001);amp3=(ton3.reciprocal).round(0.00000001);
 
 mag=(Cartesian(mag_x,mag_y,mag_z).rho)+(Cartesian(mag_qx,mag_qy,mag_z).rho);
 
@@ -218,13 +218,12 @@ osc3=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp3*mag,phase:phase),~b.bufnum,qsphe.theta.
 				ripple=LFNoise1.kr(0.1).abs;
 				Out.kr(~controlBus_ripple.index,ripple);
 
-//osc1=SinOsc.kr(ton1/100,mul:amp1,phase:startloc).range(0,maxrange).round(1).abs.poll;
-osc1=SinOsc.kr(ton1/10,mul:amp1,phase:startloc).range(pi.neg,pi).poll;
-osc2=SinOsc.kr(ton2/10,mul:amp2,phase:startloc).range(pi.neg,pi);
-osc3=SinOsc.kr(ton3/10,mul:amp3,phase:startloc).range(pi.neg,pi);
+				osc1=SinOsc.kr(freq,mul:mag.wrap(0,1),phase:startloc).range(maxrange.neg,maxrange).round(1).abs.poll;
+//osc2=SinOsc.kr(ton2*0.0001,mul:1,phase:startloc).range(0,maxrange).round(1);
+//osc3=SinOsc.kr(ton3*0.0001,mul:1,phase:startloc).range(0,maxrange).round(1);
 
-Out.kr(~controlBus_coordinate.index,osc3*env);
-Out.kr(~controlBus_coordinate.index,osc2*env);
+//Out.kr(~controlBus_coordinate.index,osc3*env);
+//Out.kr(~controlBus_coordinate.index,osc2*env);
 Out.kr(~controlBus_coordinate.index,osc1*env);
 
 
@@ -248,16 +247,18 @@ Out.kr(~controlBus_coordinate.index,osc1*env);
 			\dur,Pseq(~durr.abs*2,inf),
 			\pl1,Pseq(~listt,inf),    ///////coordinate selection
 			\pl2,Pseq(~list22,inf),
-		\lfo,0.0001, /////mag spherical harmonic oscillation
-		\lfo2,Pbrown(0.0001,0.005,0.001,inf), /////tone spherical harmonic oscillation
+			\lfo,Pbrown(0.000001,0.001,1,inf), /////mag spherical harmonic oscillation
+		\lfo2,Pbrown(1,2,0.01,inf), /////tone spherical harmonic oscillation
 		//\cell,Pbrown(0.01,1/4,0.1,inf), ///////speed of 4dimensional oscillation
 		//\rot_angle,Pseq(~angle,inf),
-		//\maxrange,Prand(~list22,inf),
+		\maxrange,Prand(~list22,inf),
+			\freq,0.0000001,
 		\spread,Pbrown(0.1,2,1,inf),  //////spherical harmonic width
 		\decay,Pbrown(4,8,1,inf),
+				\amp,Pseq(~r,inf);///l system
 
 ));
-	TempoClock.default.tempo_(1);
+	TempoClock.default.tempo_(2);
 			s.scope;
 }
 )
