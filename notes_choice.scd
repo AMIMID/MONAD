@@ -58,7 +58,7 @@ var n1,n2, tone1, tone2, sig, degree,m,scale,nn=8.neg,r;
 
 \spread,Pbrown(0.1,2,1,inf),  //spherical harmonic width//////////////////////same as above
 
-\ripple,Pbrown(0.001,0.1,0.01,inf),  //sphere ripple wave oscillation speed///this can become a value stream for interchangeable speeds through the contro synth arpegio or event triggers. The control synth will not have a ripple effect in its spherical model, therefore non in its pattern.
+\ripple,Pbrown(0.001,0.1,0.01,inf),  //sphere ripple wave oscillation speed///this can become a value stream for interchangeable speeds through the control synth arpegio or event triggers. The control synth will not have a ripple effect in its spherical model, therefore non in its pattern.
 
 \amount,Prand([4,5,6,7,8],inf),   //sphere ripple waves amount//////////////this can stay as is
 
@@ -73,3 +73,6 @@ var n1,n2, tone1, tone2, sig, degree,m,scale,nn=8.neg,r;
 \amp,Pseq(~r,inf);   ///l system////////////////////////////////////////stays as is and thus defines clearer moments of silence as dur has become a whole or more measures rather then a single note.
 
 )))*/
+
+
+////about the stream value tone/location settings. The oscillator needs to be a sine oscillator as the phase argument is needed for an initial location. Now the values of the array that the oscillators uses are, in the case of the unrounded model 4320 values (+1 for the 'next point distance range) nad for the rounded model 361 +1, or less. So whether the array is scrambled or not the osiscillator range would be eg. 0,4320 with absolute values thus each cicle is two iterations of the same whole array scan. A further option would be to modulate this range. Lets say the initial position derived from the array through the oscillator phase is some position during that range, then the range min and max can be one random value x as the max and the min value being 0. In this away the range is modulated as different instances of the max value
