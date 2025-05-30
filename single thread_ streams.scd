@@ -74,6 +74,57 @@ wt = signal.asWavetable;
 signal.plot;
 		}.value;
 
+	(
+{
+var dict = IdentityDictionary[\A -> "AB", \B -> "A"];
+//These are the production rules of the L-system
+var word = "A";
+var string_temp = "";
+var iter = 6;
+
+//These are diction for the mapping of the alphabet to "artistic" parameters: degrees in a scale, beat occurrence, etc.
+
+var dictnotes = IdentityDictionary[\A -> 0, \B -> 1];
+ ~r=[];
+
+//This iteration generates the system recursively
+
+iter.do({
+
+word.asArray.do({|i|
+    string_temp = string_temp ++ dict[i.asSymbol];
+});
+
+word = string_temp;
+	string_temp = "";
+});
+
+word.postln;
+
+//Here we map the final system to the parameters as above
+
+word.do({|i| ~r = ~r ++ dictnotes[i.asSymbol];});
+
+~r.postln;
+}.value
+)
+
+
+(
+	~m=Buffer.alloc(s,2048);
+			{
+var signal,wt,env;
+
+		env=Env(~r,[1]);
+		signal=env.asSignal(1024);
+wt=signal.asWavetable;
+		signal.plot;
+~m.loadCollection(wt);
+		}.value;
+);
+
+
+
 	/////angle
 		({
 		var angle=0;
@@ -98,7 +149,7 @@ signal.plot;
 
 
 ///spheres and angles
-		mod=LFNoise0.ar(freq:1,mul:arr).range(17280.neg,17280).round(1).abs.poll;
+		mod=Osc.kr(~m.bufnum,freq:arr).range(17280.neg,17280).round(1).abs.poll;
 		azimuth=Select.kr(mod,~az);
 		elevation=Select.kr(mod,~el);
 
