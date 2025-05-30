@@ -87,19 +87,20 @@ signal.plot;
 (SynthDef.new(\ospace, {
 
 					////controls
-	arg	amp=1,ar=0,lfo=0.1,spread=1,ripple=0.1,waveFreq=5,rotation=0,coo=0,cell=0.1,lamdoma2=1,lamdoma1=1,mh=1,lfo2=0.1,octave=1,switch1=0,switch2=0,switch3=0;
+	arg	amp=1,arr=1,lfo=0.1,spread=1,ripple=0.1,waveFreq=5,rotation=0,coo=0,cell=0.1,lamdoma2=1,lamdoma1=1,mh=1,lfo2=0.1,octave=1,switch1=0,switch2=0,switch3=0;
 			//~buf=0;~rq=0.00001;
 	var amp1,amp2,amp3,center=1800/2,pitch4,pitch5,pitch6,pitch7,pitch8,pitch9,dist,harm,rot_angle=Select.kr(rotation,~angle);
 	var ton1,ton2,ton3,fundamental,sph,sph8,varamp=5,freq1,pitch1,pitch2,pitch3,env,n1,n2,n3,magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 	var ratio1,ratio2,ratio3,m=3,mq=2,phase,osc1,osc2,osc3,sphere,scale,nn=29.neg,nnn=15.neg,nnnn=15.neg,scale_coo,sig;
 	var mod_angle,mod_angle1,mod_angle2,mod_anglez,mag,magxx,q1,q2,waveSpeed = 1, theta,phi,wave,t,scalar,l1,l2;
 	var axis,i,j,k,coordinatesx,coordinatesy,coordinatesz,v,v1,qsphe,ii,iii,jj,jjj,kk,kkk,axis1,axis2,axis3,v2,v3;
-	var azimuth, elevation,vamp=10;
+	var azimuth, elevation,vamp=10,mod;
 
 
 ///spheres and angles
-		azimuth=Select.kr(SinOsc.kr(0.1,phase:0.degrad,mul:ar).range(17280.neg,17280).round(1).abs,~az);
-		elevation=Select.kr(SinOsc.kr(0.1,phase:0.degrad,mul:ar).range(17280.neg,17280).round(1).abs,~el);
+		mod=LFNoise0.ar(freq:1,mul:arr).range(17280.neg,17280).round(1).abs.poll;
+		azimuth=Select.kr(mod,~az);
+		elevation=Select.kr(mod,~el);
 
 	sph=Spherical(1,azimuth,elevation);
 	//sph8=Spherical(1,(az+~angle.[0].degrad).wrap(pi.neg,pi),(el+~angle.[0].degrad).wrap((pi/2).neg,(pi/2)));
@@ -114,7 +115,7 @@ signal.plot;
 			//env=EnvGen.ar(Env.perc(dist.lag(0.1),decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
 
 ///scales
-scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
+//scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=Select.kr(switch1,
 				[29.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)},29.collect{nnnn=nnnn+1;Scale.minor.performDegreeToKey(nnnn,12)}]);
 scalar=2.pow(Select.kr(coo.linlin(14.neg, 14, 0, 28), scale_coo) / 12);
@@ -176,11 +177,11 @@ harm=((Complex(cos(((sph.phi+mod_angle2).round(0.00001)*mh).wrap((pi/2).neg,(pi/
 sphere=Spherical(28*harm,azimuth,elevation);
 
 n1=(sphere.x).round(0.00000001);n2=(sphere.y).round(0.00000001);n3=(sphere.z).round(0.00000001);
-ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
-ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
-ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
-ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
-//ton1 = 2.pow(n1 / 12);ton2 = 2.pow(n2 / 12);ton3 = 2.pow(n3 / 12);
+//ratio1=n1.round(1);ratio2=n2.round(1);ratio3=n3.round(1);
+//ton1 = 2.pow(Select.kr(ratio1.linlin(28.neg, 28, 0, 56), scale) / 12);
+//ton2 = 2.pow(Select.kr(ratio2.linlin(28.neg, 28, 0, 56), scale) / 12);
+//ton3 = 2.pow(Select.kr(ratio3.linlin(28.neg, 28, 0, 56), scale) / 12);
+ton1 = 2.pow(n1 / 12);ton2 = 2.pow(n2 / 12);ton3 = 2.pow(n3 / 12);
 	amp1=(ton1.reciprocal*octave.reciprocal*scalar.reciprocal*l1.reciprocal*l2.reciprocal).round(0.00000001);
 	amp2=(ton2.reciprocal*octave.reciprocal*scalar.reciprocal*l1.reciprocal*l2.reciprocal).round(0.00000001);
 	amp3=(ton3.reciprocal*octave.reciprocal*scalar.reciprocal*l1.reciprocal*l2.reciprocal).round(0.00000001);
@@ -281,7 +282,7 @@ w=Window.new("gui",Rect.new(100,100,1100,800)).front.alwaysOnTop_(true);
 	\switch1,~s1.value_(1),
 	\switch2,~s2.value_(1),
 	\switch3,~s3.value_(1),
-\ear,~q_az_el.value.linlin(0,1,0.000001,0.01)]).register;
+\arr,~q_az_el.value.linlin(0,1,0.001,1)]).register;
 
 (
 StaticText(w, Rect(60,200,200, 20)).string = "azimuth lfo | elevation lfo";
@@ -444,10 +445,10 @@ if(~synth.isPlaying,{~synth.set(\cell,lfo4)});
 		(
 ~q_az_el.action_({
 	arg obj;
-			var ar;
-	ar=obj.value.linlin(0,1,0.000001,0.01);
-				ar.value.postln;
-if(~synth.isPlaying,{~synth.set(\ar,ar)});
+			var arr;
+	arr=obj.value.linlin(0,1,0.001,1);
+				arr.value.postln;
+if(~synth.isPlaying,{~synth.set(\arr,arr)});
 });
 );
 
