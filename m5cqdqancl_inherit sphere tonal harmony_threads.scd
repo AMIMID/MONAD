@@ -69,12 +69,12 @@ var az4=0,el4=0,az5=0,el5=0,pl1=0,pl2=0,pl3=0,pl4=0,pl5=0;
 var angle=0,ang=0;
 var azimuth,elevation,magnitudex,magnitudey,magnitudez;
 var durx,dury,durz;
-var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
+var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=1,ply=1,plz=1;
 var num=1.neg;
 var ellipsis=[1,1,1],spread=1;
 			~az=[];~el=[];~dur=[];
 
-		361.do{
+		45.do{
 durx=(12).collect{
 			azx = (angle+(360*2.pow(plx/12))).wrap(180.neg,180);  // Increment azimuth
 				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
@@ -130,7 +130,7 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 	////////////list
 	({
 		var n=1.neg;
-		~list1=(360*12-1).collect{
+		~list1=(45*12-1).collect{
 		n=n+1;
 		}
 		}.value
@@ -138,7 +138,7 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 
 		({
 		var n=1.neg;
-		~list2=(360*12*10).collect{
+		~list2=(45*12*10).collect{
 		n=n+1;
 		}
 		}.value
@@ -146,7 +146,7 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 
 	({
 		var n=0; ~list=[];
-		(360*12*10+1).do{ n=n+(10.reciprocal);
+		(45*12*10+1).do{ n=n+(10.reciprocal);
 			~list=~list++~list1.[n];
 	}}.value);
 ~list=~list.scramble;
@@ -156,9 +156,9 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 
 	(	{var n=1.neg,neighbors;
 		~neighbors=[];
-		(361*12).do{n=n+1;
+		(45*12).do{n=n+1;
 		~center = Spherical(1, ~az.[n], ~el.[n] );
-~threshold = 	0.1;
+~threshold = 	0.5;
 	neighbors = ~points.select { |pt|
 		Quaternion(0,pt.x,pt.y,pt.z).distance(Quaternion(0,~center.x,~center.y,~center.z)) < ~threshold};
 			~neighbors=~neighbors.add(neighbors);
@@ -166,7 +166,6 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 
 	~thetaArray = ~neighbors.collect(_.theta);
      ~phiArray = ~neighbors.collect(_.phi);
-
 
 /////synths////
 
@@ -195,11 +194,11 @@ SynthDef.new(\ospace, {
 	var out3 = NamedControl.kr(\out3, [0, 1, 2, 3]);
 
 
-			point=LFNoise0.kr(1,mul:8);
+			point=LFNoise0.kr(32).range(22.neg,22).round(1).abs;
 			///point=4;
 	t=SinOsc.kr(ripple).range(1, 100);
 			waveFreq=amount;
-			sph=Spherical(1,Select.kr(point,Select.kr(pl1,~thetaArray)).poll,Select.kr(point,Select.kr(pl1,~phiArray)));
+			sph=Spherical(1,Select.kr(point,Select.kr(pl1,~thetaArray)),Select.kr(point,Select.kr(pl1,~phiArray)));
 
 	mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
@@ -209,7 +208,7 @@ SynthDef.new(\ospace, {
 q1=Quaternion(0,sph.x,sph.y,sph.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1)*10,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
+			env=EnvGen.ar(Env.sine(decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
 
 //scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=15.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
@@ -354,15 +353,16 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 
 (
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
-			\dur,Pseq(~dur.abs,inf),
+			//\dur,Pseq(~dur.abs,inf),
+			\dur,16,
 		\coo,Pseq(~dur,inf),
 		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
-		\mm,Prand([1,2/1,3/2,4/3],inf),
-		\mh,Prand([1],inf),
+		\mm,Prand([1,1/2,2/3,3/4],inf),
+		\mh,Prand([3],inf),
 			\pl1,Pseq(~list1.scramble,inf),    ///////coordinate selection
 		//	\pl2,Pseq(~list2,inf),
 		\lfo,Pbrown(0.01,0.1,0.1,inf), /////mag spherical harmonic oscillation
-		\lfo2,Pbrown(0.0001,0.01,0.01,inf), /////tone spherical harmonic oscillation
+		\lfo2,Pbrown(0.0001,0.005,0.01,inf), /////tone spherical harmonic oscillation
 		\cell,Pbrown(0.01,0.1,0.1,inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
 		//\lfo,1/2,
@@ -373,15 +373,15 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
 		\varamp,Pbrown(0.1,5,0.1,inf), /////ripple amp
-		\decay,Pbrown(16,32,1,inf),
+		\decay,Pbrown(32,48,1,inf),
 		//\varamp,1,
 				\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 		\out2,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 		\out3,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
-			//\amp,Pseq(~r,inf);///l system
-			\amp,1;
+			\amp,Pseq(~r,inf);///l system
+			//\amp,1;
 )));
-	TempoClock.default.tempo_(1);
+	TempoClock.default.tempo_(8);
 
 s.meter;s.freqscope;s.scope;
 }
