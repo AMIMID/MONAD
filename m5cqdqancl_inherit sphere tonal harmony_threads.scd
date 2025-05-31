@@ -80,7 +80,7 @@ durx=(12).collect{
 				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
 		plx=(plx+1).mod(12);
 
-		sphx=(Spherical(14,(azx.degrad),(elx.degrad))).x.round(1/32);
+		sphx=(Spherical(7,(azx.degrad),(elx.degrad))).x.round(1/32);
 
 	};
 
@@ -89,7 +89,7 @@ dury=(12).collect{
 			ely = (angle+(180*2.pow(ply/12))).wrap(90.neg,90);
 		ply=(ply+1).mod(12);
 
-		sphy=(Spherical(14,(azy.degrad),(ely.degrad))).y.round(1/32);
+		sphy=(Spherical(7,(azy.degrad),(ely.degrad))).y.round(1/32);
 
 	};
 durz=(12).collect{
@@ -97,7 +97,7 @@ durz=(12).collect{
 				elz = (angle+(180*2.pow(plz/12))).wrap(90.neg,90);
 		plz=(plz+1).mod(12);
 
-		sphz=(Spherical(14,(azz.degrad),(elz.degrad))).z.round(1/32);
+		sphz=(Spherical(7,(azz.degrad),(elz.degrad))).z.round(1/32);
 
 	};
 
@@ -130,7 +130,7 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 	////////////list
 	({
 		var n=1.neg;
-		~list1=(360*12+1).collect{
+		~list1=(360*12-1).collect{
 		n=n+1;
 		}
 		}.value
@@ -156,13 +156,16 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 
 	(	{var n=1.neg,neighbors;
 		~neighbors=[];
-		(12).do{n=n+1;
-		~center = Spherical(1, ~az.[0], ~el.[0] );
+		(361*12).do{n=n+1;
+		~center = Spherical(1, ~az.[n], ~el.[n] );
 ~threshold = 	0.1;
 	neighbors = ~points.select { |pt|
 		Quaternion(0,pt.x,pt.y,pt.z).distance(Quaternion(0,~center.x,~center.y,~center.z)) < ~threshold};
-		~neighbors=~neighbors++neighbors;
+			~neighbors=~neighbors.add(neighbors);
 }}.value;);
+
+	~thetaArray = ~neighbors.collect(_.theta);
+     ~phiArray = ~neighbors.collect(_.phi);
 
 
 /////synths////
@@ -178,7 +181,7 @@ SynthDef.new(\ospace, {
 	var freq1,freq2,freq3,pitch1,pitch2,pitch3,env,sig,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 	var ratio1,ratio2,ratio3,m=3,mq=2,phase,osc1,osc2,osc3,sphere;
-	var scale,nn=29.neg,nnn=15.neg,scale_coo;
+	var scale,nn=29.neg,nnn=8.neg,scale_coo;
 	var ampx,ampy,ampz,mod_angle,mod_angle1,mod_angle2;
 	var ellipsis=[1,1,1],mag,magxx,q1,q2;
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t,scalar;
@@ -192,24 +195,25 @@ SynthDef.new(\ospace, {
 	var out3 = NamedControl.kr(\out3, [0, 1, 2, 3]);
 
 
-			point=SinOsc.kr(0.01,mul:8);
+			//point=LFNoise0.kr(1,mul:8);
+			point=4;
 	t=SinOsc.kr(ripple).range(1, 100);
 			waveFreq=amount;
-			sph=Spherical(1,Select.kr(pl1,Select.kr(point,~neighbors)).theta,Select.kr(pl1,Select.kr(point,~neighbors)).phi);
+			sph=Spherical(1,Select.kr(point,Select.kr(pl1,~thetaArray)).poll,Select.kr(point,Select.kr(pl1,~phiArray)));
 
 	mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 	mod_anglez=SinOsc.ar(lfo,45.degrad).range(90.neg.degrad,90.degrad);
 
-	sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list),~az),Select.kr(Select.kr(pl2+1,~list),~el));
-q1=Quaternion(0,~center.x,~center.y,~center.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
+	sph8=Spherical(1,Select.kr(point,Select.kr(pl1+1,~thetaArray)),Select.kr(point,Select.kr(pl1+1,~phiArray)));
+q1=Quaternion(0,sph.x,sph.y,sph.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1),decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1)*10,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.01);
 
 //scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
-scale_coo=29.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
-scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
+scale_coo=15.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
+scalar=2.pow(Select.kr(coo.round(1).linlin(7.neg, 7, 0, 14), scale_coo) / 12);
 
 			lamdoma=mm;
 
@@ -241,8 +245,8 @@ sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
 (Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
 cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 
-	theta = Select.kr(pl1,Select.kr(point,~neighbors)).theta.degrad;
-     phi = Select.kr(pl1,Select.kr(point,~neighbors)).phi.degrad;
+	theta = Select.kr(point,Select.kr(pl1,~thetaArray)).degrad;
+     phi = Select.kr(point,Select.kr(pl1,~phiArray)).degrad;
 	 wave = varamp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
   magxx=  magx * wave;
 
@@ -255,7 +259,7 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 
 harm=((Complex(cos(((sph.phi+mod_angle2).round(0.00001)*mh).wrap((pi/2).neg,(pi/2))),cos(((sph.phi).round(0.00001)*mh).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-sphere=Spherical(28*harm,Select.kr(pl1,Select.kr(point,~neighbors)).theta,Select.kr(pl1,Select.kr(point,~neighbors)).phi);
+sphere=Spherical(24*harm,Select.kr(point,Select.kr(pl1,~thetaArray)),Select.kr(point,Select.kr(pl1,~phiArray)));
 
 n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
@@ -348,43 +352,42 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env)*In.kr(0));
 
 //////////pattern
 
-
+(
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq(~dur.abs,inf),
 		\coo,Pseq(~dur,inf),
 		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
 		\mm,Prand([1,2/1,3/2,4/3],inf),
 		\mh,Prand([1],inf),
-			\pl1,Pseq(~list,inf),    ///////coordinate selection
-			\pl2,Pseq(~list2,inf),
+			\pl1,Pseq(~list1.scramble,inf),    ///////coordinate selection
+		//	\pl2,Pseq(~list2,inf),
 		\lfo,Pbrown(0.01,0.1,0.1,inf), /////mag spherical harmonic oscillation
-		\lfo2,Pbrown(0.0001,0.005,0.001,inf), /////tone spherical harmonic oscillation
-		\cell,Pbrown(0.01,1/4,0.1,inf), ///////speed of 4dimensional oscillation
+		\lfo2,Pbrown(0.0001,0.01,0.01,inf), /////tone spherical harmonic oscillation
+		\cell,Pbrown(0.01,0.1,0.1,inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
 		//\lfo,1/2,
-		\spread,Pbrown(2,2,1,inf),  //////spherical harmonic width
+		\spread,Pbrown(1,1.5,1,inf),  //////spherical harmonic width
 		//\spread,2,
-		\ripple,Pbrown(0.001,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
+		\ripple,Pbrown(0.001,0.1,0.1,inf),  /////sphere ripple wave oscillation speed
 		//\ripple,0.1,
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
-		\varamp,Pbrown(0.1,3,0.1,inf), /////ripple amp
-		\decay,Pbrown(4,8,1,inf),
+		\varamp,Pbrown(0.1,5,0.1,inf), /////ripple amp
+		\decay,Pbrown(16,32,1,inf),
 		//\varamp,1,
 				\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 		\out2,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 		\out3,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 			//\amp,Pseq(~r,inf);///l system
 			\amp,1;
-));
-	TempoClock.default.tempo_(2);
-
+)));
+	TempoClock.default.tempo_(1);
 
 s.meter;s.freqscope;s.scope;
 }
 )
 
-(
+/*(
 	~m=Buffer.alloc(s,2048);
 			{
 var signal,wt,env;
@@ -395,11 +398,12 @@ wt=signal.asWavetable;
 		//signal.plot;
 ~m.loadCollection(wt);
 		}.value;
-);
+)*/;
 
 (
 ~aa.play;
-{Out.kr(0,Osc.ar(~m.bufnum,300.reciprocal,mul:1))}.play;
+//{Out.kr(0,Osc.ar(~m.bufnum,300.reciprocal,mul:1))}.play;
+{Out.kr(0,SinOsc.ar(300.reciprocal,mul:1))}.play;
 );
 
 s.record(numChannels:4);
