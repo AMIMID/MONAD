@@ -195,8 +195,8 @@ SynthDef.new(\ospace, {
 	var out3 = NamedControl.kr(\out3, [0, 1, 2, 3]);
 
 
-			//point=LFNoise0.kr(1,mul:8);
-			point=4;
+			point=LFNoise0.kr(1,mul:8);
+			///point=4;
 	t=SinOsc.kr(ripple).range(1, 100);
 			waveFreq=amount;
 			sph=Spherical(1,Select.kr(point,Select.kr(pl1,~thetaArray)).poll,Select.kr(point,Select.kr(pl1,~phiArray)));
