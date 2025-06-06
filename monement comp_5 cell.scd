@@ -301,7 +301,7 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 
 harm=((Complex(cos(((sph.phi+mod_angle2).round(0.00001)*mh).wrap((pi/2).neg,(pi/2))),cos(((sph.phi).round(0.00001)*mh).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
+sphere=Spherical(24*harm,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
@@ -399,14 +399,14 @@ wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env));
 			\coo,Pseq([0],inf),
 		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
 		\mm,Prand([1,1/2,3/2,4/3],inf),
-		\mh,Prand([1],inf),
+		\mh,Prand([3],inf),
 		//\a,Prand([0,1,2,3,4],inf),
 		//\b,Prand([0,1,2,3,4],inf),
 			//\dur,1,
 			\pl1,Pseq(~list,inf),    ///////coordinate selection
 			\pl2,Pseq(~list,inf),
 		\lfo,Pbrown(0.01,0.1,0.1,inf), /////mag spherical harmonic oscillation
-		\lfo2,Pbrown(0.0001,0.005,0.001,inf), /////tone spherical harmonic oscillation
+		\lfo2,Pbrown(0.0001,0.01,0.001,inf), /////tone spherical harmonic oscillation
 		\cell,Pbrown(0.01,1,0.1,inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
 		//\lfo,1/2,

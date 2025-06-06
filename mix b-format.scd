@@ -6,13 +6,14 @@ TempoClock.default.tempo_(1);
 s.options.memSize = 8192*128*2;
 s.options.blockSize = 64*4;
 s.options.maxNodes = 1024 * 16;
-s.options.sampleRate= 44100;
+s.options.sampleRate= 44100;s.boot;
 )
+Buffer.freeAll;}
 (
-~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/bees war and tv-sets/0.wav",channels:0 );//flu
-~c2 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/bees war and tv-sets/0.wav",channels:1 );//bru
-~c3 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/bees war and tv-sets/0.wav",channels:2 );//bld
-~c4 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/uni/ksyme:cmrc/final/bees war and tv-sets/0.wav",channels:3 );//frd
+~c1 = Buffer.readChannel(s,,channels:0 );//flu
+~c2 = Buffer.readChannel(s,,channels:1 );//bru
+~c3 = Buffer.readChannel(s,,channels:2 );//bld
+~c4 = Buffer.readChannel(s,,channels:3 );//frd
 )
 ///w=flu+frd+bld+bru
 //x=flu+frd-bld-bru
