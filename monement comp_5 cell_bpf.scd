@@ -278,7 +278,7 @@ SynthDef.new(\ospace, {
 q1=Quaternion(0,sph.x,sph.y,sph.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.1,decay*dist.lag(0.1),amp),doneAction:2,levelScale:1);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.01,decay*dist.lag(0.1),amp),doneAction:2,levelScale:10);
 
 //scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=29.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
@@ -399,9 +399,12 @@ osc3=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp3*mag,rq:rq),~b.bufnum,qsphe.theta.radde
 			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
 			// osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-wrappedOut1.value(out1,LeakDC.ar(osc3,mul:env*(rq.sqrt.reciprocal)));
-wrappedOut1.value(out1,LeakDC.ar(osc2,mul:env*(rq.sqrt.reciprocal)));
-wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)));
+//wrappedOut1.value(out1,LeakDC.ar(osc3,mul:env*(rq.sqrt.reciprocal)));
+//wrappedOut1.value(out1,LeakDC.ar(osc2,mul:env*(rq.sqrt.reciprocal)));
+//wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)));
+Out.ar(0,LeakDC.ar(osc3,mul:env*(rq.sqrt.reciprocal)));
+Out.ar(0,LeakDC.ar(osc2,mul:env*(rq.sqrt.reciprocal)));
+Out.ar(0,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)));
 //wrappedOut2.value(out2,LeakDC.ar(osc9,mul:env));
 //wrappedOut2.value(out2,LeakDC.ar(osc8,mul:env));
 //wrappedOut2.value(out2,LeakDC.ar(osc7,mul:env));
@@ -421,7 +424,8 @@ wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)));
 	);
 
 //////////pattern
-
+	~list1=[~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand]];
+	~list2=[~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand]];
 	(
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq([1],inf),
@@ -447,7 +451,7 @@ wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)));
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
 		\varamp,Pbrown(0.1,4,0.1,inf), /////ripple amp
-		\decay,Pbrown(2,4,1,inf),
+		\decay,Pbrown(1,2,1,inf),
 		//\varamp,1,
 				\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 		\out2,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
