@@ -60,8 +60,8 @@ signal.plot;
 		{
 var signal,wt,m=0,amp,ph=0;
 
-~levelll=4.collect{m=m+1;amp=m.reciprocal};
-		~phaseee=4.collect{ph=(ph+(360-(360/1.6180339887499))).wrap(0,360)};
+~levelll=8.collect{m=128.rand;amp=m.reciprocal};
+		~phaseee=8.collect{ph=(ph+(360-(360/1.6180339887499))).wrap(0,360)};
 signal=Signal.sineFill(1024,~levelll,~phaseee.degrad);
 
 wt = signal.asWavetable;
@@ -428,11 +428,11 @@ v3=axis3*v2*axis3.conjugate;
 
 qsphe=Cartesian(v3.b,v3.c,v3.d).asSpherical;
 
-osc1=VBAP.ar(4,VOsc.ar(harm,pitch1,mul:amp1*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+osc1=VBAP.ar(4,VOsc.ar(0.04,pitch1,mul:amp1*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-osc2=VBAP.ar(4,VOsc.ar(harm,mul:amp2*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+osc2=VBAP.ar(4,VOsc.ar(0.04,pitch2,mul:amp2*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-osc3=VBAP.ar(4,VOsc.ar(harm,mul:amp3*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+osc3=VBAP.ar(4,VOsc.ar(0.04,pitch3,mul:amp3*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
 			// osc4=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp4*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
@@ -486,7 +486,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env));
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
 			\pl2,Pseq(~list2,inf),
 		\lfo,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,0.01],inf), /////mag spherical harmonic oscillation
-		\lfo2,Pbrown(0.001,1,0.01,inf), /////tone spherical harmonic oscillation
+		\lfo2,Pbrown(0.001,0.1,0.01,inf), /////tone spherical harmonic oscillation
 			\cell,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,0.01],inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
 		//\lfo,1/2,
