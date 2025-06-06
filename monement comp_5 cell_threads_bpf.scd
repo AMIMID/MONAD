@@ -77,7 +77,7 @@ var durx,dury,durz;
 var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=1,ply=1,plz=1;
 var num=1.neg;
 var ellipsis=[1,1,1],spread=1;
-			~az=[];~el=[];~dur=[];
+			~az=[];~el=[];
 
 		45.do{
 durx=(12).collect{
@@ -128,7 +128,7 @@ elevation=(12).collect{
 
 angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;
 
-				12.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];};num=1.neg;};
+			}
 }.value;
 );
 	///////////wavetable

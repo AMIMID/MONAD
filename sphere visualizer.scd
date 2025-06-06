@@ -381,7 +381,7 @@ var r1,harm1,r2,harm2,rad;
 var run = true;
 var ot=0.degrad;
 
-data = (6*1024).collect{
+data = (32*128).collect{
 
 	az=~az.[pl];
 	el=~el.[pl];

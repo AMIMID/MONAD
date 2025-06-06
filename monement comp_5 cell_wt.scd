@@ -1,3 +1,28 @@
+/*({
+		var angle=0;
+		~angle=(16).collect{
+		angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);
+		}
+		}.value
+	)
+
+~w= Buffer.alloc(s,2048);
+		{
+var wt,sig;
+
+	sig=Signal.newClear(1024);
+	sig.waveFill({
+		arg x, old,i;
+		var out,angle=0;
+		angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);
+		out=exp(Complex(0,1)*~angle.[x].degrad).theta;
+	},0,15);
+
+wt = sig.asWavetable;
+~w.loadCollection(wt);
+sig.plot;
+		}.value;*/
+
 (
 Server.default = s = Server.local;
 ////server setup
@@ -14,6 +39,48 @@ s.options.sampleRate= 44100;
 
 s.waitForBoot{
 Buffer.freeAll;
+
+
+		///////////wavetables
+
+	~w1= Buffer.alloc(s,2048);
+		{
+var signal,wt,m=0,amp,ph=0;
+
+~levell=1.collect{m=m+1;amp=m.reciprocal};
+		~phasee=1.collect{ph=(ph+(360-(360/1.6180339887499))).wrap(0,360)};
+signal=Signal.sineFill(1024,~levell,~phasee.degrad);
+
+wt = signal.asWavetable;
+~w1.loadCollection(wt);
+signal.plot;
+		}.value;
+
+		~w2= Buffer.alloc(s,2048);
+		{
+var signal,wt,m=0,amp,ph=0;
+
+~levelll=4.collect{m=m+1;amp=m.reciprocal};
+		~phaseee=4.collect{ph=(ph+(360-(360/1.6180339887499))).wrap(0,360)};
+signal=Signal.sineFill(1024,~levelll,~phaseee.degrad);
+
+wt = signal.asWavetable;
+~w2.loadCollection(wt);
+signal.plot;
+		}.value;
+
+	~t= Buffer.alloc(s,2048);
+		{
+var signal,wt,m=0,amp;
+
+~level=60.collect{m=m+1;amp=m.reciprocal};
+		~phase=60.collect{pi};
+signal=Signal.sineFill(1024,~level,~phase);
+
+wt = signal.asWavetable;
+~t.loadCollection(wt);
+//signal.plot;
+		}.value;
 ////////////////////////////////////speaker setup///other
 
 	~a = VBAPSpeakerArray.new(3, [[0, 45], [180, 45], [90, 45.neg], [90.neg, 45.neg]]);
@@ -202,7 +269,7 @@ elz = (elz+(180-(180/1.6180339887499))).wrap(90.neg,90);
 	////////////list
 	({
 		var n=1.neg;
-		~list1=(1024+1).collect{
+		~list1=((128*32)+1).collect{
 		n=n+1;
 		}
 		}.value
@@ -210,7 +277,7 @@ elz = (elz+(180-(180/1.6180339887499))).wrap(90.neg,90);
 
 		({
 		var n=1.neg;
-		~list2=(1024).collect{
+		~list2=(32*128).collect{
 		n=n+1;
 		}
 		}.value
@@ -223,40 +290,13 @@ elz = (elz+(180-(180/1.6180339887499))).wrap(90.neg,90);
 	// }}.value);
 ~list1=~list1.scramble;
 
-		///////////wavetables
-~t= Buffer.alloc(s,2048);
-		{
-var signal,wt,m=0,amp;
-
-~level=60.collect{m=m+1;amp=m.reciprocal};
-		~phase=60.collect{pi};
-signal=Signal.sineFill(1024,~level,~phase);
-
-wt = signal.asWavetable;
-~t.loadCollection(wt);
-signal.plot;
-		}.value;
-
-	~w= Buffer.alloc(s,2048);
-		{
-var signal,wt,m=0,amp,ph=0;
-
-~levell=3.collect{m=m+1;amp=m.reciprocal};
-		~phasee=3.collect{ph=(ph+(360-(360/1.6180339887499))).wrap(0,360)};
-signal=Signal.sineFill(1024,~levell,~phasee.degrad);
-
-wt = signal.asWavetable;
-~w.loadCollection(wt);
-signal.plot;
-		}.value;
-
 /////synths////
 
 
 		(
 SynthDef.new(\ospace, {
 	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0,rot_angle=0,a=0,b=0,mm=1,lfo2,mh=0;
-	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=1800/2;////343speed of sound/1800hz= 0.1905 aproximate head diameter
+	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,center=1800;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9,lamdoma;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9,dist,harm;
 	var ton1,ton2,ton3,fundamental,sph,sph8;
@@ -287,7 +327,7 @@ SynthDef.new(\ospace, {
 q1=Quaternion(0,sph.x,sph.y,sph.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.1,dist.lag(0.1)*decay,amp),doneAction:2,levelScale:0.01);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.1,decay,amp),doneAction:2,levelScale:0.005);
 
 //scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=29.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
@@ -337,7 +377,7 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 
 harm=((Complex(cos(((sph.phi+mod_angle2).round(0.00001)*mh).wrap((pi/2).neg,(pi/2))),cos(((sph.phi).round(0.00001)*mh).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-sphere=Spherical(24,Select.kr(pl1,~az),Select.kr(pl1,~el));
+sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
@@ -388,11 +428,11 @@ v3=axis3*v2*axis3.conjugate;
 
 qsphe=Cartesian(v3.b,v3.c,v3.d).asSpherical;
 
-osc1=VBAP.ar(4,Osc.ar(~w.bufnum,pitch1,mul:amp1*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+osc1=VBAP.ar(4,VOsc.ar(harm,pitch1,mul:amp1*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-osc2=VBAP.ar(4,Osc.ar(~w.bufnum,mul:amp2*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+osc2=VBAP.ar(4,VOsc.ar(harm,mul:amp2*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-osc3=VBAP.ar(4,Osc.ar(~w.bufnum,mul:amp3*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+osc3=VBAP.ar(4,VOsc.ar(harm,mul:amp3*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
 			// osc4=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp4*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
@@ -439,25 +479,25 @@ Out.ar(0,LeakDC.ar(osc1,mul:env));
 			\coo,Pseq([0],inf),
 		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
 		\mm,Prand([1/2],inf),
-		\mh,Prand([3],inf),
+		\mh,Prand([1],inf),
 		//\a,Prand([0,1,2,3,4],inf),
 		//\b,Prand([0,1,2,3,4],inf),
 			//\dur,1,
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
 			\pl2,Pseq(~list2,inf),
-		\lfo,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,1,10],inf), /////mag spherical harmonic oscillation
-		\lfo2,Pbrown(0.0001,0.001,0.001,inf), /////tone spherical harmonic oscillation
-			\cell,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,1,10],inf), ///////speed of 4dimensional oscillation
+		\lfo,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,0.01],inf), /////mag spherical harmonic oscillation
+		\lfo2,Pbrown(0.001,1,0.01,inf), /////tone spherical harmonic oscillation
+			\cell,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,0.01],inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
 		//\lfo,1/2,
-		\spread,Pbrown(1,2,0.1,inf),  //////spherical harmonic width
+		\spread,Pbrown(1,1,0.1,inf),  //////spherical harmonic width
 		//\spread,2,
-		\ripple,Pbrown(0.0001,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
+		\ripple,Pbrown(0.0001,0.01,0.01,inf),  /////sphere ripple wave oscillation speed
 		//\ripple,0.1,
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
 		\varamp,Pbrown(1,5,0.1,inf), /////ripple amp
-		\decay,Pbrown(4,8,1,inf),
+		\decay,Pbrown(2,4,1,inf),
 		//\varamp,1,
 			//	\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 		//\out2,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
@@ -465,7 +505,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env));
 	\amp,Pseq(~r,inf);///l system
 	//		\amp,1;
 	)));
-	TempoClock.default.tempo_(8);
+	TempoClock.default.tempo_(4);
 
 
 
