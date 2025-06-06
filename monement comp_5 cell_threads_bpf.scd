@@ -240,9 +240,8 @@ dist=q1.distance(q2);
 
 //scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=15.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
-scalar=2.pow(Select.kr(coo.round(1).linlin(7.neg, 7, 0, 14), scale_coo) / 12);
-
-			lamdoma=mm;
+//scalar=2.pow(Select.kr(coo.round(1).linlin(7.neg, 7, 0, 14), scale_coo) / 12);
+		scalar=1;	lamdoma=mm;
 
 fundamental=(center)*scalar*lamdoma;
 freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);

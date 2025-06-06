@@ -63,67 +63,116 @@ word.do({|i| ~r = ~r ++ dictnotes[i.asSymbol];});
 	///Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])
 	(
 {
-var  sph1,sph2,sph3,sph4,sph5,m_x=2,m_y=2,m_z=2;
-var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z;
-var az4=0,el4=0,az5=0,el5=0,pl1=0,pl2=0,pl3=0,pl4=0,pl5=0;
+var  sph1,sph2,sph3,sph4,sph5,sph6,sph7,m_x=3,m_y=3,m_z=3,qx,qy,mq=2;
+var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z,mag_qx,mag_qy;
+var az4=0,el4=0,az5=0,el5=0,az6=0,el6=0,az7=0,el7=0;
 var angle=0,ang=0;
 var azimuth,elevation,magnitudex,magnitudey,magnitudez;
 var durx,dury,durz;
-var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=0,ply=0,plz=0;
+var sphx,sphy,sphz,azx=0,elx=90.degrad.neg,azy=0,ely=90.degrad.neg,azz=0,elz=90.degrad.neg,plx=0,ply=0,plz=0;
 var num=1.neg;
 var ellipsis=[1,1,1],spread=1;
 			~az=[];~el=[];~dur=[];
 
-		361.do{
-durx=(12).collect{
-			azx = (angle+(360*2.pow(plx/12))).wrap(180.neg,180);  // Increment azimuth
-				elx = (angle+(180*2.pow(plx/12))).wrap(90.neg,90);
-		plx=(plx+1).mod(12);
+			2.do{
 
-		sphx=(Spherical(14,(azx.degrad),(elx.degrad))).x.round(1/32);
+		durx=	4.collect{	azx = (azx+(360-(360/1.6180339887499))).wrap(180.neg,180);
+			sphx=(Spherical(1,(azx.degrad),(elx.degrad))).x.round(0.000000001).abs;};
+		elx = (elx+(180-(180/1.6180339887499))).wrap(90.neg,90);
 
-	};
 
-dury=(12).collect{
-		azy = (angle+(360*2.pow(ply/12))).wrap(180.neg,180);  // Increment azimuth
-			ely = (angle+(180*2.pow(ply/12))).wrap(90.neg,90);
-		ply=(ply+1).mod(12);
+	dury=	4.collect{	azy = (azy+(360-(360/1.6180339887499))).wrap(180.neg,180);
 
-		sphy=(Spherical(14,(azy.degrad),(ely.degrad))).y.round(1/32);
+		sphy=(Spherical(1,(azy.degrad),(ely.degrad))).y.round(0.000000001).abs;
+			};
+	ely = (ely+(180-(180/1.6180339887499))).wrap(90.neg,90);
 
-	};
-durz=(12).collect{
-			azz = (angle+(360*2.pow(plz/12))).wrap(180.neg,180);  // Increment azimuth
-				elz = (angle+(180*2.pow(plz/12))).wrap(90.neg,90);
-		plz=(plz+1).mod(12);
+	durz=		4.collect{	azz = (azz+(360-(360/1.6180339887499))).wrap(180.neg,180);
 
-		sphz=(Spherical(14,(azz.degrad),(elz.degrad))).z.round(1/32);
+		sphz=(Spherical(1,(azz.degrad),(elz.degrad))/Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])).z.round(0.000000001).abs;
+			};
+elz = (elz+(180-(180/1.6180339887499))).wrap(90.neg,90);
 
-	};
+				4.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];};num=1.neg;
+		};
 
-azimuth=(12).collect{
+		16.do{
 
-			az1 = (angle+(360*2.pow(pl1/12))).wrap(180.neg,180);  // Increment azimuth
-				el1 = (angle+(180*2.pow(pl1/12))).wrap(90.neg,90);
-		pl1=(pl1+1).mod(12);
+azimuth=	32.collect{		az1 = (az1+(360-(360/1.6180339887499))).wrap(180.neg,180);
 
 		sph1=(Spherical(1,(az1.degrad),(el1.degrad))).theta.round(0.00001);
+			};
+			el1 = (el1+(180-(180/1.6180339887499))).wrap(90.neg,90);
 
-	};
 
-elevation=(12).collect{
-
-				az2 = (angle+(360*2.pow(pl2/12))).wrap(180.neg,180);  // Increment azimuth
-			el2 = (angle+(180*2.pow(pl2/12))).wrap(90.neg,90);
-		pl2=(pl2+1).mod(12);
+elevation=		32.collect{		az2 = (az2+(360-(360/1.6180339887499))).wrap(180.neg,180);
 
 		sph2=(Spherical(1,(az2.degrad),(el2.degrad))).phi.round(0.00001);
-
 	};
+								el2 = (el2+(180-(180/1.6180339887499))).wrap(90.neg,90);
 
-angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++elevation;
 
-				12.do{ num=num+1; ~dur=~dur++durx.[num]++dury.[num]++durz.[num];};num=1.neg;};
+	magnitudex=	32.collect{		az3 = (az3+(360-(360/1.6180339887499))).wrap(180.neg,180);
+
+	sph3=(Spherical(1,(az3.degrad),(el3.degrad)));
+
+	 mag_x=((Complex(cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi)),cos((sph3.theta.round(0.00001)*m_x).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+			(Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
+
+				};		el3 = (el3+ (180-(180/1.6180339887499))).wrap(90.neg,90);
+
+
+	magnitudey=	32.collect{		az4 = (az4+(360-(360/1.6180339887499))).wrap(180.neg,180);
+
+	sph4=(Spherical(1,(az4.degrad),(el4.degrad)));
+
+		 mag_y=((Complex(sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi)),sin((sph4.theta.round(0.00001)*m_y).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+		 (Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
+				};
+				el4 = (el4+(180-(180/1.6180339887499))).wrap(90.neg,90);
+
+
+	qx=	32.collect{		az5 = (az5+(360-(360/1.6180339887499))).wrap(180.neg,180);
+
+	sph5=(Spherical(1,(az5.degrad),(el5.degrad)));
+
+
+mag_qx=((((Complex(cos(((sph5.theta.round(0.00001))*mq).wrap(pi.neg,pi)),
+cos(((sph5.theta.round(0.00001))*mq).wrap(pi.neg,pi))))*
+(Complex(sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+sin((sph5.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+(Complex(cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
+				};			el5 = (el5+(360-(360/1.6180339887499))).wrap(90.neg,90);
+
+
+		qy=	32.collect{		az6 = (az6+(360-(360/1.6180339887499))).wrap(180.neg,180);
+
+	sph6=(Spherical(1,(az6.degrad),(el6.degrad)));
+
+ mag_qy=((((Complex(sin(((sph6.theta.round(0.00001))*mq).wrap(pi.neg,pi)),
+sin(((sph6.theta.round(0.00001))*mq).wrap(pi.neg,pi))))*
+(Complex(sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+sin((sph6.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+(Complex(cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
+				};							el6 = (el6+(180-(180/1.6180339887499))).wrap(90.neg,90);
+
+
+	magnitudez=	32.collect{		az7 = (az7+(360-(360/1.6180339887499))).wrap(180.neg,180);
+
+sph7=(Spherical(1,(az7.degrad),(el7.degrad)));
+
+if(
+m_z.even,
+mag_z=(Complex(cos((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),cos((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread),
+mag_z=(Complex(sin((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread)
+	);
+////z axis   ambi..  sin for odd numbers, cos for even
+				};		el7 = (el7+(180-(180/1.6180339887499))).wrap(90.neg,90);
+
+		~az=~az++azimuth;~el=~el++elevation;~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;
+		~qx=~qx++qx;~qy=~qy++qy;};
 }.value;
 );
 
@@ -149,7 +198,21 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);~az=~az++azimuth;~el=~el++
 		(360*12*10+1).do{ n=n+(10.reciprocal);
 			~list=~list++~list1.[n];
 	}}.value);
-~list=~list.scramble;
+//~list=~list.scramble;
+
+		///////////wavetable
+~t= Buffer.alloc(s,2048);
+		{
+var signal,wt,m=0,amp;
+
+~level=15.collect{m=m+1;amp=m.reciprocal};
+~phase=15.collect{pi};
+signal=Signal.sineFill(1024,~level,~phase);
+
+wt = signal.asWavetable;
+~t.loadCollection(wt);
+signal.plot;
+		}.value;
 
 /////synths////
 
@@ -192,11 +255,11 @@ dist=q1.distance(q2);
 
 //scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=29.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
-scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
-
-			lamdoma=mm;
+//scalar=2.pow(Select.kr(coo.round(1).linlin(14.neg, 14, 0, 28), scale_coo) / 12);
+scalar=1;lamdoma=mm;
 
 fundamental=(center)*scalar*lamdoma;
+//fundamental=(center)*lamdoma;
 freq1=(fundamental*octave1);freq2=(fundamental*octave2);freq3=(fundamental*octave3);
 
 					(
@@ -290,33 +353,32 @@ v3=axis3*v2*axis3.conjugate;
 qsphe=Cartesian(v3.b,v3.c,v3.d).asSpherical;
 
 osc1=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp1*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
-				SinOsc.ar(cell,qsphe.phi).range(90.neg,90));
+			Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
 osc2=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp2*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
-				SinOsc.ar(cell,qsphe.phi).range(90.neg,90));
+				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
 osc3=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp3*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
-				SinOsc.ar(cell,qsphe.phi).range(90.neg,90));
-osc4=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp4*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
-				SinOsc.ar(cell,qsphe.phi).range(90.neg,90));
-osc5=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp5*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
-				SinOsc.ar(cell,qsphe.phi).range(90.neg,90));
-osc6=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp6*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
-				SinOsc.ar(cell,qsphe.phi).range(90.neg,90));
-osc7=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp7*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
-				SinOsc.ar(cell,qsphe.phi).range(90.neg,90));
-osc8=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp8*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
-				SinOsc.ar(cell,qsphe.phi).range(90.neg,90));
-osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
-				SinOsc.ar(cell,qsphe.phi).range(90.neg,90));
-
+				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
+			// osc4=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp4*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
+			// osc5=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp5*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
+			// osc6=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp6*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
+			// osc7=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp7*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
+			// osc8=VBAP.ar(4,SinOsc.ar(pitch2,mul:amp8*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
+			// osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
 wrappedOut1.value(out1,LeakDC.ar(osc3,mul:env));
 wrappedOut1.value(out1,LeakDC.ar(osc2,mul:env));
 wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env));
-wrappedOut2.value(out2,LeakDC.ar(osc9,mul:env));
-wrappedOut2.value(out2,LeakDC.ar(osc8,mul:env));
-wrappedOut2.value(out2,LeakDC.ar(osc7,mul:env));
-wrappedOut3.value(out3,LeakDC.ar(osc6,mul:env));
-wrappedOut3.value(out3,LeakDC.ar(osc5,mul:env));
-wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env));
+//wrappedOut2.value(out2,LeakDC.ar(osc9,mul:env));
+//wrappedOut2.value(out2,LeakDC.ar(osc8,mul:env));
+//wrappedOut2.value(out2,LeakDC.ar(osc7,mul:env));
+//wrappedOut3.value(out3,LeakDC.ar(osc6,mul:env));
+//wrappedOut3.value(out3,LeakDC.ar(osc5,mul:env));
+//wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env));
 
 }).add;
 );
@@ -331,13 +393,12 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env));
 
 //////////pattern
 
-	~list=[0,32,256,80];
 	(
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq([1],inf),
 			\coo,Pseq([0],inf),
 		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
-		\mm,Prand([1],inf),
+		\mm,Prand([1,1/2,3/2,4/3],inf),
 		\mh,Prand([1],inf),
 		//\a,Prand([0,1,2,3,4],inf),
 		//\b,Prand([0,1,2,3,4],inf),
@@ -346,47 +407,76 @@ wrappedOut3.value(out3,LeakDC.ar(osc4,mul:env));
 			\pl2,Pseq(~list,inf),
 		\lfo,Pbrown(0.01,0.1,0.1,inf), /////mag spherical harmonic oscillation
 		\lfo2,Pbrown(0.0001,0.005,0.001,inf), /////tone spherical harmonic oscillation
-		\cell,Pbrown(0.01,1/4,0.1,inf), ///////speed of 4dimensional oscillation
+		\cell,Pbrown(0.01,1,0.1,inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
 		//\lfo,1/2,
-		\spread,Pbrown(1,2,1,inf),  //////spherical harmonic width
+		\spread,Pbrown(1,2,0.1,inf),  //////spherical harmonic width
 		//\spread,2,
-		\ripple,Pbrown(0.1,10,0.01,inf),  /////sphere ripple wave oscillation speed
+		\ripple,Pbrown(0.01,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
 		//\ripple,0.1,
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
-		\varamp,Pbrown(0.1,2,0.1,inf), /////ripple amp
-		\decay,Pbrown(1,2,1,inf),
+		\varamp,Pbrown(0.1,4,0.1,inf), /////ripple amp
+		\decay,Pbrown(2,4,1,inf),
 		//\varamp,1,
 				\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 		\out2,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 		\out3,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
-			\amp,Pseq(~r,inf);///l system
-			//\amp,1;
+	\amp,Pseq(~r,inf);///l system
+	//		\amp,1;
 	)));
-	TempoClock.default.tempo_(4);
+	TempoClock.default.tempo_(8);
 
 
 s.meter;s.freqscope;s.scope;
 }
 )
 
+~seed =10;
 (
-	~m=Buffer.alloc(s,2048);
-			{
-var signal,wt,env;
+thisThread.randSeed = ~seed;
+4.rand
+)
+////this is an example of setting a random seed but what about using a sequence as seed for a thread
+///in the case of using a sequence as a seed for a pattern it would be like so: (this shuffles a sequence in time)
+(
+~seed = [1,2,3,4,5];
 
-		env=Env([0,1,1,0],[50,100,50],[4,0,-4]);
-		signal=env.asSignal(1024);
-wt=signal.asWavetable;
-		//signal.plot;
-~m.loadCollection(wt);
-		}.value;
-);
+a= Pshuf(~seed, 20);
+b = a.asStream;
+20.do({ b.next.postln; });
+)
+//another example would be to create two arrays of azimuth and elevation points in a constant elevation and azimuth increase eg. down to up (so that locations in the area can be conceptualized in series and choose the coordinate via Pwrand on these area through another array of weights that will point the randomness toward a specific area on the sphere, thus creating an instance of the code that produces some specific locations/chords more than other instances
+///in such a case also random motion patterns can be used with lo and high boundaries of az and el (no arrays)
+(
+var a, b;
+a = Pwrand.new([1, 2, 3], [1, 0, 0].normalizeSum, 6);    // return 6 items
+b = a.asStream;
+7.do({ b.next.postln; });
+)
+////the weight array can also be a pattern so that the area of choice can change in time
+(
+~weightStream = Ppatlace([
+    Pseq([[1, 0, 0]], 2),
+    Pseq([[0, 1, 0]], 2),
+    Pseq([[0, 0, 1]], 2)
+], 2).asStream;
+
+a =  Pwrand(
+        [1,2,3],
+        Pfunc({ ~weightStream.next }),
+       6
+    );
+b = a.asStream;
+6.do({ b.next.postln; });
+)
+
+///another alternative for selection would to use
+Pclutch(Pseq([1, 2, 3, 4, 5], 3), Pseq([0, 0, 1, 0, 0, 0, 1, 1])).asStream.nextN(10);
 
 (
 ~aa.play;
-{Out.kr(0,Osc.ar(~m.bufnum,300.reciprocal,mul:1))}.play;
+//{Out.kr(0,Osc.ar(~m.bufnum,300.reciprocal,mul:1))}.play;
 );
 
 s.record(numChannels:4);
