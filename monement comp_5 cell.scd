@@ -179,7 +179,7 @@ mag_z=(Complex(sin((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 	////////////list
 	({
 		var n=1.neg;
-		~list1=(360*12+1).collect{
+		~list1=(32*16+1).collect{
 		n=n+1;
 		}
 		}.value
@@ -187,17 +187,17 @@ mag_z=(Complex(sin((sph7.phi.round(0.00001)*m_z).wrap((pi/2).neg,(pi/2))),sin((s
 
 		({
 		var n=1.neg;
-		~list2=(360*12*10).collect{
+		~list2=(32*16).collect{
 		n=n+1;
 		}
 		}.value
 	);
 
-	({
-		var n=0; ~list=[];
-		(360*12*10+1).do{ n=n+(10.reciprocal);
-			~list=~list++~list1.[n];
-	}}.value);
+	// ({
+	// 	var n=0; ~list=[];
+	// 	(32*16*10+1).do{ n=n+(10.reciprocal);
+	// 		~list=~list++~list1.[n];
+	// }}.value);
 //~list=~list.scramble;
 
 		///////////wavetable
@@ -243,7 +243,7 @@ SynthDef.new(\ospace, {
 
 	t=SinOsc.kr(ripple).range(1, 100);
 			waveFreq=amount;
-	sph=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list),~az),Select.kr(Select.kr(pl2+1,~list),~el));
+	sph=Spherical(1,Select.kr(pl1,~az),Select.kr(pl1,~el));sph8=Spherical(1,Select.kr(Select.kr(pl2+1,~list1),~az),Select.kr(Select.kr(pl2+1,~list1),~el));
 	mod_angle=SinOsc.ar(lfo,0.degrad).range(90.neg.degrad,90.degrad);
 	mod_angle1=SinOsc.ar(lfo,90.degrad).range(90.neg.degrad,90.degrad);
 	mod_anglez=SinOsc.ar(lfo,45.degrad).range(90.neg.degrad,90.degrad);
@@ -403,10 +403,10 @@ wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env));
 		//\a,Prand([0,1,2,3,4],inf),
 		//\b,Prand([0,1,2,3,4],inf),
 			//\dur,1,
-			\pl1,Pseq(~list,inf),    ///////coordinate selection
-			\pl2,Pseq(~list,inf),
+			\pl1,Pseq(~list1,inf),    ///////coordinate selection
+			\pl2,Pseq(~list2,inf),
 		\lfo,Pbrown(0.01,0.1,0.1,inf), /////mag spherical harmonic oscillation
-		\lfo2,Pbrown(0.0001,0.01,0.001,inf), /////tone spherical harmonic oscillation
+		\lfo2,Pbrown(0.0001,0.001,0.001,inf), /////tone spherical harmonic oscillation
 		\cell,Pbrown(0.01,1,0.1,inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
 		//\lfo,1/2,
