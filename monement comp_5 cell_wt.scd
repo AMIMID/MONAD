@@ -71,10 +71,10 @@ var durx,dury,durz,angle=0;
 var sphx,sphy,sphz,azx,elx,azy,ely,azz,elz,plx=1,ply=1,plz=1;
 var num=1.neg;
 var ellipsis=[1,1,1],spread=1;
-			~dur=[];~az=[];~el=[];~magx=[];~magy=[];~magz=[];~qx=[];~qy=[];
+			~az=[];~el=[];~magx=[];~magy=[];~magz=[];~qx=[];~qy=[];
 
-	(2.pow(10)).do{
-azimuth=6.collect{
+	(2.pow(7)).do{
+azimuth=32.collect{
 
 			az1 = (az1+(360-(360/1.6180339887499))).wrap(180.neg,180);  // Increment azimuth
 				el1 = (el1+(180-(180/1.6180339887499))).wrap(90.neg,90);
@@ -83,7 +83,7 @@ sph1=(Spherical(1,(az1.degrad+angle.degrad).wrap(pi.neg,pi),(el1.degrad+angle.de
 
 	};
 
-elevation=(6).collect{
+elevation=(32).collect{
 
 				az2 = (az2+(360-(360/1.6180339887499))).wrap(180.neg,180);  // Increment azimuth
 			el2 = (el2+(180-(180/1.6180339887499))).wrap(90.neg,90);
@@ -92,7 +92,7 @@ elevation=(6).collect{
 
 	};
 
-			magnitudex=	6.collect{
+			magnitudex=	32.collect{
 			az3 = (az3+(360-(360/1.6180339887499))).wrap(180.neg,180);
 			el3 = (el3+ (180-(180/1.6180339887499))).wrap(90.neg,90);
 
@@ -104,7 +104,7 @@ elevation=(6).collect{
 				};
 
 
-	magnitudey=	6.collect{		az4 = (az4+(360-(360/1.6180339887499))).wrap(180.neg,180);
+	magnitudey=	32.collect{		az4 = (az4+(360-(360/1.6180339887499))).wrap(180.neg,180);
 				el4 = (el4+(180-(180/1.6180339887499))).wrap(90.neg,90);
 
 	sph4=(Spherical(1,(az4.degrad+angle.degrad).wrap(pi.neg,pi),(el4.degrad+angle.degrad).wrap((pi/2).neg,(pi/2))));
@@ -114,7 +114,7 @@ elevation=(6).collect{
 				};
 
 
-	qx=	6.collect{		az5 = (az5+(360-(360/1.6180339887499))).wrap(180.neg,180);
+	qx=	32.collect{		az5 = (az5+(360-(360/1.6180339887499))).wrap(180.neg,180);
 			el5 = (el5+(360-(360/1.6180339887499))).wrap(90.neg,90);
 
 	sph5=(Spherical(1,(az5.degrad+angle.degrad).wrap(pi.neg,pi),(el5.degrad+angle.degrad).wrap((pi/2).neg,(pi/2))));
@@ -129,7 +129,7 @@ cos((sph5.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spr
 				};
 
 
-		qy=	6.collect{		az6 = (az6+(360-(360/1.6180339887499))).wrap(180.neg,180);
+		qy=	32.collect{		az6 = (az6+(360-(360/1.6180339887499))).wrap(180.neg,180);
 			el6 = (el6+(180-(180/1.6180339887499))).wrap(90.neg,90);
 
 	sph6=(Spherical(1,(az6.degrad+angle.degrad).wrap(pi.neg,pi),(el6.degrad+angle.degrad).wrap((pi/2).neg,(pi/2))));
@@ -143,7 +143,7 @@ cos((sph6.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spr
 				};
 
 
-	magnitudez=	6.collect{		az7 = (az7+(360-(360/1.6180339887499))).wrap(180.neg,180);
+	magnitudez=	32.collect{		az7 = (az7+(360-(360/1.6180339887499))).wrap(180.neg,180);
 			el7 = (el7+(180-(180/1.6180339887499))).wrap(90.neg,90);
 
 sph7=(Spherical(1,(az7.degrad+angle.degrad).wrap(pi.neg,pi),(el7.degrad+angle.degrad).wrap((pi/2).neg,(pi/2))));
@@ -160,8 +160,8 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);
 ~az=~az++azimuth;~el=~el++elevation;
 ~magx=~magx++magnitudex;~magy=~magy++magnitudey;~magz=~magz++magnitudez;
 ~qx=~qx++qx;~qy=~qy++qy;
-		//az1=0;el1=0;az2=0;el2=0;az3=0;el3=0;
-		//az4=0;el4=0;az5=0;el5=0;az6=0;el6=0;az7=0;el7=0;
+		az1=0;el1=0;az2=0;el2=0;az3=0;el3=0;
+		az4=0;el4=0;az5=0;el5=0;az6=0;el6=0;az7=0;el7=0;
 	}
 }.value;
 );
@@ -174,7 +174,7 @@ var num=1.neg;
 var ellipsis=[1,1,1],spread=1;
 			~dur=[];
 
-			4.do{
+			2.do{
 
 		durx=	4.collect{	azx = (azx+(360-(360/1.6180339887499))).wrap(180.neg,180);
 			sphx=(Spherical(1,(azx.degrad),(elx.degrad))).x.round(0.000000001).abs;};
@@ -221,7 +221,7 @@ elz = (elz+(180-(180/1.6180339887499))).wrap(90.neg,90);
 	// 	(32*16*10+1).do{ n=n+(10.reciprocal);
 	// 		~list=~list++~list1.[n];
 	// }}.value);
-//~list=~list.scramble;
+~list1=~list1.scramble;
 
 		///////////wavetables
 ~t= Buffer.alloc(s,2048);
@@ -241,8 +241,8 @@ signal.plot;
 		{
 var signal,wt,m=0,amp,ph=0;
 
-~levell=4.collect{m=m+1;amp=m.reciprocal};
-		~phasee=12.collect{ph=(ph+(360-(360/1.6180339887499))).wrap(0,360)};
+~levell=3.collect{m=m+1;amp=m.reciprocal};
+		~phasee=3.collect{ph=(ph+(360-(360/1.6180339887499))).wrap(0,360)};
 signal=Signal.sineFill(1024,~levell,~phasee.degrad);
 
 wt = signal.asWavetable;
@@ -269,12 +269,12 @@ SynthDef.new(\ospace, {
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t,scalar;
 	var axis,i,j,k,coordinatesx,coordinatesy,coordinatesz,v,v1,qsphe;
 	var ii,iii,jj,jjj,kk,kkk,axis1,axis2,axis3,v2,v3,mod_anglez;
-  var wrappedOut1 = { |busArray, signalArray|[busArray, signalArray].flop.do { |pair| Out.ar(pair[0], pair[1])}};
-	var wrappedOut2 = { |busArray, signalArray|[busArray, signalArray].flop.do { |pair|Out.ar(pair[0], pair[1])}};
-	var wrappedOut3 = { |busArray, signalArray|[busArray, signalArray].flop.do { |pair|Out.ar(pair[0], pair[1])}};
-	 var out1 = NamedControl.kr(\out1, [0, 1, 2, 3]);  // multiple buses!
-	var out2 = NamedControl.kr(\out2, [0, 1, 2, 3]);
-	var out3 = NamedControl.kr(\out3, [0, 1, 2, 3]);
+ // var wrappedOut1 = { |busArray, signalArray|[busArray, signalArray].flop.do { |pair| Out.ar(pair[0], pair[1])}};
+//	var wrappedOut2 = { |busArray, signalArray|[busArray, signalArray].flop.do { |pair|Out.ar(pair[0], pair[1])}};
+	//var wrappedOut3 = { |busArray, signalArray|[busArray, signalArray].flop.do { |pair|Out.ar(pair[0], pair[1])}};
+	// var out1 = NamedControl.kr(\out1, [0, 1, 2, 3]);  // multiple buses!
+	//var out2 = NamedControl.kr(\out2, [0, 1, 2, 3]);
+	//var out3 = NamedControl.kr(\out3, [0, 1, 2, 3]);
 
 
 	t=SinOsc.kr(ripple).range(1, 100);
@@ -287,7 +287,7 @@ SynthDef.new(\ospace, {
 q1=Quaternion(0,sph.x,sph.y,sph.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.1,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.02);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.1,dist.lag(0.1)*decay,amp),doneAction:2,levelScale:0.01);
 
 //scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=29.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
@@ -337,7 +337,7 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 
 harm=((Complex(cos(((sph.phi+mod_angle2).round(0.00001)*mh).wrap((pi/2).neg,(pi/2))),cos(((sph.phi).round(0.00001)*mh).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-sphere=Spherical(24*harm,Select.kr(pl1,~az),Select.kr(pl1,~el));
+sphere=Spherical(24,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
@@ -431,47 +431,57 @@ Out.ar(0,LeakDC.ar(osc1,mul:env));
 	);
 
 //////////pattern
-~list1=[~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand]];
-	~list2=[~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand]];
+//~list1=[~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand]];
+	//~list2=[~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand]];
 	(
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
-			\dur,Pseq([1],inf),
+			\dur,Pseq(~dur,inf),
 			\coo,Pseq([0],inf),
 		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
-		\mm,Prand([1,1/2,3/2,4/3],inf),
+		\mm,Prand([1/2],inf),
 		\mh,Prand([3],inf),
 		//\a,Prand([0,1,2,3,4],inf),
 		//\b,Prand([0,1,2,3,4],inf),
 			//\dur,1,
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
 			\pl2,Pseq(~list2,inf),
-		\lfo,Pbrown(0.01,0.1,0.1,inf), /////mag spherical harmonic oscillation
+		\lfo,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,1,10],inf), /////mag spherical harmonic oscillation
 		\lfo2,Pbrown(0.0001,0.001,0.001,inf), /////tone spherical harmonic oscillation
-		\cell,Pbrown(0.01,1,0.1,inf), ///////speed of 4dimensional oscillation
+			\cell,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,1,10],inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
 		//\lfo,1/2,
 		\spread,Pbrown(1,2,0.1,inf),  //////spherical harmonic width
 		//\spread,2,
-		\ripple,Pbrown(0.01,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
+		\ripple,Pbrown(0.0001,0.1,0.01,inf),  /////sphere ripple wave oscillation speed
 		//\ripple,0.1,
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
 		\amount,5,
-		\varamp,Pbrown(0.1,4,0.1,inf), /////ripple amp
-		\decay,Pbrown(1,2,1,inf),
+		\varamp,Pbrown(1,5,0.1,inf), /////ripple amp
+		\decay,Pbrown(4,8,1,inf),
 		//\varamp,1,
-				\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
-		\out2,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
-		\out3,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
+			//	\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
+		//\out2,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
+		//\out3,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
 	\amp,Pseq(~r,inf);///l system
 	//		\amp,1;
 	)));
-	TempoClock.default.tempo_(4);
+	TempoClock.default.tempo_(8);
 
 
 
 s.meter;s.freqscope;s.scope;
 }
 )
+
+
+
+(
+~aa.play;
+//{Out.kr(0,Osc.ar(~m.bufnum,300.reciprocal,mul:1))}.play;
+);
+
+s.record(numChannels:4);
+
 
 ~seed =10;
 (
@@ -515,9 +525,3 @@ b = a.asStream;
 ///another alternative for selection would to use
 Pclutch(Pseq([1, 2, 3, 4, 5], 3), Pseq([0, 0, 1, 0, 0, 0, 1, 1])).asStream.nextN(10);
 
-(
-~aa.play;
-//{Out.kr(0,Osc.ar(~m.bufnum,300.reciprocal,mul:1))}.play;
-);
-
-s.record(numChannels:4);
