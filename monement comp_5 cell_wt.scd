@@ -327,7 +327,7 @@ SynthDef.new(\ospace, {
 q1=Quaternion(0,sph.x,sph.y,sph.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.1,decay,amp),doneAction:2,levelScale:0.005);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.5,decay,amp),doneAction:2,levelScale:0.005);
 
 //scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=29.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
@@ -371,13 +371,14 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 				mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;mag_qx=magqx.value;mag_qy=magqy.value
 				);
 
-						phase=Complex(sph.theta.linlin(pi.neg,pi,1.neg,1),sph.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
+						//phase=Complex(sph.theta.linlin(pi.neg,pi,1.neg,1),sph.phi.linlin((pi/2).neg,(pi/2),1.neg,1)).theta;
+			phase=sph.theta;
 				mod_angle2=SinOsc.ar(lfo2,phase).range(90.neg.degrad,90.degrad);///harm oscillator phase can vary across tones
 			//mod_angle2=LFNoise1.ar(lfo2).range(90.neg.degrad,90.degrad);///harm oscillator phase can vary across tones
 
 harm=((Complex(cos(((sph.phi+mod_angle2).round(0.00001)*mh).wrap((pi/2).neg,(pi/2))),cos(((sph.phi).round(0.00001)*mh).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
 
-sphere=Spherical(28,Select.kr(pl1,~az),Select.kr(pl1,~el));
+sphere=Spherical(24,Select.kr(pl1,~az),Select.kr(pl1,~el));
 
 n1=(sphere.x).round(0.00000001);
 n2=(sphere.y).round(0.00000001);
@@ -428,11 +429,11 @@ v3=axis3*v2*axis3.conjugate;
 
 qsphe=Cartesian(v3.b,v3.c,v3.d).asSpherical;
 
-osc1=VBAP.ar(4,VOsc.ar(0.04,pitch1,mul:amp1*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+osc1=VBAP.ar(4,VOsc.ar(0.05,pitch1,mul:amp1*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-osc2=VBAP.ar(4,VOsc.ar(0.04,pitch2,mul:amp2*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+osc2=VBAP.ar(4,VOsc.ar(0.05,pitch2,mul:amp2*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-osc3=VBAP.ar(4,VOsc.ar(0.04,pitch3,mul:amp3*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
+osc3=VBAP.ar(4,VOsc.ar(0.05,pitch3,mul:amp3*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
 			// osc4=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp4*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
@@ -471,32 +472,31 @@ Out.ar(0,LeakDC.ar(osc1,mul:env));
 	);
 
 //////////pattern
-//~list1=[~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand]];
-	//~list2=[~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand]];
+~list1=[~list1.[(32*128).rand],~list1.[(32*128).rand],~list1.[(32*128).rand],~list1.[(32*128).rand],~list1.[(32*128).rand]];
 	(
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
-			\dur,Pseq(~dur,inf),
+			\dur,Pseq([1],inf),
 			\coo,Pseq([0],inf),
 		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
 		\mm,Prand([1/2],inf),
-		\mh,Prand([1],inf),
+		\mh,Prand([3],inf),
 		//\a,Prand([0,1,2,3,4],inf),
 		//\b,Prand([0,1,2,3,4],inf),
 			//\dur,1,
 			\pl1,Pseq(~list1,inf),    ///////coordinate selection
-			\pl2,Pseq(~list2,inf),
+			\pl2,Pseq(~list1,inf),
 		\lfo,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,0.01],inf), /////mag spherical harmonic oscillation
-		\lfo2,Pbrown(0.001,0.1,0.01,inf), /////tone spherical harmonic oscillation
+		\lfo2,Pbrown(0.0001,0.01,0.01,inf), /////tone spherical harmonic oscillation
 			\cell,Prand([0.001,0.0001,0.001,0.0001,0.001,0.0001,0.01],inf), ///////speed of 4dimensional oscillation
 		\rot_angle,Pseq(~angle,inf),
 		//\lfo,1/2,
 		\spread,Pbrown(1,1,0.1,inf),  //////spherical harmonic width
 		//\spread,2,
-		\ripple,Pbrown(0.0001,0.01,0.01,inf),  /////sphere ripple wave oscillation speed
+		\ripple,Pbrown(0.0001,0.01,0.1,inf),  /////sphere ripple wave oscillation speed
 		//\ripple,0.1,
 		//\amount,Prand([4,5,6,7,8],inf),   /////sphere ripple waves amount
-		\amount,5,
-		\varamp,Pbrown(1,5,0.1,inf), /////ripple amp
+		\amount,7,
+		\varamp,Pbrown(1,4,0.1,inf), /////ripple amp
 		\decay,Pbrown(2,4,1,inf),
 		//\varamp,1,
 			//	\out1,Pn(Pshuf([0, 1, 2, 3], 1), inf).clump(4).collect([_]),
