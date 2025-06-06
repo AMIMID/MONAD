@@ -14,15 +14,11 @@ s.options.sampleRate= 44100;
 
 s.waitForBoot{
 Buffer.freeAll;
-				~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/bpf/0_tapsi diskos.wav",channels:0 );
-	~c2 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/bpf/0_tapsi diskos.wav",channels:0 );
-	~c3 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/bpf/0_tapsi diskos.wav",channels:0 );
-	~c4 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/bpf/0_tapsi diskos.wav",channels:0 );
-	~c5 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/PROJECT  FILES/recordings/bpf samples/bpf/0_tapsi diskos.wav",channels:0 );
 ////////////////////////////////////speaker setup///other
 
 	~a = VBAPSpeakerArray.new(3, [[0, 45], [180, 45], [90, 45.neg], [90.neg, 45.neg]]);
 	 ~b = Buffer.loadCollection(s, ~a.getSetsAndMatrices);
+
 
 ///////////////////////////////////////////////////////arrays
 ///////l-system
@@ -63,9 +59,9 @@ word.do({|i| ~r = ~r ++ dictnotes[i.asSymbol];});
 
 
 //////////////////////////////////////////////////basis
+	////no0
 	///Cartesian(ellipsis.normalizeSum.sqrt.[0],ellipsis.normalizeSum.sqrt.[1],ellipsis.normalizeSum.sqrt.[2])
-
-	(
+		(
 {
 var  sph1,sph2,sph3,sph4,sph5,sph6,sph7,m_x=3,m_y=3,m_z=3,qx,qy,mq=2;
 var az1=0,el1=0,az2=0,el2=0,az3=0,el3=0,mag,mag_x,mag_y,mag_z,mag_qx,mag_qy;
@@ -168,7 +164,7 @@ angle=(angle+(360-(360/1.6180339887499))).wrap(0,360);
 		//az4=0;el4=0;az5=0;el5=0;az6=0;el6=0;az7=0;el7=0;
 	}
 }.value;
-)
+);
 	(
 {
 var angle=0,ang=0;
@@ -227,17 +223,30 @@ elz = (elz+(180-(180/1.6180339887499))).wrap(90.neg,90);
 	// }}.value);
 //~list=~list.scramble;
 
-		///////////wavetable
+		///////////wavetables
 ~t= Buffer.alloc(s,2048);
 		{
 var signal,wt,m=0,amp;
 
-~level=15.collect{m=m+1;amp=m.reciprocal};
-~phase=15.collect{pi};
+~level=60.collect{m=m+1;amp=m.reciprocal};
+		~phase=60.collect{pi};
 signal=Signal.sineFill(1024,~level,~phase);
 
 wt = signal.asWavetable;
 ~t.loadCollection(wt);
+signal.plot;
+		}.value;
+
+	~w= Buffer.alloc(s,2048);
+		{
+var signal,wt,m=0,amp,ph=0;
+
+~levell=4.collect{m=m+1;amp=m.reciprocal};
+		~phasee=12.collect{ph=(ph+(360-(360/1.6180339887499))).wrap(0,360)};
+signal=Signal.sineFill(1024,~levell,~phasee.degrad);
+
+wt = signal.asWavetable;
+~w.loadCollection(wt);
 signal.plot;
 		}.value;
 
@@ -246,11 +255,11 @@ signal.plot;
 
 		(
 SynthDef.new(\ospace, {
-	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0,rot_angle=0,a=0,b=0,mm=1,lfo2,mh=0,buf=0;
+	arg amp=1,pl1=0,lfo,spread=1,ripple=0.01,amount=1,decay=8,varamp=5,coo,cell=1,pl2=0,rot_angle=0,a=0,b=0,mm=1,lfo2,mh=0;
 	var amp1,amp2,amp3,octave1=1,octave2=2,octave3=4,multiplier=64,center=1800/2;////343speed of sound/1800hz= 0.1905 aproximate head diameter
 	var osc4,osc5,osc6,osc7,osc8,osc9,amp4,amp5,amp6,amp7,amp8,amp9,lamdoma;
 	var pitch4,pitch5,pitch6,pitch7,pitch8,pitch9,dist,harm;
-	var ton1,ton2,ton3,fundamental,sph,sph8,rq=0.000001;
+	var ton1,ton2,ton3,fundamental,sph,sph8;
 	var freq1,freq2,freq3,pitch1,pitch2,pitch3,env,sig,n1,n2,n3;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 	var ratio1,ratio2,ratio3,m=3,mq=2,phase,osc1,osc2,osc3,sphere;
@@ -278,7 +287,7 @@ SynthDef.new(\ospace, {
 q1=Quaternion(0,sph.x,sph.y,sph.z); q2=Quaternion(0,sph8.x,sph8.y,sph8.z);
 dist=q1.distance(q2);
 
-			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.01,decay*dist.lag(0.1),amp),doneAction:2,levelScale:10);
+			env=EnvGen.ar(Env.perc(dist.lag(0.1)*0.1,decay*dist.lag(0.1),amp),doneAction:2,levelScale:0.02);
 
 //scale=57.collect{nn=nn+1;Scale.major.performDegreeToKey(nn,12)};
 scale_coo=29.collect{nnn=nnn+1;Scale.major.performDegreeToKey(nnn,12)};
@@ -379,13 +388,11 @@ v3=axis3*v2*axis3.conjugate;
 
 qsphe=Cartesian(v3.b,v3.c,v3.d).asSpherical;
 
-			sig=PlayBuf.ar(1, buf, BufRateScale.kr(buf), loop: 1,doneAction:2)*1;
-
-osc1=VBAP.ar(4,BPF.ar(sig,pitch1,mul:amp1*mag,rq:rq),~b.bufnum,qsphe.theta.raddeg,
+osc1=VBAP.ar(4,Osc.ar(~w.bufnum,pitch1,mul:amp1*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-osc2=VBAP.ar(4,BPF.ar(sig,pitch2,mul:amp2*mag,rq:rq),~b.bufnum,qsphe.theta.raddeg,
+osc2=VBAP.ar(4,Osc.ar(~w.bufnum,mul:amp2*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-osc3=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp3*mag,rq:rq),~b.bufnum,qsphe.theta.raddeg,
+osc3=VBAP.ar(4,Osc.ar(~w.bufnum,mul:amp3*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 				Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
 			// osc4=VBAP.ar(4,SinOsc.ar(pitch1,mul:amp4*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
@@ -399,12 +406,12 @@ osc3=VBAP.ar(4,BPF.ar(sig,pitch3,mul:amp3*mag,rq:rq),~b.bufnum,qsphe.theta.radde
 			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
 			// osc9=VBAP.ar(4,SinOsc.ar(pitch3,mul:amp9*mag,phase:phase),~b.bufnum,qsphe.theta.raddeg,
 			// Osc.ar(~t.bufnum,cell,qsphe.phi).range(90.neg,90));
-//wrappedOut1.value(out1,LeakDC.ar(osc3,mul:env*(rq.sqrt.reciprocal)));
-//wrappedOut1.value(out1,LeakDC.ar(osc2,mul:env*(rq.sqrt.reciprocal)));
-//wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)));
-Out.ar(0,LeakDC.ar(osc3,mul:env*(rq.sqrt.reciprocal)));
-Out.ar(0,LeakDC.ar(osc2,mul:env*(rq.sqrt.reciprocal)));
-Out.ar(0,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)));
+			Out.ar(0,LeakDC.ar(osc3,mul:env));
+Out.ar(0,LeakDC.ar(osc2,mul:env));
+Out.ar(0,LeakDC.ar(osc1,mul:env));
+//wrappedOut1.value(out1,LeakDC.ar(osc3,mul:env));
+//wrappedOut1.value(out1,LeakDC.ar(osc2,mul:env));
+//wrappedOut1.value(out1,LeakDC.ar(osc1,mul:env));
 //wrappedOut2.value(out2,LeakDC.ar(osc9,mul:env));
 //wrappedOut2.value(out2,LeakDC.ar(osc8,mul:env));
 //wrappedOut2.value(out2,LeakDC.ar(osc7,mul:env));
@@ -424,13 +431,12 @@ Out.ar(0,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)));
 	);
 
 //////////pattern
-	~list1=[~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand]];
+~list1=[~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand],~list1.[1024.rand]];
 	~list2=[~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand],~list2.[1024.rand]];
 	(
 		~aa=Pdef(\1, Pbind(\instrument, \ospace,
 			\dur,Pseq([1],inf),
 			\coo,Pseq([0],inf),
-				\buf,Prand([0,1,2,3,4],inf),
 		//\mm,Prand([1,2,3,4,5,6,7,8,9,10],inf),
 		\mm,Prand([1,1/2,3/2,4/3],inf),
 		\mh,Prand([3],inf),
@@ -460,6 +466,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env*(rq.sqrt.reciprocal)));
 	//		\amp,1;
 	)));
 	TempoClock.default.tempo_(4);
+
 
 
 s.meter;s.freqscope;s.scope;
