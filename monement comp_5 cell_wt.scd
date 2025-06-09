@@ -55,13 +55,18 @@ var wt,sig;
 				(sin((4/1)*(x+~angle.[3].degrad))*(1/4))+
 				(sin((5/1)*(x+~angle.[4].degrad))*(1/5))+
 				(sin((6/1)*(x+~angle.[5].degrad))*(1/6))+
-				(sin((7/1)*(x+~angle.[6].degrad))*(1/7));
+				(sin((7/1)*(x+~angle.[6].degrad))*(1/7))+
+				(sin((8/1)*(x+~angle.[7].degrad))*(1/8))+
+				(sin((9/1)*(x+~angle.[8].degrad))*(1/9))+
+				(sin((10/1)*(x+~angle.[9].degrad))*(1/10));
 	},0,2pi);
 
 wt = sig.asWavetable;
 ~w2.loadCollection(wt);
 sig.plot;
 	}.value;);
+
+	//{Osc.ar(~w2.bufnum,55,mul:0.1)}.play;
 
 
 	~t= Buffer.alloc(s,2048);
@@ -491,7 +496,7 @@ Out.ar(0,LeakDC.ar(osc1,mul:env));
 	\amp,Pseq(~r,inf);///l system
 	//		\amp,1;
 	)));
-	TempoClock.default.tempo_(2);
+	TempoClock.default.tempo_(4);
 
 
 
