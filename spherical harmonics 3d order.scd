@@ -1,3 +1,4 @@
+
 (
 s.options.numWireBufs = 1024*4;
 s.options.numOutputBusChannels=4;
@@ -11,8 +12,8 @@ s.boot;
 )
 
 
-// Buffer.freeAll
-//
+Buffer.freeAll
+
 // OSCdef(\amp1, { |msg|
 // 	~a = msg[3];
 // 	defer { ~v.refresh };
@@ -38,32 +39,27 @@ s.boot;
 
 (
 Buffer.freeAll;
-(
-~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/BWATVFBP9.wav",channels:0);
-~c2 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Desktop/BWATVFBP9.wav",channels:1);
-);
-~controlBus_m = Bus.control(s, 1);
+
+//~controlBus_m = Bus.control(s, 1);
 ~controlBus_a = Bus.control(s, 1);
 ~controlBus_a1 = Bus.control(s, 1);
-~controlBus_t = Bus.control(s, 1);
+//~controlBus_spread = Bus.control(s, 1);
 
 
 SynthDef.new(\player,{
 	arg tempo;
 	var env;
-	var sig1, sig2, sig3, sig4;
+	var sig1, sig2, sig3, sig4,control,sig;
 
-	sig1=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1.bufnum), loop: 0, doneAction:2);
-	sig2=PlayBuf.ar(1, ~c2.bufnum, BufRateScale.kr(~c2.bufnum), loop: 0, doneAction:2);
+	sig=SinOsc.kr(0.01).range(1,4);
 
-	//Out.kr(~controlBus_m.index, (ZeroCrossing.ar(sig1)*0.006).poll);
-	Out.kr(~controlBus_a.index, SinOsc.ar(Amplitude.ar(sig1,mul:5),0.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_a1.index, SinOsc.ar(Amplitude.ar(sig1,mul:5),90.degrad,mul:1).range(90.neg.degrad,90.degrad));
-	Out.kr(~controlBus_t.index, SinOsc.kr(0.01).range(0, 100));
+	//Out.kr(~controlBus_m.index, sig);
+	//Out.kr(~controlBus_m.index, sig);
+	Out.kr(~controlBus_a.index, SinOsc.kr(0.05,0.degrad,mul:1).range(90.neg.degrad,90.degrad));
+	Out.kr(~controlBus_a1.index, SinOsc.kr(0.05,90.degrad,mul:1).range(90.neg.degrad,90.degrad));
 
-
-Out.ar(0,sig1*1);
-Out.ar(1,sig2*1);
+//Out.ar(0,sig*1);
+//Out.ar(1,sig*1);
 
 }).add;
 )
@@ -97,9 +93,9 @@ w = Window.new("3D Scatterplot", Rect(40,40, 800, 800)).front;
 ~v = UserView.new(w,Rect(0,0,800,800)).background_(Color.black);
 a = ScatterView3d(~v, Rect(0,0, 800,800), data, [-1000, 1000].asSpec,[-1000, 1000].asSpec,[-1000, 1000].asSpec);
 a.drawMethod = \fillRect;
-a.symbolSize = 1.3;
-a.symbolColor = Color.red;
-a.background = Color.green;
+a.symbolSize = 1;
+a.symbolColor = Color.white;
+a.background = Color.black;
 
   r= Routine({loop{
 
@@ -219,7 +215,7 @@ magnitudez=(12).collect{
 ~magz=~magz/(2.sqrt);
  );
 );
-	dota=(360*3).collect{
+	dota=(360*4).collect{
 
 	az=~az.[pla];
 	el=~el.[pla];
@@ -240,7 +236,7 @@ magg=(Cartesian(~magx.[pla],~magy.[pla],~magz.[pla]).rho/(2.sqrt))+
 	data =data++dota;
 	//data.postln;
  	a.data = data;            // Update ScatterView3d
-0.065.wait
+0.5.wait
 }});
 r.play;
 
@@ -252,7 +248,7 @@ Pen.translate(400,400);
 		a.rot(ot,ot,ot);
     ~v.refresh;
 
-		ot=ot+0.5.degrad;
+		ot=ot+0.2.degrad;
 
 };
 { while { run } {~v.background_(Color.black); ~v.refresh; (0.1).wait } }.fork(AppClock);
